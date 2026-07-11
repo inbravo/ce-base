@@ -488,6 +488,7 @@ table.sem-table tr:last-child td { border-bottom: none; }
 .sol-num.n4 { background: var(--orange); }
 .sol-num.n5 { background: var(--green); }
 .sol-num.n6 { background: var(--teal); }
+.sol-num.n7 { background: var(--red); }
 .sol-section-head h2 { font-size: 18px; font-weight: 700; color: var(--text); }
 .sol-section > p { font-size: 13.5px; color: #4A5568; line-height: 1.65; margin-bottom: 16px; max-width: 720px; }
 
@@ -531,6 +532,15 @@ table.sem-table tr:last-child td { border-bottom: none; }
   color: #7C4A03; line-height: 1.55; margin: 16px 0;
 }
 .callout-warn .icon { font-size: 15px; flex-shrink: 0; }
+
+.callout-info {
+  display: flex; gap: 10px; align-items: flex-start; background: var(--green-lt);
+  border: 1px solid #9AE6B4; border-radius: 10px; padding: 12px 16px; font-size: 12.5px;
+  color: #14532D; line-height: 1.55; margin: 16px 0;
+}
+.callout-info .icon { font-size: 15px; flex-shrink: 0; }
+.callout-info a { color: #15803D; font-weight: 700; }
+.callout-info code { font-family: 'Courier New', monospace; background: rgba(255,255,255,0.6); padding: 1px 5px; border-radius: 4px; }
 
 /* code blocks */
 .code-block {
@@ -2063,6 +2073,10 @@ footer {
         <p class="state-governed">"Every assistant gives the same, trustworthy answer."</p>
       </div>
 
+      <div style="text-align:center;">
+        <button class="solution-cta" onclick="showPage('solution-databricks-genie')">View technical solution design →</button>
+      </div>
+
     </div>
   </div>
 
@@ -2346,6 +2360,11 @@ driver = GraphDatabase.<span class="code-fn">driver</span>(<span class="code-str
         <span class="code-fn">print</span>(record)</pre>
         </div>
 
+        <div class="callout-info">
+          <span class="icon">▶</span>
+          <span><strong>Runnable reference implementation:</strong> this exact <code>neo4j</code> driver pattern — Order/Scan/Hub/Guarantee as graph nodes, walked with the same query shape shown above — is built and runnable locally, no AWS account needed. Neo4j stands in for Neptune's openCypher endpoint (same driver, same query language, only the connection string changes). It also adds the piece this design leaves as "hand-encoded into the ETL transform": the policy document (<code>guarantee_policy.md</code>) is parsed at ingestion time, not hardcoded, so changing the policy's wording and re-running ingestion changes which edges get created — with zero code changes. See <a href="https://github.com/inbravo/my-hello-worlds/tree/main/%5Bce%5D-%5Bknowledge-graph%5D-%5Bamazon-delivery%5D-%5B2026-07%5D" target="_blank" rel="noopener">inbravo/my-hello-worlds — Example 11: Knowledge Graph (Neo4j)</a>.</span>
+        </div>
+
         <div class="code-block">
           <div class="code-block-head">
             <span class="code-block-label">OPTION B · SPARQL (SPARQLWrapper, real OWL subclass matching)</span>
@@ -2391,6 +2410,322 @@ results = sparql.query().convert()</pre>
             <h4>Feedback hook</h4>
             <p>Log every (question, query, answer) triple — feeds a future review of the ontology or edge rules.</p>
           </div>
+        </div>
+      </section>
+
+      <!-- 7. Run it locally -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n7">7</div>
+          <h2>Run it locally — reference implementation</h2>
+        </div>
+        <p>This design's Option A (openCypher) is built and runnable on a laptop, no AWS account required — useful for prototyping the graph model, the ingestion logic, or the agent's tool-calling loop before touching Neptune. Neo4j stands in for Neptune's openCypher/property-graph deployment mode; the driver code and query language carry over unchanged.</p>
+        <div class="scope-grid">
+          <div class="scope-box in">
+            <div class="scope-label">WHAT IT ADDS</div>
+            <ul>
+              <li>A working three-stage pipeline: raw rows in DuckDB → policy-driven ingestion → Neo4j graph</li>
+              <li>The guarantee rule parsed out of a prose policy markdown file at runtime — not hardcoded, mirroring the "hand-encoded into the ETL transform" note above</li>
+              <li>A full local agent loop (Ollama qwen2.5) that traces an order's journey and answers guarantee questions</li>
+              <li>Neo4j Browser Cypher queries for inspecting the graph visually</li>
+            </ul>
+          </div>
+          <div class="scope-box out">
+            <div class="scope-label">WHAT IT SKIPS</div>
+            <ul>
+              <li>IAM / VPC — local Neo4j uses basic auth over Bolt</li>
+              <li>Bedrock Agent — a local Ollama or Claude agent stands in</li>
+              <li>Glue ETL / S3 Bulk Loader — a plain Python script reads DuckDB directly</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout-info">
+          <span class="icon">🔗</span>
+          <span><strong>Repo:</strong> <a href="https://github.com/inbravo/my-hello-worlds/tree/main/%5Bce%5D-%5Bknowledge-graph%5D-%5Bamazon-delivery%5D-%5B2026-07%5D" target="_blank" rel="noopener">inbravo/my-hello-worlds — Example 11: Knowledge Graph (Neo4j)</a>, part of a 10+ example progressive Context Engineering learning series.</span>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       PAGE: TECHNICAL SOLUTION DESIGN — DATABRICKS / GENIE ONTOLOGY
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-solution-databricks-genie" class="page">
+    <div class="solution-wrap">
+
+      <button class="back-link" onclick="showPage('uc-amazon-databricks')">← Amazon UK Delivery</button>
+
+      <div class="solution-header">
+        <div class="solution-eyebrow">TECHNICAL SOLUTION DESIGN · DATABRICKS</div>
+        <h1>Genie Ontology-Backed Context for Delivery Data</h1>
+        <p class="solution-sub">How a developer would actually build the "How does this all fit together?" check — from raw Delta tables to a Genie Space answer.</p>
+      </div>
+
+      <!-- 1. Problem statement & scope -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n1">1</div>
+          <h2>Problem statement &amp; scope</h2>
+        </div>
+        <p>The Genie Space handling Sarah's questions needs to reason across an order, a courier scan, a delivery hub, and A-to-Z Guarantee eligibility — facts that today live as flat Delta tables, governed only at the column level by Unity Catalog. Answering "is it on its way" or "does this qualify for a refund" requires Genie to guess at a join no one told it about, with no shared, checkable definition of what these facts mean together.</p>
+        <div class="scope-grid">
+          <div class="scope-box in">
+            <div class="scope-label">IN SCOPE</div>
+            <ul>
+              <li>Genie Ontology-backed reasoning over Order / Scan / Hub / Guarantee relationships</li>
+              <li>Ingestion path from existing Delta Lake sources via Lakeflow Declarative Pipelines</li>
+              <li>A Unity Catalog Metric View for the EDD formula</li>
+              <li>Genie Conversation API access, callable from an external app or agent</li>
+              <li>Baseline observability</li>
+            </ul>
+          </div>
+          <div class="scope-box out">
+            <div class="scope-label">OUT OF SCOPE</div>
+            <ul>
+              <li>Row-/column-level ACLs (assumed already configured in Unity Catalog)</li>
+              <li>Golden Gatekeeper review workflow</li>
+              <li>Infrastructure-as-code / deployment automation</li>
+              <li>SQL warehouse sizing / cost optimization</li>
+              <li>Changes to upstream courier or order systems</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Architecture overview -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n2">2</div>
+          <h2>Architecture overview</h2>
+        </div>
+        <p>Delta tables are ingested and governed through Unity Catalog. Genie Ontology continuously mines table/column metadata, query history, and dashboard usage to infer an entity graph, weighting sources by authority. A Genie Space queries both the Ontology and a governed Metric View to answer Sarah, over the Genie Conversation API.</p>
+        <div class="arch-diagram-card">
+          <svg viewBox="0 0 920 380" width="100%" style="min-width:820px;" role="img">
+            <title>Architecture: Delta tables governed by Unity Catalog feed Genie Ontology, which a Genie Space queries alongside a Metric View, invoked via the Genie Conversation API, answering Sarah</title>
+
+            <!-- source systems -->
+            <rect x="10" y="20" width="180" height="120" rx="10" fill="#F7FAFC" stroke="#A0AEC0" stroke-width="1.4"/>
+            <text x="100" y="40" text-anchor="middle" font-size="10" font-weight="800" fill="#4A5568" letter-spacing="0.05em">DELTA TABLES</text>
+            <text x="100" y="62" text-anchor="middle" font-size="10.5" fill="#2D3748">order_events</text>
+            <text x="100" y="80" text-anchor="middle" font-size="10.5" fill="#2D3748">carrier_feed</text>
+            <text x="100" y="98" text-anchor="middle" font-size="10.5" fill="#2D3748">postcode_zones</text>
+            <text x="100" y="116" text-anchor="middle" font-size="10.5" fill="#2D3748">carrier scan logs</text>
+
+            <line x1="190" y1="80" x2="230" y2="80" stroke="#D9621E" stroke-width="2.4"/>
+            <polygon points="230,75 240,80 230,85" fill="#D9621E"/>
+
+            <!-- ingestion / unity catalog -->
+            <rect x="240" y="20" width="180" height="120" rx="10" fill="#FFF1E7" stroke="#D9621E" stroke-width="1.4"/>
+            <text x="330" y="40" text-anchor="middle" font-size="10" font-weight="800" fill="#B34E14" letter-spacing="0.05em">UNITY CATALOG</text>
+            <text x="330" y="64" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Lakeflow Declarative</text>
+            <text x="330" y="80" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Pipelines (Bronze→Gold)</text>
+            <text x="330" y="104" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Column comments / tags /</text>
+            <text x="330" y="120" text-anchor="middle" font-size="10.5" fill="#7C3A0F">certification</text>
+
+            <line x1="420" y1="80" x2="460" y2="80" stroke="#7C3AED" stroke-width="2.4"/>
+            <polygon points="460,75 470,80 460,85" fill="#7C3AED"/>
+
+            <!-- genie ontology -->
+            <rect x="470" y="10" width="220" height="140" rx="10" fill="#F3EEFF" stroke="#7C3AED" stroke-width="1.6"/>
+            <text x="580" y="30" text-anchor="middle" font-size="10" font-weight="800" fill="#5B21B6" letter-spacing="0.05em">GENIE ONTOLOGY</text>
+            <text x="580" y="46" text-anchor="middle" font-size="9.5" fill="#5B21B6" font-style="italic">(auto-extracted, not hand-modeled)</text>
+            <rect x="486" y="56" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.2"/>
+            <text x="580" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#5B21B6">Living knowledge graph</text>
+            <text x="580" y="86" text-anchor="middle" font-size="9" fill="#7C3AED">mined from usage, not authored</text>
+            <rect x="486" y="100" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.2"/>
+            <text x="580" y="116" text-anchor="middle" font-size="10" font-weight="700" fill="#5B21B6">Authority weighting</text>
+            <text x="580" y="130" text-anchor="middle" font-size="9" fill="#7C3AED">certified sources rank higher</text>
+
+            <!-- workspace boundary -->
+            <rect x="460" y="165" width="360" height="130" rx="10" fill="none" stroke="#A0AEC0" stroke-width="1.4" stroke-dasharray="6 4"/>
+            <text x="640" y="182" text-anchor="middle" font-size="9.5" font-weight="700" fill="#718096" letter-spacing="0.05em">DATABRICKS WORKSPACE</text>
+
+            <line x1="580" y1="150" x2="580" y2="190" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="575,190 580,200 585,190" fill="#1A9C59"/>
+
+            <rect x="480" y="200" width="220" height="70" rx="10" fill="#F0FFF4" stroke="#1A9C59" stroke-width="1.6"/>
+            <text x="590" y="220" text-anchor="middle" font-size="10" font-weight="800" fill="#15803D" letter-spacing="0.05em">METRIC VIEW</text>
+            <text x="590" y="238" text-anchor="middle" font-size="9.5" fill="#15803D">Unity Catalog governed</text>
+            <text x="590" y="252" text-anchor="middle" font-size="9.5" fill="#15803D">EDD formula (Databricks SQL)</text>
+
+            <line x1="700" y1="235" x2="740" y2="235" stroke="#0078D4" stroke-width="2.4"/>
+            <polygon points="740,230 750,235 740,240" fill="#0078D4"/>
+            <text x="722" y="225" text-anchor="middle" font-size="8" fill="#0078D4">Genie API</text>
+
+            <!-- genie space -->
+            <rect x="750" y="200" width="150" height="70" rx="10" fill="#EBF8FF" stroke="#0078D4" stroke-width="1.6"/>
+            <text x="825" y="222" text-anchor="middle" font-size="10" font-weight="800" fill="#0067B0" letter-spacing="0.02em">GENIE SPACE</text>
+            <text x="825" y="240" text-anchor="middle" font-size="9.5" fill="#0067B0">Plans SQL / tool calls,</text>
+            <text x="825" y="254" text-anchor="middle" font-size="9.5" fill="#0067B0">assembles the answer</text>
+
+            <line x1="825" y1="270" x2="825" y2="310" stroke="#4A5568" stroke-width="2"/>
+            <polygon points="820,310 825,320 830,310" fill="#4A5568"/>
+            <text x="825" y="345" text-anchor="middle" font-size="11" font-weight="700" fill="#2D3748">Sarah, on the Amazon app</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- 3. Ontology model -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n3">3</div>
+          <h2>Ontology — auto-extracted, not hand-modeled</h2>
+        </div>
+        <p>Unlike Neptune, there's no explicit schema step where a developer declares <code>Order</code>, <code>Scan</code>, <code>Hub</code>, and <code>Guarantee</code> as node types and wires up <code>SCANNED_AT</code> / <code>TRIGGERS</code> edges. Genie Ontology continuously mines signals and infers the graph:</p>
+
+        <div class="option-grid">
+          <div class="option-box propgraph">
+            <div class="option-tag">SIGNALS IT MINES</div>
+            <h3>What Genie observes</h3>
+            <ul>
+              <li>Table and column names, and foreign-key-like naming patterns (<code>order_id</code>, <code>hub_id</code>)</li>
+              <li>Join patterns seen across the SQL query history</li>
+              <li>Which dashboards and queries are used most, and by whom</li>
+            </ul>
+          </div>
+          <div class="option-box rdf">
+            <div class="option-tag">WHAT A DEVELOPER CONTROLS</div>
+            <h3>The only levers available</h3>
+            <ul>
+              <li>Unity Catalog column comments and table/column tags</li>
+              <li>Marking an asset "Certified" — certified sources are weighted higher</li>
+              <li>Which queries and dashboards get promoted, since usage itself is a signal</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout-warn">
+          <span class="icon">⚠</span>
+          <span><strong>There's no query language for hand-writing a <code>TRIGGERS</code> edge.</strong> If Genie hasn't seen enough certified, authoritative usage connecting <code>Scan.scan_type='DAMAGED'</code> to a guarantee outcome, it won't reliably infer that relationship. The fix is exposing that logic in a governed, certified asset — a Metric View or a certified query (Section 5) — not in application code, and not in a hand-written graph edge either.</span>
+        </div>
+      </section>
+
+      <!-- 4. Ingestion pipeline -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n4">4</div>
+          <h2>Ingestion pipeline</h2>
+        </div>
+        <p>Lakeflow Declarative Pipelines ingest raw carrier scan events and order events into Bronze → Silver → Gold Delta tables inside Unity Catalog — standard Delta ingestion, nothing graph-specific happens here. The difference from Neptune's pipeline: there's no discrete "compute edges" step. What the Gold table owner attaches as column comments, tags, and certification is the only thing that later biases what Genie Ontology treats as an authoritative relationship.</p>
+        <div class="callout-warn">
+          <span class="icon">📄</span>
+          <span><strong>Where the policy documents fit:</strong> "Fulfilment Policy §4.2" and "Ops Policy §2.1" aren't encoded as ETL transform logic here, because there's no explicit edge-creation step to encode them into. In practice this rule still has to live somewhere a human maintains it — most reliably as a certified Metric View or certified query (Section 5). Left undone, it lives nowhere formal at all, which is a governance gap Genie Ontology's auto-extraction doesn't close by itself.</span>
+        </div>
+      </section>
+
+      <!-- 5. Query/API layer -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n5">5</div>
+          <h2>Query / API layer — Python, both options</h2>
+        </div>
+        <p>Authentication either way: a Databricks personal access token or OAuth service principal, scoped to the Genie Space or SQL warehouse.</p>
+
+        <div class="code-block">
+          <div class="code-block-head">
+            <span class="code-block-label">OPTION A · GENIE CONVERSATION API (databricks-sdk)</span>
+            <span class="code-block-dots"><span></span><span></span><span></span></span>
+          </div>
+          <pre><span class="code-kw">from</span> databricks.sdk <span class="code-kw">import</span> WorkspaceClient
+
+w = WorkspaceClient()
+
+<span class="code-com"># ask Genie a question against the Amazon Delivery space</span>
+resp = w.genie.<span class="code-fn">start_conversation_and_wait</span>(
+    space_id=<span class="code-str">"01ef...delivery-space"</span>,
+    content=<span class="code-str">"Is order 48213 covered by the A-to-Z Guarantee?"</span>
+)
+conversation_id = resp.conversation_id
+
+<span class="code-com"># follow-up question, same conversation</span>
+followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
+    space_id=<span class="code-str">"01ef...delivery-space"</span>,
+    conversation_id=conversation_id,
+    content=<span class="code-str">"Where is that scan located?"</span>
+)
+<span class="code-fn">print</span>(followup.attachments[0].text.content)</pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-head">
+            <span class="code-block-label">OPTION B · DIRECT METRIC VIEW QUERY (databricks-sql-connector)</span>
+            <span class="code-block-dots"><span></span><span></span><span></span></span>
+          </div>
+          <pre><span class="code-kw">from</span> databricks <span class="code-kw">import</span> sql
+
+<span class="code-kw">with</span> sql.<span class="code-fn">connect</span>(
+    server_hostname=<span class="code-str">"my-workspace.cloud.databricks.com"</span>,
+    http_path=<span class="code-str">"/sql/1.0/warehouses/xxxx"</span>,
+    access_token=<span class="code-str">"..."</span>
+) <span class="code-kw">as</span> conn:
+    <span class="code-kw">with</span> conn.<span class="code-fn">cursor</span>() <span class="code-kw">as</span> cur:
+        cur.<span class="code-fn">execute</span>(<span class="code-str">"SELECT * FROM delivery.metrics.edd_by_order WHERE order_id = '48213'"</span>)
+        <span class="code-kw">for</span> row <span class="code-kw">in</span> cur.<span class="code-fn">fetchall</span>():
+            <span class="code-fn">print</span>(row)</pre>
+        </div>
+
+        <div class="callout-info">
+          <span class="icon">▶</span>
+          <span><strong>Runnable reference implementation:</strong> there's no local open-source equivalent of Genie Ontology's auto-extraction or authority-weighting — that's a managed, proprietary capability. What <em>is</em> runnable locally is the same node/edge shape (Order/Scan/Hub/Guarantee) this Ontology infers, built explicitly with a <code>neo4j</code> driver instead of mined from usage, plus the governed-authoring step ("what turns a policy document into a graph relationship") that Genie Ontology doesn't offer out of the box. See <a href="https://github.com/inbravo/my-hello-worlds/tree/main/%5Bce%5D-%5Bknowledge-graph%5D-%5Bamazon-delivery%5D-%5B2026-07%5D" target="_blank" rel="noopener">inbravo/my-hello-worlds — Example 11: Knowledge Graph (Neo4j)</a>.</span>
+        </div>
+      </section>
+
+      <!-- 6. Observability -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n6">6</div>
+          <h2>Observability</h2>
+        </div>
+        <div class="obs-grid">
+          <div class="obs-card">
+            <h4>Query-level logging</h4>
+            <p>System Tables (<code>system.query.history</code>) capture every SQL statement Genie generates, its latency, and the warehouse used.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Lineage tracing</h4>
+            <p>Unity Catalog's automatic lineage graph traces every column an answer relied on back to its source table.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Health alarms</h4>
+            <p>SQL warehouse System Table metrics — queue time, cluster utilization — with alerts on breach.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Feedback hook</h4>
+            <p>Thumbs up/down on Genie's generated answers logs directly to System Tables — feeds curation of comments, tags, and certification.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Run it locally -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n7">7</div>
+          <h2>Run it locally — reference implementation</h2>
+        </div>
+        <p>Genie Ontology itself isn't something you can run on a laptop — it's a managed, workspace-level capability. What's runnable locally is the graph-traversal shape it infers, built explicitly instead of auto-extracted, so a developer can prototype and sanity-check the target relationships before trusting Genie's inferred version of them.</p>
+        <div class="scope-grid">
+          <div class="scope-box in">
+            <div class="scope-label">WHAT IT ADDS</div>
+            <ul>
+              <li>A working three-stage pipeline: raw rows in DuckDB → policy-driven ingestion → Neo4j graph, hand-modeling the same Order→Scan→Hub→Guarantee relationships Genie Ontology infers automatically</li>
+              <li>The guarantee rule parsed out of a prose policy markdown file at runtime — the governed authoring step Genie Ontology doesn't provide out of the box</li>
+              <li>A full local agent loop (Ollama qwen2.5) that mirrors a Genie Space: takes a natural-language question, calls a tool, returns a grounded answer</li>
+              <li>Neo4j Browser Cypher queries for inspecting the graph visually — useful for checking what an Ontology-style graph should look like</li>
+            </ul>
+          </div>
+          <div class="scope-box out">
+            <div class="scope-label">WHAT IT SKIPS / DIFFERS</div>
+            <ul>
+              <li>No auto-extraction or authority-weighting — the local graph is hand-built from a policy document, not mined from query history</li>
+              <li>No Unity Catalog governance, lineage, or certification signals</li>
+              <li>Genie Space — a local Ollama or Claude agent stands in for the natural-language interface</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout-info">
+          <span class="icon">🔗</span>
+          <span><strong>Repo:</strong> <a href="https://github.com/inbravo/my-hello-worlds/tree/main/%5Bce%5D-%5Bknowledge-graph%5D-%5Bamazon-delivery%5D-%5B2026-07%5D" target="_blank" rel="noopener">inbravo/my-hello-worlds — Example 11: Knowledge Graph (Neo4j)</a>, part of a 10+ example progressive Context Engineering learning series.</span>
         </div>
       </section>
 
