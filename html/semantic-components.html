@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semantic Components — Amazon UK · CE Knowledge Base</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+:root {
+  --header-h:   48px;
+  --sidebar-w:  240px;
+  --bg:         #F0F4F8;
+  --surface:    #FFFFFF;
+  --border:     #E2E8F0;
+  --text:       #1A202C;
+  --muted:      #718096;
+  --accent:     #0078D4;
+  --accent-lt:  #EBF8FF;
+  --green:      #1A9C59;
+  --green-lt:   #F0FFF4;
+  --red:        #C0392B;
+  --red-lt:     #FFF5F5;
+  --amber:      #D97706;
+  --purple:     #7C3AED;
+  --blue:       #2563EB;
+}
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
+
+/* ── header ── */
+header {
+  height: var(--header-h); background: #1A202C;
+  display: flex; align-items: center; padding: 0 20px; gap: 16px;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3); flex-shrink: 0;
+}
+.back-link {
+  color: #63B3ED; font-size: 13px; text-decoration: none; font-weight: 600;
+  display: flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.back-link:hover { color: #90CDF4; }
+.header-title { color: #fff; font-size: 14px; font-weight: 700; }
+.header-sub { color: #718096; font-size: 12px; margin-left: 4px; }
+
+/* ── body layout ── */
+.body-area { display: flex; flex: 1; overflow: hidden; height: calc(100vh - var(--header-h)); }
+
+/* ── sidebar ── */
+aside {
+  width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border);
+  overflow-y: auto; flex-shrink: 0; height: 100%;
+}
+.sb-section { padding: 14px 0 6px; }
+.sb-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); padding: 0 14px 6px;
+}
+.sb-group-btn {
+  width: 100%; display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; background: none; border: none; cursor: pointer;
+  font-size: 12px; font-weight: 700; color: var(--text); text-align: left;
+  font-family: inherit; transition: background 0.12s;
+}
+.sb-group-btn:hover { background: var(--bg); }
+.sb-group-btn .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sb-item {
+  padding: 6px 14px 6px 30px; font-size: 12px; color: var(--muted);
+  cursor: pointer; border-left: 3px solid transparent; transition: all 0.12s;
+}
+.sb-item:hover { background: var(--bg); color: var(--text); }
+.sb-item.active { background: var(--accent-lt); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+.sb-divider { height: 1px; background: var(--border); margin: 6px 14px; }
+
+/* ── main ── */
+main { flex: 1; overflow-y: auto; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px; padding: 10px 28px;
+  font-size: 12px; color: var(--muted); background: var(--surface);
+  border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10;
+}
+.crumb-sep { color: #CBD5E0; }
+.crumb-active { color: var(--text); font-weight: 600; }
+.content-wrap { padding: 28px 36px; max-width: 1060px; }
+
+/* ── panels ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── section card ── */
+.section {
+  background: var(--surface); border-radius: 10px; border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 22px 26px; margin-bottom: 22px;
+}
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.section-heading { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.section-sub { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 18px; }
+.accent-bar { height: 3px; border-radius: 2px; margin-bottom: 18px; }
+
+/* ── diagram (monospace pre) ── */
+.diagram {
+  font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6;
+  background: #F7FAFC; border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px 20px; white-space: pre; overflow-x: auto;
+}
+
+/* ── color spans ── */
+.cg  { color: #1A9C59; font-weight: 700; }   /* green  */
+.cb  { color: #2563EB; font-weight: 700; }   /* blue   */
+.ca  { color: #D97706; font-weight: 700; }   /* amber  */
+.cr  { color: #C0392B; font-weight: 700; }   /* red    */
+.cp  { color: #7C3AED; font-weight: 700; }   /* purple */
+.cw  { color: #1A202C; font-weight: 600; }   /* dark   */
+.cm  { color: #A0AEC0; }                      /* muted  */
+.ci  { color: #2B6CB0; font-style: italic; } /* italic query */
+
+/* ── table ── */
+table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+table.data-table th {
+  text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border); background: #F7FAFC; color: var(--muted);
+}
+table.data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 13px; line-height: 1.45; }
+table.data-table tr:last-child td { border-bottom: none; }
+table.data-table tr:hover td { background: #F7FAFC; }
+.td-term  { font-weight: 700; color: var(--text); }
+.td-code  { font-weight: 700; font-family: 'Courier New', monospace; }
+.td-not   { color: #C0392B; font-size: 12px; }
+.td-muted { color: var(--muted); font-size: 12px; }
+
+/* ── maturity ladder ── */
+.ladder { display: flex; flex-direction: column; gap: 8px; }
+.ladder-row {
+  display: grid; grid-template-columns: 200px 1fr 1fr;
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  border-left: 4px solid;
+}
+.ladder-left { padding: 14px 16px; background: #F7FAFC; }
+.ladder-num { font-size: 22px; font-weight: 900; line-height: 1; }
+.ladder-label { font-size: 13px; font-weight: 700; margin: 2px 0; }
+.ladder-tag { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 8px; }
+.ladder-comp { font-size: 11px; color: var(--muted); }
+.ladder-comp span { display: block; }
+.ladder-can, .ladder-cannot { padding: 14px 16px; }
+.ladder-can   { background: var(--green-lt); }
+.ladder-cannot { background: var(--red-lt); }
+.ladder-col-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+.ladder-can .ladder-col-head    { color: var(--green); }
+.ladder-cannot .ladder-col-head { color: var(--red); }
+.check-item, .cross-item { font-size: 12px; padding: 2px 0; display: flex; gap: 6px; }
+.check-item .ic { color: var(--green); font-weight: 700; }
+.cross-item .ic { color: var(--red); font-weight: 700; }
+
+/* ── arch flow ── */
+.flow-box {
+  border: 1px solid var(--border); border-radius: 6px; padding: 10px 16px;
+  background: #F7FAFC; font-size: 12px; text-align: center;
+}
+.flow-box.agent  { border-color: #90CDF4; background: #EBF8FF; }
+.flow-box.gloss  { border-color: #9AE6B4; background: #F0FFF4; }
+.flow-box.sem    { border-color: #90CDF4; background: #EBF8FF; }
+.flow-box.graph  { border-color: #D6BCFA; background: #FAF5FF; }
+.flow-box.data   { border-color: var(--border); background: #F7FAFC; }
+.flow-box.answer { border-color: #9AE6B4; background: #F0FFF4; }
+.flow-label { font-weight: 700; font-size: 11px; margin-bottom: 2px; }
+.flow-sub { font-size: 10px; color: var(--muted); }
+.flow-arrow { text-align: center; color: var(--muted); font-size: 14px; padding: 3px 0; }
+.flow-three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 8px 0; }
+.flow-call { font-size: 10px; color: var(--muted); font-style: italic; text-align: center; }
+.gaps-box { background: var(--red-lt); border: 1px solid #FEB2B2; border-radius: 8px; padding: 14px 16px; margin-top: 12px; }
+.gaps-box h4 { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.gaps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+.gap-line { font-size: 12px; color: var(--red); display: flex; gap: 6px; padding: 2px 0; }
+
+/* ── summary table ── */
+.sum-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.sum-table th { padding: 9px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 2px solid var(--border); background: #F7FAFC; color: var(--muted); text-align: left; }
+.sum-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.45; }
+.sum-table tr:last-child td { border-bottom: none; }
+.sum-comp { font-weight: 700; font-size: 12px; }
+.sum-moment { font-size: 11px; color: var(--muted); font-style: italic; margin-top: 2px; }
+.sum-without { color: var(--red); font-size: 12px; }
+.sum-with { color: var(--green); font-size: 12px; }
+
+/* ── conversation layout ── */
+.convo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.convo-col { border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+.convo-head { padding: 9px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.convo-head.without { background: #FFF5F5; color: var(--red); border-bottom: 2px solid #FEB2B2; }
+.convo-head.with    { background: var(--green-lt); color: var(--green); border-bottom: 2px solid #9AE6B4; }
+.convo-body { padding: 12px 14px; background: #FAFAFA; min-height: 300px; }
+.msg { font-size: 12px; line-height: 1.5; padding: 3px 0; }
+.msg.sarah { color: #2B6CB0; font-weight: 600; }
+.msg.agent { color: #4A5568; }
+.msg.narrator { color: #A0AEC0; font-style: italic; }
+.msg.highlight { color: var(--green); font-weight: 600; }
+.msg.warning { color: var(--red); font-weight: 600; }
+.msg.code { font-family: 'Courier New', monospace; font-size: 11px; color: #553C9A; }
+.msg.blank { height: 8px; }
+.verdict {
+  margin: 10px 14px 14px; padding: 8px 12px; border-radius: 6px;
+  font-size: 12px; font-weight: 700;
+}
+.verdict.bad  { background: #FFF5F5; color: var(--red); border: 1px solid #FEB2B2; }
+.verdict.good { background: var(--green-lt); color: var(--green); border: 1px solid #9AE6B4; }
+
+/* ── callout ── */
+.callout { background: var(--accent-lt); border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; padding: 11px 16px; font-size: 12px; color: #2C5282; margin-top: 16px; line-height: 1.55; }
+
+hr.div { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+</style>
+</head>
+<body>
+
+<!-- ── header ── -->
+<header>
+  <a class="back-link" href="index.html">← Knowledge Base</a>
+  <span style="color:#4A5568;">|</span>
+  <span class="header-title">Semantic Components</span>
+  <span class="header-sub">— Amazon UK Delivery · 8 Components · 27 Slides</span>
+</header>
+
+<div class="body-area">
+
+<!-- ── sidebar ── -->
+<aside>
+  <div class="sb-section">
+    <div class="sb-label">Overview</div>
+    <div class="sb-item active" onclick="go('maturity',  ['Overview','Maturity Ladder'], this)">Maturity Ladder</div>
+    <div class="sb-item"        onclick="go('archview',  ['Overview','Level 1 Arch View'], this)">Level 1 Arch View</div>
+    <div class="sb-item"        onclick="go('summary',   ['Overview','Summary Table'], this)">Summary Table</div>
+  </div>
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <div class="sb-label">8 Semantic Components</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#1A9C59"></span>Business Glossary</div>
+    <div class="sb-item" onclick="go('gl-1',['Business Glossary','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('gl-2',['Business Glossary','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('gl-3',['Business Glossary','Machine-readable'],this)">Machine-readable</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#2563EB"></span>Semantic Model (OSI)</div>
+    <div class="sb-item" onclick="go('sm-1',['Semantic Model','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('sm-2',['Semantic Model','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('sm-3',['Semantic Model','Machine-readable'],this)">Machine-readable</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#D97706"></span>Data Product (ODPS)</div>
+    <div class="sb-item" onclick="go('dp-1',['Data Product (ODPS)','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('dp-2',['Data Product (ODPS)','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('dp-3',['Data Product (ODPS)','Machine-readable'],this)">Machine-readable</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#C0392B"></span>Data Contract (ODCS)</div>
+    <div class="sb-item" onclick="go('dc-1',['Data Contract (ODCS)','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('dc-2',['Data Contract (ODCS)','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('dc-3',['Data Contract (ODCS)','Machine-readable'],this)">Machine-readable</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#7C3AED"></span>Ontology</div>
+    <div class="sb-item" onclick="go('on-1',['Ontology','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('on-2',['Ontology','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('on-3',['Ontology','Machine-readable'],this)">Machine-readable</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#1A9C59"></span>Knowledge Graph</div>
+    <div class="sb-item" onclick="go('kg-1',['Knowledge Graph','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('kg-2',['Knowledge Graph','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('kg-3',['Knowledge Graph','Machine-readable'],this)">Machine-readable</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#D97706"></span>Policy Bindings</div>
+    <div class="sb-item" onclick="go('pb-1',['Policy Bindings','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('pb-2',['Policy Bindings','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('pb-3',['Policy Bindings','Machine-readable'],this)">Machine-readable</div>
+
+    <div class="sb-group-btn"><span class="dot" style="background:#2563EB"></span>Data Lineage</div>
+    <div class="sb-item" onclick="go('dl-1',['Data Lineage','Artifact'],        this)">Artifact</div>
+    <div class="sb-item" onclick="go('dl-2',['Data Lineage','Conversation'],    this)">Conversation</div>
+    <div class="sb-item" onclick="go('dl-3',['Data Lineage','Machine-readable'],this)">Machine-readable</div>
+  </div>
+</aside>
+
+<!-- ── main ── -->
+<main>
+<div class="breadcrumb" id="bc">
+  <span>Overview</span><span class="crumb-sep">›</span><span class="crumb-active">Maturity Ladder</span>
+</div>
+<div class="content-wrap">
+
+<!-- ════════════════════════════════════════════════════════
+     MATURITY LADDER
+════════════════════════════════════════════════════════ -->
+<div id="p-maturity" class="panel active">
+<div class="section">
+  <div class="section-label">Semantic Components</div>
+  <div class="section-heading">The Maturity Ladder</div>
+  <div class="section-sub">Bare minimum to full context layer · What each level unlocks — and what it still cannot do</div>
+  <div class="ladder">
+
+    <div class="ladder-row" style="border-left-color:#1A9C59">
+      <div class="ladder-left">
+        <div class="ladder-num" style="color:#1A9C59">01</div>
+        <div class="ladder-label" style="color:#1A9C59">Minimum Viable</div>
+        <div class="ladder-tag">The agent gives an answer</div>
+        <div class="ladder-comp">
+          <span>▸ Business Glossary</span>
+          <span>▸ Semantic Model (OSI)</span>
+          <span>▸ Knowledge Graph</span>
+        </div>
+      </div>
+      <div class="ladder-can">
+        <div class="ladder-col-head">What you can do</div>
+        <div class="check-item"><span class="ic">✓</span> Agent answers consistently</div>
+        <div class="check-item"><span class="ic">✓</span> Metrics computed correctly</div>
+        <div class="check-item"><span class="ic">✓</span> Entities connected</div>
+        <div class="check-item"><span class="ic">✓</span> Common language established</div>
+      </div>
+      <div class="ladder-cannot">
+        <div class="ladder-col-head">What you still cannot</div>
+        <div class="cross-item"><span class="ic">✗</span> No SLA — answer may be stale</div>
+        <div class="cross-item"><span class="ic">✗</span> Nobody owns the data</div>
+        <div class="cross-item"><span class="ic">✗</span> Wrong person may see it</div>
+        <div class="cross-item"><span class="ic">✗</span> Cannot explain its working</div>
+      </div>
+    </div>
+
+    <div class="ladder-row" style="border-left-color:#2563EB">
+      <div class="ladder-left">
+        <div class="ladder-num" style="color:#2563EB">02</div>
+        <div class="ladder-label" style="color:#2563EB">Production Ready</div>
+        <div class="ladder-tag">The agent gives a reliable answer</div>
+        <div class="ladder-comp">
+          <span>▸ + Data Contract (ODCS)</span>
+          <span>▸ + Data Product (ODPS)</span>
+        </div>
+      </div>
+      <div class="ladder-can">
+        <div class="ladder-col-head">What you can do</div>
+        <div class="check-item"><span class="ic">✓</span> Data freshness guaranteed</div>
+        <div class="check-item"><span class="ic">✓</span> Owner known when it breaks</div>
+        <div class="check-item"><span class="ic">✓</span> SLA enforced automatically</div>
+        <div class="check-item"><span class="ic">✓</span> Proactive alerts fire</div>
+      </div>
+      <div class="ladder-cannot">
+        <div class="ladder-col-head">What you still cannot</div>
+        <div class="cross-item"><span class="ic">✗</span> Wrong person may still see it</div>
+        <div class="cross-item"><span class="ic">✗</span> Cannot reason across types</div>
+        <div class="cross-item"><span class="ic">✗</span> Cannot explain its working</div>
+      </div>
+    </div>
+
+    <div class="ladder-row" style="border-left-color:#D97706">
+      <div class="ladder-left">
+        <div class="ladder-num" style="color:#D97706">03</div>
+        <div class="ladder-label" style="color:#D97706">Governed</div>
+        <div class="ladder-tag">The agent gives a governed answer</div>
+        <div class="ladder-comp">
+          <span>▸ + Policy Bindings</span>
+          <span>▸ + Ontology</span>
+        </div>
+      </div>
+      <div class="ladder-can">
+        <div class="ladder-col-head">What you can do</div>
+        <div class="check-item"><span class="ic">✓</span> Right person sees right data</div>
+        <div class="check-item"><span class="ic">✓</span> Policies enforced instantly</div>
+        <div class="check-item"><span class="ic">✓</span> Agent reasons across types</div>
+        <div class="check-item"><span class="ic">✓</span> Compliance risk removed</div>
+      </div>
+      <div class="ladder-cannot">
+        <div class="ladder-col-head">What you still cannot</div>
+        <div class="cross-item"><span class="ic">✗</span> Cannot explain its working</div>
+        <div class="cross-item"><span class="ic">✗</span> No full audit trail</div>
+      </div>
+    </div>
+
+    <div class="ladder-row" style="border-left-color:#7C3AED">
+      <div class="ladder-left">
+        <div class="ladder-num" style="color:#7C3AED">04</div>
+        <div class="ladder-label" style="color:#7C3AED">Audit Ready</div>
+        <div class="ladder-tag">The agent gives a defensible answer</div>
+        <div class="ladder-comp"><span>▸ + Data Lineage</span></div>
+      </div>
+      <div class="ladder-can">
+        <div class="ladder-col-head">What you can do</div>
+        <div class="check-item"><span class="ic">✓</span> Every number has a receipt</div>
+        <div class="check-item"><span class="ic">✓</span> Agent shows its working</div>
+        <div class="check-item"><span class="ic">✓</span> Regulator can verify</div>
+        <div class="check-item"><span class="ic">✓</span> No answer is a black box</div>
+      </div>
+      <div class="ladder-cannot" style="background:#F7FAFC;">
+        <div class="ladder-col-head" style="color:var(--muted)">Full context layer achieved</div>
+      </div>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:16px;">Go live with Level 1 &nbsp;·&nbsp; Production needs Level 2 &nbsp;·&nbsp; Compliance requires Level 3 &nbsp;·&nbsp; Regulators demand Level 4</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     LEVEL 1 ARCH VIEW
+════════════════════════════════════════════════════════ -->
+<div id="p-archview" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#1A9C59">Level 1 — Minimum Viable</div>
+  <div class="section-heading">Architectural View</div>
+  <div class="section-sub">How the agent interacts with the three core components at runtime · Business Glossary · Semantic Model · Knowledge Graph</div>
+  <div class="accent-bar" style="background:#1A9C59"></div>
+  <div class="flow-box" style="max-width:560px;margin:0 auto 4px;border-color:#90CDF4;background:#EBF8FF;">
+    <div class="flow-label" style="color:#2563EB">Sarah (Amazon.co.uk)</div>
+    <div class="flow-sub">"Where is my order and when will it arrive?"</div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="flow-box agent" style="max-width:560px;margin:0 auto 4px;">
+    <div class="flow-label" style="color:#2563EB">AI AGENT</div>
+    <div class="flow-sub">receives query · plans steps · calls components</div>
+  </div>
+  <div class="flow-three" style="max-width:560px;margin:8px auto;">
+    <div>
+      <div class="flow-call" style="color:#1A9C59">① what does "delivered" mean?</div>
+      <div class="flow-arrow" style="color:#1A9C59">▼</div>
+      <div class="flow-box gloss">
+        <div class="flow-label" style="color:#1A9C59">BUSINESS GLOSSARY</div>
+        <div class="flow-sub">DEL = POD scan confirmed AND photo postcode matches shipping postcode</div>
+        <div class="flow-sub" style="margin-top:4px;">ATT ≠ DEL · NEI ≠ DEL · SAF ≠ DEL</div>
+      </div>
+    </div>
+    <div>
+      <div class="flow-call" style="color:#7C3AED">② traverses graph</div>
+      <div class="flow-arrow" style="color:#7C3AED">▼</div>
+      <div class="flow-box graph">
+        <div class="flow-label" style="color:#7C3AED">KNOWLEDGE GRAPH</div>
+        <div class="flow-sub">Sarah→Order→Leeds→Evri→Sheffield 06:42→Manchester~10am→Zone B→2pm–5pm</div>
+      </div>
+    </div>
+    <div>
+      <div class="flow-call" style="color:#2563EB">③ what is EDD formula?</div>
+      <div class="flow-arrow" style="color:#2563EB">▼</div>
+      <div class="flow-box sem">
+        <div class="flow-label" style="color:#2563EB">SEMANTIC MODEL (OSI)</div>
+        <div class="flow-sub">EDD = order_date + processing_days + transit_days + weekend_adj</div>
+      </div>
+    </div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="flow-box data" style="max-width:560px;margin:0 auto 4px;">
+    <div class="flow-label">RAW DATA LAYER</div>
+    <div class="flow-sub">order_events · carrier_feed · postcode_zones · customer_master · fulfilment_sla · product_catalog</div>
+  </div>
+  <div class="flow-arrow" style="color:#1A9C59">▼</div>
+  <div class="flow-box answer" style="max-width:560px;margin:0 auto;">
+    <div class="flow-label" style="color:#1A9C59">Sarah: "Your parcel left Leeds at 4am · Sheffield scan 6:42am · Arriving today 2pm–5pm"</div>
+  </div>
+  <div class="gaps-box">
+    <h4>What is missing at Level 1</h4>
+    <div class="gaps-grid">
+      <div class="gap-line"><span>✗</span> No Policy check — agent doesn't verify if Sarah can see this order</div>
+      <div class="gap-line"><span>✗</span> No Data Contract — agent doesn't know if the Sheffield scan is fresh or stale</div>
+      <div class="gap-line"><span>✗</span> No Lineage — agent cannot show where the 2pm–5pm estimate came from</div>
+      <div class="gap-line"><span>✗</span> No Ontology — if trainers arrive damaged agent cannot find that A-to-z applies</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SUMMARY TABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-summary" class="panel">
+<div class="section">
+  <div class="section-label">Semantic Components</div>
+  <div class="section-heading">Impact on the Amazon Customer Moment</div>
+  <div class="section-sub">Sarah orders trainers from Amazon UK · every scenario uses the same customer, the same order</div>
+  <table class="sum-table">
+    <thead><tr><th>Component</th><th>Amazon Moment</th><th style="color:var(--red)">Without it</th><th style="color:var(--green)">With it</th></tr></thead>
+    <tbody>
+      <tr><td><div class="sum-comp" style="color:#1A9C59">Business Glossary</div><div class="sum-moment">DEL status on wrong door</div></td><td class="td-muted">Delivery status dispute</td><td class="sum-without">Agent sees DEL and stops. Tells Sarah to check neighbours. 40 minutes unresolved.</td><td class="sum-with">Agent checks what DEL requires. Photo postcode mismatch found. Replacement raised in 90 seconds.</td></tr>
+      <tr><td><div class="sum-comp" style="color:#2563EB">Semantic Model</div><div class="sum-moment">EDD for Highlands postcode</div></td><td class="td-muted">Delivery date query</td><td class="sum-without">Agent has a date but no formula. Cannot explain July 8th or offer alternative.</td><td class="sum-with">Agent computes: 3P seller +2d, Zone D +5d, weekend +2d = July 12th. Finds AMZ alternative for July 4th.</td></tr>
+      <tr><td><div class="sum-comp" style="color:#D97706">Data Product (ODPS)</div><div class="sum-moment">Order stuck in dispatch 2 days</div></td><td class="td-muted">Escalation needed</td><td class="sum-without">Agent checks 3 systems, gets conflicting data, says wait 48 hours. No owner identified.</td><td class="sum-with">Agent finds product owner instantly. SLA already breached. Escalated. Update promised by 3pm.</td></tr>
+      <tr><td><div class="sum-comp" style="color:#C0392B">Data Contract (ODCS)</div><div class="sum-moment">Status not updated 1hr after delivery</div></td><td class="td-muted">Proactive notification</td><td class="sum-without">Nobody notices until Sarah calls. Agent apologises and asks her to wait.</td><td class="sum-with">Contract breach auto-detected at 30min. Agent proactively messages Sarah before she opens app.</td></tr>
+      <tr><td><div class="sum-comp" style="color:#7C3AED">Ontology</div><div class="sum-moment">Trainers arrive with broken sole</div></td><td class="td-muted">Damaged item claim</td><td class="sum-without">Agent says contact the seller. Seller ignores Sarah 3 days. Back to Amazon 6 days later.</td><td class="sum-with">Agent maps to DamagedOnArrival class. A-to-z applies. Amazon liable. Replacement in 3 minutes.</td></tr>
+      <tr><td><div class="sum-comp" style="color:#1A9C59">Knowledge Graph</div><div class="sum-moment">Parcel not arrived — where is it?</div></td><td class="td-muted">Parcel tracking query</td><td class="sum-without">Agent says parcel is with Evri. Same line the app already shows. No extra information.</td><td class="sum-with">Agent traces Leeds→Sheffield 6:42am→Manchester hub→Zone B→ETA 2pm–5pm today.</td></tr>
+      <tr><td><div class="sum-comp" style="color:#D97706">Policy Bindings</div><div class="sum-moment">Return request on digital rental</div></td><td class="td-muted">Policy enforcement</td><td class="sum-without">Agent raises return. System rejects 2 days later. Sarah was given false hope.</td><td class="sum-with">Policy bound to DIGITAL_RENTAL fires instantly. Agent explains non-refundable rule with legal basis.</td></tr>
+      <tr><td><div class="sum-comp" style="color:#2563EB">Data Lineage</div><div class="sum-moment">Charged £87.99 instead of £79.99</div></td><td class="td-muted">Price dispute</td><td class="sum-without">Agent says prices change at checkout. Cannot show evidence. Sarah feels dismissed.</td><td class="sum-with">Agent shows: base £79.99 → Lightning Deal expired 3min before checkout → £87.99 correct.</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     BUSINESS GLOSSARY — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-gl-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#1A9C59">Business Glossary · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">Internal controlled vocabulary — every agent reads this before making any decision</div>
+  <div class="accent-bar" style="background:#1A9C59"></div>
+  <table class="data-table">
+    <thead><tr><th>Term</th><th>Code</th><th>System Definition</th><th>What it is NOT</th></tr></thead>
+    <tbody>
+      <tr><td class="td-term">Delivered</td><td class="td-code" style="color:#1A9C59">DEL</td><td>POD scan confirmed AND photo postcode matches shipping postcode</td><td class="td-not">Attempted / Left at neighbour</td></tr>
+      <tr><td class="td-term">Attempted</td><td class="td-code" style="color:#1A9C59">ATT</td><td>Carrier scan shows delivery attempt with no POD confirmed</td><td class="td-not">Lost in transit / Delivered</td></tr>
+      <tr><td class="td-term">Safe Place</td><td class="td-code" style="color:#1A9C59">SAF</td><td>Delivered to customer-nominated location with photo evidence</td><td class="td-not">Standard DEL / Attempted</td></tr>
+      <tr><td class="td-term">Neighbour Drop</td><td class="td-code" style="color:#1A9C59">NEI</td><td>Delivered to adjacent address with card through customer door</td><td class="td-not">DEL at correct address</td></tr>
+      <tr><td class="td-term">Lost in Transit</td><td class="td-code" style="color:#1A9C59">LIT</td><td>No carrier scan for 48hrs after last known checkpoint</td><td class="td-not">Attempted / Delayed</td></tr>
+      <tr><td class="td-term">Return Window</td><td class="td-code" style="color:#1A9C59">RWT</td><td>14 calendar days from DEL date — excludes digital, perishables</td><td class="td-not">14 days from dispatch date</td></tr>
+      <tr><td class="td-term">Refund Eligible</td><td class="td-code" style="color:#1A9C59">REF-Y</td><td>Item in original condition + within RWT + not in exclusion list</td><td class="td-not">Opened digital content</td></tr>
+    </tbody>
+  </table>
+  <div class="callout" style="margin-top:14px;border-color:#1A9C59;background:#F0FFF4;color:#1A5C36;">
+    Linked tables: <strong>order_events.delivery_status · carrier_feed.scan_events</strong><br>
+    Owner: Fulfilment Data Engineering · Used by: Returns Agent · Dispute Agent · Comms Engine · A-to-z Agent
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     BUSINESS GLOSSARY — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-gl-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#1A9C59">Business Glossary · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — Sarah's missing parcel</div>
+  <div class="section-sub">Same question. Same agent. Same order. Two completely different outcomes.</div>
+  <div class="accent-bar" style="background:#1A9C59"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg narrator">Agent sees status = DEL and stops. No further conditions checked.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: My order shows delivered but I never received it.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Status shows DEL on July 2nd. Please check with your neighbours.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: I have checked. Nobody has it.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Please allow 48 hours for the carrier to investigate.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: This is the third time I have asked.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The agent saw DEL and stopped. It never knew what conditions DEL required.</div>
+      </div>
+      <div class="verdict bad">⏱ 40 minutes · unresolved ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg narrator">Agent sees status = DEL. Checks: what does DEL require?</div>
+        <div class="msg highlight">  Condition 1: POD scan confirmed ✓</div>
+        <div class="msg agent">  Condition 2: photo postcode must match shipping postcode</div>
+        <div class="msg code">  Photo: E1 7AB   Shipping: E3 4RQ</div>
+        <div class="msg warning">  Result: MISMATCH ✗</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: My order shows delivered but I never received it.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: The delivery photo does not match your postcode. Under our definition this does not qualify as DEL. Raising a replacement now — no action needed from you.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: That was quick, thank you.</div>
+      </div>
+      <div class="verdict good">⏱ 90 seconds · resolved ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     BUSINESS GLOSSARY — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-gl-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#1A9C59">Business Glossary · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">Not a wiki page or spreadsheet. A structured file every agent reads at runtime in milliseconds.</div>
+  <div class="accent-bar" style="background:#1A9C59"></div>
+  <div class="diagram"><span class="cg">glossary:</span>
+  domain:    amazon.delivery
+  version:   2.1
+  owner:     fulfilment-data-engineering
+  approved:  2026-06-14
+
+  <span class="cg">terms:</span>
+    <span class="cg">- id:</span>          DEL
+      label:       Delivered
+      definition:  POD scan confirmed AND photo_postcode matches shipping_postcode
+      conditions:
+        - field: carrier_scan_event    value: POD
+        - field: photo_postcode        must_match: shipping_address_postcode
+      not_this:  [ ATT, NEI, SAF ]
+      linked_tables:
+        - order_events.delivery_status
+        - carrier_feed.scan_events
+      used_by:  [ returns-agent, dispute-agent, a-to-z-engine, comms-engine ]
+
+    <span class="cg">- id:</span>          RWT
+      label:       Return Window
+      definition:  14 calendar days from DEL date
+      depends_on:  DEL
+      excludes:    [ DIGITAL (if streaming_started=true), PERISHABLE, CUSTOM_MADE ]
+
+    <span class="cg">- id:</span>          REF-Y
+      label:       Refund Eligible
+      depends_on:  RWT
+      conditions:  [ item_condition=ORIGINAL, within_return_window=true ]</div>
+  <div class="callout">When the agent looks up DEL — it reads this file. Not a policy PDF. Not a knowledge base article. This exact structure.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SEMANTIC MODEL — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-sm-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#2563EB">Semantic Model (OSI) · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">The recipe — maps every business metric to the exact formula, table, and conditions that produce it</div>
+  <div class="accent-bar" style="background:#2563EB"></div>
+  <div class="callout" style="border-color:#2563EB;background:#EBF8FF;color:#1E3A5F;margin-bottom:14px;">
+    <strong>METRIC: Estimated Delivery Date (EDD) · ID: edd_v3 · Owner: Delivery Experience Team</strong><br>
+    FORMULA: order_date + processing_days + transit_days + weekend_adjustment
+  </div>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th>Condition</th><th style="color:#2563EB">Value</th></tr></thead>
+    <tbody>
+      <tr><td class="td-term">processing_days</td><td>seller_type = AMZ</td><td style="color:#2563EB;font-weight:700">1 day</td></tr>
+      <tr><td></td><td>seller_type = 3P</td><td style="color:#2563EB;font-weight:700">2–5 days (seller-declared)</td></tr>
+      <tr><td class="td-term">transit_days</td><td>postcode_zone = A (London/M25)</td><td style="color:#2563EB;font-weight:700">1 day</td></tr>
+      <tr><td></td><td>postcode_zone = B (Mainland UK)</td><td style="color:#2563EB;font-weight:700">2 days</td></tr>
+      <tr><td></td><td>postcode_zone = C (Scotland)</td><td style="color:#2563EB;font-weight:700">3 days</td></tr>
+      <tr><td></td><td>postcode_zone = D (Highlands)</td><td style="color:#2563EB;font-weight:700">5 days</td></tr>
+      <tr><td class="td-term">weekend_adj</td><td>transit crosses Sat/Sun</td><td style="color:#2563EB;font-weight:700">+2 days (non-working days)</td></tr>
+      <tr><td></td><td>prime_membership = TRUE</td><td style="color:#2563EB;font-weight:700">Sunday delivery available</td></tr>
+      <tr><td class="td-term">bank_holiday</td><td>bank_holiday = TRUE in window</td><td style="color:#2563EB;font-weight:700">+1 day per holiday</td></tr>
+    </tbody>
+  </table>
+  <div class="callout" style="border-color:#2563EB;background:#EBF8FF;color:#1E3A5F;margin-top:14px;">Source tables: orders.order_date · fulfilment.processing_sla · carrier.postcode_zones · Version: v3 approved 01 March 2026</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SEMANTIC MODEL — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-sm-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#2563EB">Semantic Model (OSI) · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — Sarah's delivery date query</div>
+  <div class="section-sub">Same question. Same order. Without the model the agent has a date but no explanation.</div>
+  <div class="accent-bar" style="background:#2563EB"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: My order says July 8th but I need it by July 5th. Can you help?</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Estimated delivery is July 8th. Unfortunately we cannot guarantee earlier delivery.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: Why is it July 8th? I ordered on Friday.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Delivery estimates depend on many factors including your location and the seller.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: That tells me nothing.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The agent had the date but not the formula. It could not explain or help.</div>
+      </div>
+      <div class="verdict bad">⏱ Unhelpful · customer frustrated ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: My order says July 8th but I need it by July 5th. Can you help?</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Your date is July 8th because:</div>
+        <div class="msg agent">  Order placed: Friday July 3rd</div>
+        <div class="msg highlight">  Seller type: 3P → processing = 2 days</div>
+        <div class="msg highlight">  Postcode IV2 → Zone D → transit = 5 days</div>
+        <div class="msg highlight">  Weekend in window → +2 days</div>
+        <div class="msg agent">  Total: July 3 + 2 + 5 + 2 = July 12th</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">July 5th is not achievable from this seller to your postcode.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Shall I find the same item from an Amazon-dispatched seller? That would arrive July 4th — before your deadline.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: Yes please — that is perfect.</div>
+      </div>
+      <div class="verdict good">⏱ Clear explanation · alternative offered ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SEMANTIC MODEL — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-sm-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#2563EB">Semantic Model (OSI) · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">The OSI file the agent reads before touching any data. Every number is traceable to a dimension.</div>
+  <div class="accent-bar" style="background:#2563EB"></div>
+  <div class="diagram"><span class="cb">semantic_model:</span>
+  name:    amazon_delivery_model
+  version: 3.1
+  owner:   delivery-experience-team
+
+  <span class="cb">metrics:</span>
+    <span class="cb">- name:</span>    estimated_delivery_date
+      label:   Estimated Delivery Date
+      formula: order_date + processing_days + transit_days + weekend_adjustment
+      format:  DATE
+
+  <span class="cb">dimensions:</span>
+    <span class="cb">- name:</span> seller_type
+      values:
+        AMZ: processing_days = 1
+        3P:  processing_days = 2   <span class="cm"># seller-declared, range 2-5</span>
+
+    <span class="cb">- name:</span> postcode_zone
+      source: carrier.postcode_zones
+      values:
+        A: transit_days = 1   <span class="cm"># London / M25 belt</span>
+        B: transit_days = 2   <span class="cm"># Mainland UK</span>
+        C: transit_days = 3   <span class="cm"># Scotland mainland</span>
+        D: transit_days = 5   <span class="cm"># Highlands and Islands</span>
+
+    <span class="cb">- name:</span> weekend_adjustment
+      rule:  if transit_window crosses Saturday or Sunday: +2 days
+      exception: prime_membership = true → Sunday delivery available</div>
+  <div class="callout">The agent computes: IV2 postcode → Zone D → transit_days = 5. Not a guess. A lookup.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA PRODUCT — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-dp-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#D97706">Data Product (ODPS) · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">A data asset with a clear owner, a clear promise, and defined access — not a nameless table</div>
+  <div class="accent-bar" style="background:#D97706"></div>
+  <table class="data-table">
+    <thead><tr><th style="color:#D97706">Field</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td class="td-code" style="color:#D97706">PRODUCT NAME</td><td class="td-term">Order Tracking</td></tr>
+      <tr><td class="td-code" style="color:#D97706">PRODUCT ID</td><td>dp-order-tracking-uk-v2</td></tr>
+      <tr><td class="td-code" style="color:#D97706">DOMAIN</td><td>Customer Fulfilment</td></tr>
+      <tr><td class="td-code" style="color:#D97706">OWNER</td><td>Fulfilment Data Engineering · on-call: fulfilment-data@amazon.co.uk</td></tr>
+      <tr><td class="td-code" style="color:#D97706">COVERAGE</td><td>All UK orders placed after 01 Jan 2024</td></tr>
+      <tr><td class="td-code" style="color:#D97706">REFRESH</td><td>Every 10 minutes</td></tr>
+      <tr><td class="td-code" style="color:#D97706">LATENCY SLA</td><td>&lt; 15 minutes from carrier scan to system update</td></tr>
+      <tr><td class="td-code" style="color:#D97706">UPTIME SLA</td><td>99.9% · max 4 hours downtime per month</td></tr>
+      <tr><td class="td-code" style="color:#D97706">GOVERNED UNDER</td><td>UK GDPR Article 6(1)(b) · Data Protection Act 2018</td></tr>
+    </tbody>
+  </table>
+  <hr class="div">
+  <table class="data-table">
+    <thead><tr><th style="color:#D97706">Access Port</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td class="td-code" style="color:#D97706">INPUT</td><td>order_id</td></tr>
+      <tr><td class="td-code" style="color:#D97706">OUTPUT</td><td>current_status · last_scan_timestamp · estimated_delivery · carrier_name · photo_url</td></tr>
+      <tr><td class="td-code" style="color:#D97706">CONSUMERS</td><td>Returns Agent · Customer Service Agent · Comms Engine · A-to-z Engine</td></tr>
+      <tr><td class="td-code" style="color:#C0392B">BLOCKED</td><td class="td-not">External systems · Customer-facing APIs · Third-party sellers</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA PRODUCT — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-dp-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#D97706">Data Product (ODPS) · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — order stuck in preparing for dispatch</div>
+  <div class="section-sub">Without it nobody owns the problem. With it the owner is known and the SLA is already breached.</div>
+  <div class="accent-bar" style="background:#D97706"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: My order has been stuck on 'preparing for dispatch' for 2 days.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Let me check our systems.</div>
+        <div class="msg warning">  System A: no update found</div>
+        <div class="msg warning">  System B: different status shown</div>
+        <div class="msg warning">  System C: connection timeout</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: I am seeing some conflicting information. Please allow 24–48 hours for this to resolve.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: This is the second time I have been told that.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The agent had no idea which system to trust or who owned the data.</div>
+      </div>
+      <div class="verdict bad">⏱ 48 hours · no owner identified ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: My order has been stuck on 'preparing for dispatch' for 2 days.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Checking Order Tracking data product —</div>
+        <div class="msg highlight">  Owner: Fulfilment Data Engineering</div>
+        <div class="msg agent">  Last refresh: 47 minutes ago</div>
+        <div class="msg agent">  SLA: must refresh every 15 minutes</div>
+        <div class="msg warning">  Status: SLA BREACHED ✗</div>
+        <div class="msg blank"></div>
+        <div class="msg highlight">Escalating to on-call team now.</div>
+        <div class="msg agent">They are the product owner and are responsible for this data.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">You will receive an update by 3pm.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: Thank you — that is clear.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">Product told the agent: owner, SLA, breach.</div>
+      </div>
+      <div class="verdict good">⏱ 2 hours · owner escalated ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA PRODUCT — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-dp-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#D97706">Data Product (ODPS) · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">The ODPS file defines what the product is, who owns it, what it promises, and who can access it.</div>
+  <div class="accent-bar" style="background:#D97706"></div>
+  <div class="diagram"><span class="ca">data_product:</span>
+  id:          dp-order-tracking-uk-v2
+  name:        Order Tracking
+  domain:      customer-fulfilment
+  owner:       fulfilment-data-engineering
+  on_call:     fulfilment-data@amazon.co.uk
+
+  description: Real-time order status for all UK orders
+  coverage:    UK orders placed after 2024-01-01
+
+  <span class="ca">sla:</span>
+    refresh_interval:  10 minutes
+    max_latency:       15 minutes
+    uptime:            99.9%
+    breach_action:     escalate_to_owner_immediately
+
+  <span class="ca">schema:</span>
+    input:   [ order_id ]
+    output:  [ current_status, last_scan_timestamp, estimated_delivery,
+               carrier_name, photo_evidence_url ]
+
+  <span class="ca">access:</span>
+    allowed:  [ returns-agent, cs-agent, comms-engine, a-to-z-engine ]
+    blocked:  [ external-apis, customer-facing-services, third-party-sellers ]
+
+  <span class="ca">governance:</span>
+    regulation:  UK-GDPR-Article-6-1-b
+    upstream:    dp-carrier-feed-v3
+    downstream:  dp-refund-eligibility-v1</div>
+  <div class="callout">When the SLA is breached the system knows immediately — and knows exactly who to call.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA CONTRACT — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-dc-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#C0392B">Data Contract (ODCS) · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">A rulebook wired into the data itself — fires an alert the moment the data breaks its promise</div>
+  <div class="accent-bar" style="background:#C0392B"></div>
+  <div class="callout" style="border-color:#C0392B;background:#FFF5F5;color:#7B1C1C;margin-bottom:14px;"><strong>CONTRACT: order_delivery_status · VERSION: 2.1 · OWNER: Fulfilment Data Engineering · EFFECTIVE: 01 Apr 2026</strong></div>
+  <table class="data-table">
+    <thead><tr><th>Field</th><th style="color:#C0392B">Type</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td class="td-term">order_id</td><td class="td-code" style="color:#C0392B">STRING</td><td>NOT NULL · must exist in orders table</td></tr>
+      <tr><td class="td-term">status_code</td><td class="td-code" style="color:#C0392B">ENUM</td><td>one of: DEL / ATT / SAF / NEI / LIT</td></tr>
+      <tr><td class="td-term">scan_timestamp</td><td class="td-code" style="color:#C0392B">TIMESTAMP</td><td>NOT NULL · must be ≤ current time</td></tr>
+      <tr><td class="td-term">photo_url</td><td class="td-code" style="color:#C0392B">STRING</td><td>NOT NULL when status_code = DEL</td></tr>
+      <tr><td class="td-term">carrier_name</td><td class="td-code" style="color:#C0392B">STRING</td><td>NOT NULL</td></tr>
+    </tbody>
+  </table>
+  <hr class="div">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#C0392B;margin-bottom:8px;">Quality Rules</div>
+  <div class="check-item" style="font-size:13px;padding:4px 0;"><span style="color:#C0392B;font-weight:700;">▸</span> Status must update within 30 minutes of carrier scan</div>
+  <div class="check-item" style="font-size:13px;padding:4px 0;"><span style="color:#C0392B;font-weight:700;">▸</span> photo_url must resolve (HTTP 200) within 5 minutes of DEL status being set</div>
+  <div class="check-item" style="font-size:13px;padding:4px 0;"><span style="color:#C0392B;font-weight:700;">▸</span> No status may revert to a prior state — DEL cannot go back to ATT</div>
+  <div class="callout" style="border-color:#C0392B;background:#FFF5F5;color:#7B1C1C;margin-top:14px;">SLA: 99.9% uptime · ALERT: quality breach → auto-escalate to on-call within 5 minutes · BREAKING CHANGE: requires sign-off</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA CONTRACT — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-dc-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#C0392B">Data Contract (ODCS) · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — status not updating after delivery</div>
+  <div class="section-sub">Without it Sarah has to chase. With it the system catches the breach before she even opens the app.</div>
+  <div class="accent-bar" style="background:#C0392B"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg narrator">08:12pm  Evri scans parcel as DEL</div>
+        <div class="msg narrator">09:14pm  App still shows Out for Delivery</div>
+        <div class="msg warning">No alert fired. Nobody noticed.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: My order was delivered an hour ago but the app still shows out for delivery.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Our system shows your order is still out for delivery. The carrier may not have updated us yet. Please check again later.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: It has been an hour.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Sometimes updates take a few hours. We apologise for any inconvenience.</div>
+      </div>
+      <div class="verdict bad">⏱ Sarah chased · bad experience ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg narrator">08:12pm  Evri scans parcel as DEL</div>
+        <div class="msg narrator">08:42pm  No status update in system</div>
+        <div class="msg narrator">Contract rule: must update within 30 min</div>
+        <div class="msg warning">08:43pm  CONTRACT BREACHED → alert fired</div>
+        <div class="msg highlight">08:43pm  On-call engineer notified</div>
+        <div class="msg blank"></div>
+        <div class="msg highlight">08:47pm  Before Sarah opens the app:</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: We noticed your delivery status has not updated as it should. Evri confirmed delivery at 8:12pm. Your app will reflect this within 10 minutes.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: Oh — I did not even need to contact you. Thank you.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The contract caught the breach before Sarah did. She never had to chase.</div>
+      </div>
+      <div class="verdict good">⏱ Proactive alert · no chase needed ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA CONTRACT — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-dc-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#C0392B">Data Contract (ODCS) · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">The ODCS file the system checks on every data write. Rules are enforced automatically — no human required.</div>
+  <div class="accent-bar" style="background:#C0392B"></div>
+  <div class="diagram"><span class="cr">data_contract:</span>
+  id:        odcs-order-delivery-status-v2.1
+  version:   2.1
+  owner:     fulfilment-data-engineering
+  effective: 2026-04-01
+
+  <span class="cr">schema:</span>
+    - field: order_id        type: STRING     rule: NOT NULL
+    - field: status_code     type: ENUM       rule: one_of [DEL,ATT,SAF,NEI,LIT]
+    - field: scan_timestamp  type: TIMESTAMP  rule: NOT NULL, lte_current_time
+    - field: photo_url       type: STRING     rule: NOT NULL when status_code=DEL
+    - field: carrier_name    type: STRING     rule: NOT NULL
+
+  <span class="cr">quality_rules:</span>
+    - rule: status must update within 30 minutes of carrier_scan_event
+      breach_action: escalate_to_on_call
+      breach_sla:    5 minutes
+    - rule: photo_url must resolve HTTP-200 within 5 min of DEL status set
+      breach_action: flag_for_manual_review
+    - rule: status_code cannot revert to earlier state (DEL → ATT forbidden)
+      breach_action: reject_write, raise_alert
+
+  <span class="cr">sla:</span>
+    uptime:       99.9%
+    max_latency:  15 minutes
+
+  breaking_change:
+    requires_approval: fulfilment-data-engineering
+    notify:            [ returns-agent, cs-agent, comms-engine ]</div>
+  <div class="callout">Every write to the delivery status table is checked against this contract. Breach = immediate escalation. No polling. No manual check.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     ONTOLOGY — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-on-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#7C3AED">Ontology · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">A formal map of how business concepts connect — machine-readable, precise, like a legal document</div>
+  <div class="accent-bar" style="background:#7C3AED"></div>
+  <div style="font-size:12px;font-weight:700;color:#7C3AED;margin-bottom:10px;">Returns &amp; Refunds Class Hierarchy (subset)</div>
+  <div class="diagram"><span class="cp">PostDeliveryEvent</span>
+├── <span class="cp">ReturnRequest</span>
+│       subClassOf:  PostDeliveryEvent
+│       hasProperty: return_window = 14 days from DEL date
+│       triggers:    RefundProcess
+│       <span class="cr">excludes:    DigitalContent (streaming_started=true)</span>
+│                    <span class="cr">Perishables  ·  CustomMadeItems</span>
+│
+├── <span class="cp">DamagedOnArrival</span>
+│       subClassOf:  PostDeliveryEvent
+│       falls_under: <span class="cp">AtoZGuarantee</span>
+│       responsibility: <span class="cp">Amazon (regardless of seller_type)</span>
+│       triggers:    FullRefund OR Replacement (customer choice)
+│       time_limit:  must be raised within 30 days of DEL
+│
+└── <span class="cp">NotAsDescribed</span>
+        subClassOf:  PostDeliveryEvent
+        falls_under: ConsumerRightsAct2015
+        entitlement: FullRefund within 30 days of DEL
+                     Repair or Replace after 30 days
+        burden_shift: to retailer after 6 months</div>
+  <div class="callout" style="border-color:#7C3AED;background:#FAF5FF;color:#44337A;">RefundProcess: amount = item_price · method = original_payment · processing = 3–5 business days</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     ONTOLOGY — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-on-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#7C3AED">Ontology · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — damaged trainers on arrival</div>
+  <div class="section-sub">Without it the agent sends Sarah to the wrong place. With it the correct responsibility is resolved instantly.</div>
+  <div class="accent-bar" style="background:#7C3AED"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: My trainers arrived with a broken sole. They are unwearable.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: I can see this item was sold by a third-party seller. Please contact the seller directly to arrange a return.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">[Sarah contacts seller]</div>
+        <div class="msg narrator">[Seller ignores her for 3 days]</div>
+        <div class="msg narrator">[Sarah escalates back to Amazon]</div>
+        <div class="msg narrator">[3 more days to resolve]</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The agent did not know that DamagedOnArrival sits under the A-to-z Guarantee regardless of seller. It sent Sarah the wrong way.</div>
+      </div>
+      <div class="verdict bad">⏱ 6 days · wrong advice ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: My trainers arrived with a broken sole. They are unwearable.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Broken sole on arrival →</div>
+        <div class="msg highlight">DamagedOnArrival class detected.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">This falls under the A-to-z Guarantee. Amazon is responsible — regardless of the seller. No need to contact them.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">You are entitled to a full refund or a replacement — your choice.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: Replacement please.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Dispatched. Arriving tomorrow before 10pm.</div>
+      </div>
+      <div class="verdict good">⏱ 3 minutes · correct resolution ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     ONTOLOGY — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-on-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#7C3AED">Ontology · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">OWL/Turtle format — the language machines use to reason over class relationships and constraints.</div>
+  <div class="accent-bar" style="background:#7C3AED"></div>
+  <div class="diagram"><span class="cm"># Amazon Returns Ontology (OWL/Turtle subset)</span>
+
+<span class="cp">:PostDeliveryEvent</span>  rdf:type  owl:Class .
+
+<span class="cp">:DamagedOnArrival</span>
+    rdf:type         owl:Class ;
+    rdfs:subClassOf  :PostDeliveryEvent ;
+    <span class="cp">:falls_under     :AtoZGuarantee ;</span>
+    <span class="cp">:responsibility  :Amazon ;</span>
+    <span class="cp">:regardless_of   :SellerType ;</span>
+    <span class="cp">:triggers        :FullRefundOrReplacement ;</span>
+    :time_limit      '30 days from DEL date' .
+
+<span class="cp">:ReturnRequest</span>
+    rdf:type         owl:Class ;
+    rdfs:subClassOf  :PostDeliveryEvent ;
+    :return_window   'P14D' ;
+    :triggers        :RefundProcess ;
+    :excludes        :DigitalContent ,
+                     :Perishable ,
+                     :CustomMadeItem .
+
+<span class="cp">:RefundProcess</span>
+    :amount   :item_price_only ;
+    :method   :original_payment_method ;
+    :sla      'P3D/P5D' .</div>
+  <div class="callout">The agent does not read a policy PDF. It traverses this graph. DamagedOnArrival → AtoZGuarantee → Amazon responsible. One hop.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     KNOWLEDGE GRAPH — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-kg-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#1A9C59">Knowledge Graph · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">All entities connected in one navigable network — customer, order, product, courier, address, rights</div>
+  <div class="accent-bar" style="background:#1A9C59"></div>
+  <div class="diagram"><span class="cg">[Sarah, Manchester, Prime Member]</span>
+    │
+    └──placed──►  <span class="cg">[Order #UK-2847301  ·  placed 11:42am July 1st]</span>
+                       │                          │
+                  contains                   payment
+                       │                          │
+          <span class="cg">[Trainers, Nike, Size 6]</span>          <span class="cg">[Visa ····4521]</span>
+               │          │
+         categorised   return_window
+               │          │
+         <span class="cg">[Footwear]</span>     <span class="cg">14 days from DEL</span>
+               │
+         a_to_z_eligible = TRUE
+
+<span class="cg">[Order #UK-2847301]</span>
+    └──dispatched_from──►  <span class="cg">[Warehouse Leeds]</span>
+                                │
+                           shipped_via
+                                │
+                           <span class="cg">[Evri Courier]</span>
+                                │
+                    last_scanned_at  06:42am July 2nd
+                                │
+                           <span class="cg">[Sheffield Depot]</span>
+                                │
+                    next_expected  Manchester Hub ~10am
+                                │
+                    estimated_delivery  today 2pm–5pm  <span class="cg">[Sarah's address, Zone B]</span></div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     KNOWLEDGE GRAPH — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-kg-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#1A9C59">Knowledge Graph · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — where is my parcel?</div>
+  <div class="section-sub">Without it the agent repeats what the app already shows. With it every hop in the journey is visible.</div>
+  <div class="accent-bar" style="background:#1A9C59"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: Where is my parcel? It was supposed to arrive today.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Your parcel is currently with Evri. Please allow until end of day for delivery.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: That is what the app already says. Can you tell me anything more?</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Unfortunately that is all the information I have available.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The agent had the same data as the app. It could not connect the parcel to the route, the depot, or the estimated window.</div>
+      </div>
+      <div class="verdict bad">⏱ Unhelpful · no more info than the app ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: Where is my parcel? It was supposed to arrive today.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Tracing your order now.</div>
+        <div class="msg blank"></div>
+        <div class="msg highlight">  Leeds warehouse → departed 4:10am</div>
+        <div class="msg highlight">  Sheffield Evri depot → scanned 6:42am</div>
+        <div class="msg highlight">  Manchester hub → expected ~10am</div>
+        <div class="msg highlight">  Your address → Zone B → 2pm–5pm today</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">3 stops remaining. Based on Zone B delivery patterns your parcel should arrive between 2pm and 5pm today.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: That is really helpful, thank you.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">Every hop is a real graph traversal.</div>
+      </div>
+      <div class="verdict good">⏱ Full journey visible · ETA given ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     KNOWLEDGE GRAPH — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-kg-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#1A9C59">Knowledge Graph · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">Cypher query language (Neo4j) — the agent traverses the graph with a single query, not five API calls.</div>
+  <div class="accent-bar" style="background:#1A9C59"></div>
+  <div class="diagram"><span class="cm">// Find the full journey for Order UK-2847301</span>
+
+<span class="cg">MATCH</span> (customer:Customer {id: 'sarah-manchester'})
+  -[:PLACED]->(order:Order {id: 'UK-2847301'})
+  -[:DISPATCHED_FROM]->(warehouse:Warehouse)
+  -[:SHIPPED_VIA]->(courier:Courier)
+  -[:LAST_SCANNED_AT]->(depot:Depot)
+  -[:NEXT_CHECKPOINT]->(hub:Hub)
+  -[:DELIVERS_TO]->(address:Address)
+
+<span class="cg">RETURN</span>
+  warehouse.location          AS dispatched_from,
+  depot.name                  AS last_scan_location,
+  depot.scan_time             AS last_scan_time,
+  hub.name                    AS next_checkpoint,
+  hub.estimated_arrival       AS eta_at_hub,
+  address.postcode_zone       AS delivery_zone,
+  address.estimated_delivery  AS eta_at_customer
+
+<span class="cm">// Result:</span>
+<span class="cm">// dispatched_from:     Leeds Fulfilment Centre</span>
+<span class="cm">// last_scan_location:  Sheffield Evri Depot</span>
+<span class="cm">// last_scan_time:      2026-07-02 06:42am</span>
+<span class="cm">// next_checkpoint:     Manchester Hub</span>
+<span class="cm">// eta_at_hub:          2026-07-02 ~10:00am</span>
+<span class="cm">// delivery_zone:       B (Mainland UK)</span>
+<span class="cm">// eta_at_customer:     2026-07-02 14:00–17:00</span></div>
+  <div class="callout">One graph traversal. No joins across five systems. No guessing. The agent knows because the data is connected.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     POLICY BINDINGS — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-pb-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#D97706">Policy Bindings · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">Rules attached directly to the data entity they govern — not buried in a terms page nobody reads</div>
+  <div class="accent-bar" style="background:#D97706"></div>
+  <table class="data-table">
+    <thead><tr><th style="color:#D97706">Policy ID</th><th>Bound To</th><th>Rule</th><th>Authority</th></tr></thead>
+    <tbody>
+      <tr><td class="td-term">digital_rental_no_return</td><td class="td-muted">product_type = DIGITAL_RENTAL</td><td>Non-refundable once streaming_started = true</td><td class="td-muted">Consumer Contracts Reg 28(1)(b)</td></tr>
+      <tr><td class="td-term">perishable_no_return</td><td class="td-muted">product_type = PERISHABLE</td><td>No return accepted under any circumstances</td><td class="td-muted">Food Safety Act 1990</td></tr>
+      <tr><td class="td-term">highlands_surcharge</td><td class="td-muted">postcode IN [IV,KW,HS,ZE range]</td><td>Delivery surcharge £14.99 — must display at checkout</td><td class="td-muted">Consumer Rights Act 2015</td></tr>
+      <tr><td class="td-term">uk_gdpr_erasure</td><td class="td-muted">entity = CustomerPII</td><td>Right to erasure — must process within 30 days</td><td class="td-muted">UK GDPR Article 17</td></tr>
+      <tr><td class="td-term">children_vat_zero</td><td class="td-muted">product_type = CHILDRENS_CLOTHING</td><td>Zero-rate VAT — do not apply standard 20% rate</td><td class="td-muted">HMRC VAT Notice 714</td></tr>
+      <tr><td class="td-term">prime_return_extension</td><td class="td-muted">customer.prime_active = true</td><td>Return window extended to 30 days (vs standard 14)</td><td class="td-muted">Amazon Prime T&amp;Cs</td></tr>
+      <tr><td class="td-term">a_to_z_damaged</td><td class="td-muted">event_type = DamagedOnArrival</td><td>Amazon liability — regardless of seller_type</td><td class="td-muted">Amazon A-to-z Guarantee</td></tr>
+    </tbody>
+  </table>
+  <div class="callout" style="border-color:#D97706;background:#FFFBEB;color:#78350F;margin-top:14px;">Every policy fires automatically when its bound condition is met. No agent needs to look it up — it is already attached.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     POLICY BINDINGS — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-pb-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#D97706">Policy Bindings · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — Sarah tries to return a digital rental</div>
+  <div class="section-sub">Without it the agent gives false hope. With it the correct answer is instant — and legally grounded.</div>
+  <div class="accent-bar" style="background:#D97706"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: I rented a film on Prime Video and it was not what I expected. I would like a refund please.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Most items are returnable within 30 days. Let me raise a return request for you.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">[Return request raised]</div>
+        <div class="msg narrator">[2 days pass]</div>
+        <div class="msg warning">[Request rejected by system]</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: Why was my return rejected? You told me I could return it.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The agent applied the wrong policy. Sarah waited 2 days for nothing.</div>
+      </div>
+      <div class="verdict bad">⏱ 2 days · false hope · frustrated customer ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: I rented a film on Prime Video and it was not what I expected. I would like a refund please.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Checking policy binding for product type: DIGITAL_RENTAL.</div>
+        <div class="msg highlight">Policy:  digital_rental_no_return</div>
+        <div class="msg highlight">Rule:    non-refundable once streaming has started.</div>
+        <div class="msg agent">Your account shows streaming began at 8:14pm — this purchase is not eligible for a refund.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">If there was a technical issue with the stream itself I can review that as an exception.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: No — it worked fine. Fair enough.</div>
+      </div>
+      <div class="verdict good">⏱ Instant · honest · legally grounded ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     POLICY BINDINGS — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-pb-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#D97706">Policy Bindings · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">Policy bindings are attached to entity types — the moment the condition is matched, the rule fires.</div>
+  <div class="accent-bar" style="background:#D97706"></div>
+  <div class="diagram"><span class="ca">policy_bindings:</span>
+
+  <span class="ca">- id:</span>          digital_rental_no_return
+    bound_to:    product_type: DIGITAL_RENTAL
+    rule:        non_refundable
+    condition:   streaming_started = true
+    action:      block_refund_request
+    exception:   technical_failure → override_to_refundable
+    <span class="cm">authority:   Consumer Contracts Regulations 2013, Reg 28(1)(b)</span>
+
+  <span class="ca">- id:</span>          highlands_delivery_surcharge
+    bound_to:    shipping_postcode IN [IV, KW, HS, ZE, PA, PH ranges]
+    rule:        apply_surcharge
+    amount:      14.99 GBP
+    display:     must show at checkout before order confirmation
+    <span class="cm">authority:   Consumer Rights Act 2015</span>
+
+  <span class="ca">- id:</span>          a_to_z_damaged_on_arrival
+    bound_to:    event_type: DamagedOnArrival
+    rule:        amazon_liable_regardless_of_seller
+    action:      offer_full_refund_or_replacement
+    time_limit:  30 days from DEL date
+    <span class="cm">authority:   Amazon A-to-z Guarantee</span>
+
+  <span class="ca">- id:</span>          uk_gdpr_erasure
+    bound_to:    entity: CustomerPII
+    rule:        right_to_erasure_on_request
+    sla:         process within 30 days of request
+    <span class="cm">authority:   UK GDPR Article 17</span></div>
+  <div class="callout">The agent never reads the terms page. The rule is attached to the entity. Condition met = rule fires. Every time. Instantly.</div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA LINEAGE — ARTIFACT
+════════════════════════════════════════════════════════ -->
+<div id="p-dl-1" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#2563EB">Data Lineage · 1 of 3</div>
+  <div class="section-heading">What it actually looks like inside Amazon's system</div>
+  <div class="section-sub">The complete receipt for every number — where it came from, what touched it, every step timestamped</div>
+  <div class="accent-bar" style="background:#2563EB"></div>
+  <div class="callout" style="border-color:#2563EB;background:#EBF8FF;color:#1E3A5F;margin-bottom:14px;"><strong>Lineage trace for Sarah's final checkout price: £87.99 · Order #UK-2847301</strong></div>
+  <table class="data-table">
+    <thead><tr><th style="color:#2563EB">Step</th><th>System</th><th>Action</th><th>Timestamp / Context</th></tr></thead>
+    <tbody>
+      <tr><td class="td-code" style="color:#2563EB">SOURCE</td><td>product_catalog.price</td><td>base_price = £79.99</td><td class="td-muted">Updated daily at 09:00 UTC</td></tr>
+      <tr><td class="td-code">TRANSFORM</td><td>pricing_engine</td><td>lightning_deal_discount applied</td><td class="td-muted">Deal active: 23:00–00:00 July 1st</td></tr>
+      <tr><td class="td-code">CHECK</td><td>deal_expiry_check</td><td>Deal expired at 00:00:00 July 2nd</td><td class="td-muted">checkout_timestamp = 00:03:17 July 2nd</td></tr>
+      <tr><td class="td-code">RESULT</td><td>discount = £0.00</td><td>Deal window missed by 3min 17sec</td><td class="td-muted">Standard price restored</td></tr>
+      <tr><td class="td-code">TRANSFORM</td><td>vat_engine</td><td>VAT rate lookup: UK standard 20%</td><td class="td-muted">Delivery address: London, England</td></tr>
+      <tr><td class="td-code">RESULT</td><td>VAT = included in listed price</td><td>£87.99 is VAT-inclusive</td><td class="td-muted">No separate VAT line</td></tr>
+      <tr><td class="td-code">TRANSFORM</td><td>delivery_calc</td><td>Prime member + AMZ dispatch</td><td class="td-muted">Free delivery applied</td></tr>
+      <tr><td class="td-code">RESULT</td><td>delivery = £0.00</td><td>Prime free delivery confirmed</td><td class="td-muted">seller_type = AMZ</td></tr>
+      <tr><td class="td-code" style="color:#2563EB">FINAL</td><td>checkout_price = £87.99</td><td>Price locked at 00:03:18 July 2nd</td><td class="td-muted">Confirmation sent 00:03:19</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA LINEAGE — CONVERSATION
+════════════════════════════════════════════════════════ -->
+<div id="p-dl-2" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#2563EB">Data Lineage · 2 of 3</div>
+  <div class="section-heading">What changes when it exists — Sarah disputes her checkout price</div>
+  <div class="section-sub">Without it the agent dismisses her. With it every step of the price is shown — dispute closed.</div>
+  <div class="accent-bar" style="background:#2563EB"></div>
+  <div class="convo-pair">
+    <div class="convo-col">
+      <div class="convo-head without">WITHOUT</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: I expected to pay £79.99 but was charged £87.99. The listing showed the lower price.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Prices on Amazon can change at any time. The price at the moment of checkout applies.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: It was still showing £79.99 when I added it to my basket.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Unfortunately we are unable to verify historical pricing.</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: This feels wrong.</div>
+        <div class="msg blank"></div>
+        <div class="msg narrator">The agent had no lineage. It could not show its working. Trust broken.</div>
+      </div>
+      <div class="verdict bad">⏱ Dismissed · no evidence · trust broken ✗</div>
+    </div>
+    <div class="convo-col">
+      <div class="convo-head with">WITH</div>
+      <div class="convo-body">
+        <div class="msg sarah">Sarah: I expected to pay £79.99 but was charged £87.99.</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">Agent: Let me show you exactly how £87.99 was calculated:</div>
+        <div class="msg blank"></div>
+        <div class="msg agent">  Base price:       £79.99</div>
+        <div class="msg highlight">  Lightning deal:   active until 00:00</div>
+        <div class="msg agent">  Your checkout:    00:03:17 July 2nd</div>
+        <div class="msg highlight">  Deal expired:     3 min 17 sec before</div>
+        <div class="msg warning">  Discount applied: £0.00</div>
+        <div class="msg agent">  VAT:              included (20% UK)</div>
+        <div class="msg agent">  Delivery:         £0.00 (Prime)</div>
+        <div class="msg highlight">  Final price:      £87.99 ✓</div>
+        <div class="msg blank"></div>
+        <div class="msg sarah">Sarah: Ah — I missed the deadline. That makes sense, thank you.</div>
+      </div>
+      <div class="verdict good">⏱ Full trail shown · dispute closed ✓</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DATA LINEAGE — MACHINE-READABLE
+════════════════════════════════════════════════════════ -->
+<div id="p-dl-3" class="panel">
+<div class="section">
+  <div class="section-label" style="color:#2563EB">Data Lineage · 3 of 3</div>
+  <div class="section-heading">How it lives inside the system — machine-readable format</div>
+  <div class="section-sub">Every transformation is logged as a node. Every number has a parent. The trail never breaks.</div>
+  <div class="accent-bar" style="background:#2563EB"></div>
+  <div class="diagram"><span class="cb">lineage_trace:</span>
+  order_id:  UK-2847301
+  field:     checkout_price
+  value:     87.99 GBP
+
+  <span class="cb">steps:</span>
+    <span class="cb">- step:</span>      1
+      system:    product_catalog
+      field:     price
+      value:     79.99
+      <span class="cm">timestamp: 2026-07-01 09:00:00 UTC</span>
+
+    <span class="cb">- step:</span>      2
+      system:    pricing_engine
+      transform: lightning_deal_check
+      <span class="cm">deal_end:  2026-07-02 00:00:00 UTC</span>
+      <span class="cm">checkout:  2026-07-02 00:03:17 UTC</span>
+      result:    deal_expired → discount = 0.00
+
+    <span class="cb">- step:</span>      3
+      system:    vat_engine
+      transform: vat_rate_lookup
+      country:   GB
+      rate:      0.20
+      method:    VAT_INCLUSIVE
+      result:    87.99 includes VAT
+
+    <span class="cb">- step:</span>      4  (FINAL)
+      system:    checkout_service
+      value:     87.99 GBP
+      <span class="cm">locked_at: 2026-07-02 00:03:18 UTC</span></div>
+  <div class="callout">Sarah asks why she paid £87.99. The agent walks the lineage tree. Every number has a parent node. No black box.</div>
+</div>
+</div>
+
+</div><!-- /content-wrap -->
+</main>
+</div><!-- /body-area -->
+
+<script>
+// Hash → panel map (used when opened from pipeline overview cards)
+const HASH_MAP = {
+  'gl-1': ['gl-1', ['Business Glossary','Artifact']],
+  'sm-1': ['sm-1', ['Semantic Model','Artifact']],
+  'dp-1': ['dp-1', ['Data Product (ODPS)','Artifact']],
+  'dc-1': ['dc-1', ['Data Contract (ODCS)','Artifact']],
+  'on-1': ['on-1', ['Ontology','Artifact']],
+  'kg-1': ['kg-1', ['Knowledge Graph','Artifact']],
+  'pb-1': ['pb-1', ['Policy Bindings','Artifact']],
+  'dl-1': ['dl-1', ['Data Lineage','Artifact']],
+};
+window.addEventListener('load', () => {
+  // Embed mode: hide header when loaded inside index.html iframe
+  if (new URLSearchParams(location.search).get('embed') === '1') {
+    const hdr = document.querySelector('header');
+    if (hdr) hdr.style.display = 'none';
+    // Expand body area to use full height since header is gone
+    const bodyArea = document.querySelector('.body-area');
+    if (bodyArea) bodyArea.style.height = '100vh';
+  }
+
+  // Hash navigation
+  const hash = location.hash.replace('#', '');
+  if (hash && HASH_MAP[hash]) {
+    const [id, crumbs] = HASH_MAP[hash];
+    const sidebarEl = document.querySelector(`.sb-item[onclick*="'${id}'"]`);
+    go(id, crumbs, sidebarEl);
+  }
+});
+
+function go(id, crumbs, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  const panel = document.getElementById('p-' + id);
+  if (panel) panel.classList.add('active');
+  if (el) el.classList.add('active');
+  const bc = document.getElementById('bc');
+  bc.innerHTML = crumbs.map((c, i) =>
+    i < crumbs.length - 1
+      ? `<span>${c}</span><span class="crumb-sep">›</span>`
+      : `<span class="crumb-active">${c}</span>`
+  ).join('');
+  document.querySelector('main').scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
