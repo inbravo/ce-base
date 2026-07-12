@@ -116,6 +116,105 @@ main { flex: 1; }
 }
 .uc-tag.aws        { background: #FFF3E0; color: #B36B00; }
 .uc-tag.databricks { background: #FFEBE8; color: #C92A1B; }
+.uc-tag.neo4j      { background: #E8F5E9; color: #2E7D32; }
+
+/* ── Learning Path ─────────────────────────────────────────────────── */
+.lp-tier { margin-bottom: 44px; }
+.lp-tier-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+.lp-tier-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+  padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+}
+.lp-tier-badge.foundation { background: #EEF2FF; color: #3730A3; }
+.lp-tier-badge.depth      { background: #FFF7ED; color: #9A3412; }
+.lp-tier-badge.capstone   { background: #F0FFF4; color: #166534; }
+.lp-tier-label { font-size: 15px; font-weight: 700; color: var(--text); }
+.lp-tier-sub   { font-size: 12px; color: var(--muted); }
+
+.lp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.lp-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px;
+  cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.lp-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.09); border-color: var(--accent); transform: translateY(-2px); }
+.lp-card-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.lp-num { font-size: 10px; font-weight: 700; color: var(--muted); min-width: 24px; }
+.lp-concept {
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 20px; white-space: nowrap;
+}
+.lp-concept.contract   { background: #EEF2FF; color: #3730A3; }
+.lp-concept.odcs       { background: #F0F4FF; color: #1D4ED8; }
+.lp-concept.odps       { background: #FFF7ED; color: #9A3412; }
+.lp-concept.slayer     { background: #FDF4FF; color: #7E22CE; }
+.lp-concept.mcp        { background: #FFF1F2; color: #9F1239; }
+.lp-concept.ontology   { background: #ECFDF5; color: #065F46; }
+.lp-concept.metrics    { background: #FFF9C4; color: #92400E; }
+.lp-concept.fullstack  { background: #F0FFF4; color: #166534; }
+.lp-concept.graph      { background: #E8F5E9; color: #2E7D32; }
+.lp-card h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 0; line-height: 1.3; }
+.lp-card p  { font-size: 11.5px; color: var(--muted); margin: 0; line-height: 1.45; }
+.lp-delta {
+  font-size: 10.5px; color: var(--accent); border-left: 2px solid var(--accent);
+  padding-left: 8px; margin-top: 2px; line-height: 1.4;
+}
+.lp-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.lp-tag {
+  font-size: 9.5px; padding: 2px 7px; border-radius: 20px;
+  background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+}
+.lp-cta {
+  font-size: 11px; font-weight: 600; color: var(--accent);
+  margin-top: auto; padding-top: 6px;
+}
+
+/* ── Learning Path detail page ─────────────────────────────────────── */
+.lp-wrap { max-width: 900px; margin: 0 auto; padding: 48px 32px; }
+.lp-wrap .back-link {
+  background: none; border: none; cursor: pointer;
+  font-size: 13px; color: var(--accent); padding: 0; margin-bottom: 28px;
+  display: inline-block;
+}
+.lp-detail-head { margin-bottom: 28px; }
+.lp-detail-num  { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+.lp-detail-title { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.lp-detail-sub   { font-size: 13.5px; color: var(--muted); }
+.lp-accent-bar   { width: 40px; height: 3px; background: var(--accent); border-radius: 2px; margin: 14px 0 20px; }
+.lp-section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; color: var(--muted); text-transform: uppercase; margin: 28px 0 10px; }
+.lp-what-changes {
+  background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 8px; padding: 14px 16px; font-size: 12.5px; color: var(--text); margin-bottom: 20px;
+}
+.lp-stack-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+.lp-stack-item { display: flex; flex-direction: column; gap: 2px; }
+.lp-stack-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.lp-stack-val   { font-size: 12.5px; color: var(--text); font-weight: 500; }
+.lp-code-block {
+  background: #0F172A; border-radius: 8px; padding: 16px 18px;
+  font-family: 'Courier New', monospace; font-size: 12px;
+  color: #94A3B8; line-height: 1.7; overflow-x: auto; margin-bottom: 16px;
+  white-space: pre;
+}
+.lp-code-block .cm { color: #64748B; }
+.lp-code-block .cg { color: #86EFAC; }
+.lp-code-block .cy { color: #FDE68A; }
+.lp-score-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
+.lp-score-table th { text-align: left; padding: 7px 10px; background: var(--card); border-bottom: 2px solid var(--border); font-size: 11px; color: var(--muted); }
+.lp-score-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+.lp-score-table tr:last-child td { border-bottom: none; }
+.score-pass { color: #16A34A; font-weight: 700; }
+.score-fail { color: #DC2626; }
+.score-partial { color: #D97706; }
 
 .uc-card {
   background: var(--surface);
@@ -596,6 +695,7 @@ footer {
   <div class="header-nav">
     <button class="header-nav-btn active" onclick="showSection('usecases', this)">Use Cases</button>
     <button class="header-nav-btn" onclick="showSection('semantic', this)">Semantic Components</button>
+    <button class="header-nav-btn" onclick="showSection('learning', this)">Learning Path</button>
   </div>
   <div class="settings-wrap">
     <button class="settings-btn" onclick="toggleSettings()" title="Settings" aria-label="Settings">⚙</button>
@@ -3399,6 +3499,599 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════════════════════
+       PAGE: LEARNING PATH — LANDING
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-learning-home" class="page">
+    <div class="home-wrap">
+      <h1>Learning Path</h1>
+      <p>Eleven runnable examples — from a single YAML contract to a five-agent scored comparison. Each one adds one semantic layer and shows exactly what changes.</p>
+
+      <!-- TIER 1: Foundation -->
+      <div class="lp-tier">
+        <div class="lp-tier-head">
+          <span class="lp-tier-badge foundation">FOUNDATION</span>
+          <span class="lp-tier-label">Examples 1–4 · Core building blocks</span>
+          <span class="lp-tier-sub">Same CET1 dataset throughout — so you see exactly what each layer adds</span>
+        </div>
+        <div class="lp-grid">
+
+          <div class="lp-card" onclick="showPage('lp-1')">
+            <div class="lp-card-top">
+              <span class="lp-num">01</span>
+              <span class="lp-concept contract">Data Contract</span>
+            </div>
+            <h3>Hello World</h3>
+            <p>"What is our CET1 ratio and who owns this data?"</p>
+            <div class="lp-delta">Starting point — agent reads a hand-written YAML contract, writes SQL, returns an auditable answer</div>
+            <div class="lp-tags">
+              <span class="lp-tag">BFSI</span>
+              <span class="lp-tag">DuckDB</span>
+              <span class="lp-tag">Claude / Ollama</span>
+            </div>
+            <div class="lp-cta">Start here →</div>
+          </div>
+
+          <div class="lp-card" onclick="showPage('lp-3')">
+            <div class="lp-card-top">
+              <span class="lp-num">03</span>
+              <span class="lp-concept odcs">ODCS</span>
+            </div>
+            <h3>Governed Contract</h3>
+            <p>"Who certified this data and what is the freshness SLA?"</p>
+            <div class="lp-delta">Upgrades the hand-written YAML to a formal Bitol ODCS 0.9.3 contract — adds owner, SLA, quality rules</div>
+            <div class="lp-tags">
+              <span class="lp-tag">BFSI</span>
+              <span class="lp-tag">DuckDB</span>
+              <span class="lp-tag">Ollama</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+          <div class="lp-card" onclick="showPage('lp-4')">
+            <div class="lp-card-top">
+              <span class="lp-num">04</span>
+              <span class="lp-concept odps">ODPS</span>
+            </div>
+            <h3>Data Product</h3>
+            <p>"What exposure do we have to counterparty HSBC right now?"</p>
+            <div class="lp-delta">Steps up from table-level contract to product-level — input/output ports, ownership, use cases. New domain: Trade Finance</div>
+            <div class="lp-tags">
+              <span class="lp-tag">Trade Finance</span>
+              <span class="lp-tag">DuckDB</span>
+              <span class="lp-tag">Ollama</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TIER 2: Depth -->
+      <div class="lp-tier">
+        <div class="lp-tier-head">
+          <span class="lp-tier-badge depth">DEPTH</span>
+          <span class="lp-tier-label">Examples 5–9 · Richer semantic layers</span>
+          <span class="lp-tier-sub">Each introduces a new component on top of what came before</span>
+        </div>
+        <div class="lp-grid">
+
+          <div class="lp-card" onclick="showPage('lp-5')">
+            <div class="lp-card-top">
+              <span class="lp-num">05</span>
+              <span class="lp-concept slayer">Semantic Layer</span>
+            </div>
+            <h3>SLayer — Hello World</h3>
+            <p>"How many orders shipped today?"</p>
+            <div class="lp-delta">Agent discovers a live SLayer semantic model via REST at startup — builds its own tool description, no manual wiring</div>
+            <div class="lp-tags">
+              <span class="lp-tag">Jaffle Shop</span>
+              <span class="lp-tag">SLayer</span>
+              <span class="lp-tag">Claude / Ollama</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+          <div class="lp-card" onclick="showPage('lp-6')">
+            <div class="lp-card-top">
+              <span class="lp-num">06</span>
+              <span class="lp-concept mcp">MCP</span>
+            </div>
+            <h3>SLayer via MCP</h3>
+            <p>No Python agent. No REST calls. No tool definitions.</p>
+            <div class="lp-delta">Same SLayer semantic layer — now exposed as an MCP server. Claude Desktop discovers and queries it natively</div>
+            <div class="lp-tags">
+              <span class="lp-tag">Jaffle Shop</span>
+              <span class="lp-tag">SLayer MCP</span>
+              <span class="lp-tag">Claude Desktop</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+          <div class="lp-card" onclick="showPage('lp-7')">
+            <div class="lp-card-top">
+              <span class="lp-num">07</span>
+              <span class="lp-concept mcp">MCP</span>
+            </div>
+            <h3>SLayer MCP — BFSI</h3>
+            <p>"What is our CET1 ratio and buffer headroom?"</p>
+            <div class="lp-delta">BFSI capital position data served through SLayer MCP — same zero-code agent pattern, real regulatory domain</div>
+            <div class="lp-tags">
+              <span class="lp-tag">BFSI</span>
+              <span class="lp-tag">SLayer MCP</span>
+              <span class="lp-tag">Claude Desktop</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+          <div class="lp-card" onclick="showPage('lp-8')">
+            <div class="lp-card-top">
+              <span class="lp-num">08</span>
+              <span class="lp-concept ontology">Ontology</span>
+            </div>
+            <h3>OWL/SKOS Ontology</h3>
+            <p>"Which Basel III article governs our CET1 ratio?"</p>
+            <div class="lp-delta">Agent reads a Turtle OWL/SKOS file at runtime — knows the domain class hierarchy and Basel III article numbers, not just the schema</div>
+            <div class="lp-tags">
+              <span class="lp-tag">BFSI</span>
+              <span class="lp-tag">rdflib</span>
+              <span class="lp-tag">Ollama</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+          <div class="lp-card" onclick="showPage('lp-9')">
+            <div class="lp-card-top">
+              <span class="lp-num">09</span>
+              <span class="lp-concept metrics">Metric Layer</span>
+            </div>
+            <h3>dbt Metric Layer</h3>
+            <p>"What are our five governed capital metrics?"</p>
+            <div class="lp-delta">Agent queries named, versioned metrics via dbt MetricFlow — never writes SQL. The metric definition is the contract</div>
+            <div class="lp-tags">
+              <span class="lp-tag">BFSI</span>
+              <span class="lp-tag">dbt MetricFlow</span>
+              <span class="lp-tag">Ollama</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TIER 3: Capstone -->
+      <div class="lp-tier">
+        <div class="lp-tier-head">
+          <span class="lp-tier-badge capstone">CAPSTONE</span>
+          <span class="lp-tier-label">Examples 10 + KG · Everything together</span>
+          <span class="lp-tier-sub">See the full progression in one run — and the same story in a graph database</span>
+        </div>
+        <div class="lp-grid">
+
+          <div class="lp-card" onclick="showPage('lp-10')">
+            <div class="lp-card-top">
+              <span class="lp-num">10</span>
+              <span class="lp-concept fullstack">Full Stack</span>
+            </div>
+            <h3>Five Agents · One Question</h3>
+            <p>"What is our CET1 ratio, who owns the data, and what happens if buffer headroom turns negative?"</p>
+            <div class="lp-delta">Runs all five context layers in one script — prints a scored table 1/5 → 5/5. The progression made tangible</div>
+            <div class="lp-tags">
+              <span class="lp-tag">BFSI</span>
+              <span class="lp-tag">All layers</span>
+              <span class="lp-tag">Ollama</span>
+            </div>
+            <div class="lp-cta">View capstone →</div>
+          </div>
+
+          <div class="lp-card" onclick="showPage('lp-kg')">
+            <div class="lp-card-top">
+              <span class="lp-num">KG</span>
+              <span class="lp-concept graph">Knowledge Graph</span>
+            </div>
+            <h3>Knowledge Graph — Amazon Delivery</h3>
+            <p>"Is my order covered by the A-to-Z Guarantee?"</p>
+            <div class="lp-delta">Guarantee rule parsed from a prose policy doc at runtime — no hardcoded conditions. Change the policy wording, rerun ingestion, graph changes</div>
+            <div class="lp-tags">
+              <span class="lp-tag">Amazon Delivery</span>
+              <span class="lp-tag">Neo4j</span>
+              <span class="lp-tag">Ollama</span>
+            </div>
+            <div class="lp-cta">View example →</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       LEARNING PATH DETAIL PAGES
+  ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- ── Example 01 — Hello World ────────────────────────────────── -->
+  <div id="page-lp-1" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 01 · FOUNDATION · Data Contract</div>
+        <div class="lp-detail-title">Hello World</div>
+        <div class="lp-detail-sub">"What is our CET1 ratio and who owns this data?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">A five-component agentic loop built around a real banking use case. An AI agent reads a structured YAML data contract, writes its own SQL, queries a live DuckDB database, and returns a plain-English answer — with a full audit trace at every step. The contract is the context fabric. Without it the agent would have to guess what the columns mean.</p>
+      <div class="lp-section-title">What changes from nothing</div>
+      <div class="lp-what-changes">The agent can cite the data owner and table purpose because those facts live in the contract, not in the schema. Remove the contract and the agent either guesses or refuses.</div>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">BFSI — CET1 Capital Adequacy</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Database</span><span class="lp-stack-val">DuckDB (local)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Context</span><span class="lp-stack-val">Hand-written YAML data contract</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">LLM</span><span class="lp-stack-val">Claude via Anthropic SDK · or Ollama qwen2.5</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block"><span class="cm"># Clone and move into the code folder</span>
+git clone https://github.com/inbravo/my-hello-worlds
+cd my-hello-worlds/<span class="cy">[ce]-[hello-world]-[2026-05]</span>/code
+
+pip install anthropic duckdb structlog pyyaml numpy pandas
+
+python bootstrap.py             <span class="cm"># seed DuckDB — run once</span>
+python agent_ollama.py          <span class="cm"># Ollama (local, no API key needed)</span>
+<span class="cm"># or: python agent.py           # Claude via Anthropic SDK</span></div>
+      <div class="lp-section-title">Key files</div>
+      <div class="lp-code-block">contracts/capital_risk.yaml   <span class="cm">← the context fabric — owner, schema, purpose</span>
+bootstrap.py                  <span class="cm">← seed DuckDB (run once)</span>
+agent.py                      <span class="cm">← Claude via Anthropic SDK</span>
+agent_ollama.py               <span class="cm">← same loop via local Ollama</span></div>
+    </div>
+  </div>
+
+  <!-- ── Example 03 — ODCS ──────────────────────────────────────── -->
+  <div id="page-lp-3" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 03 · FOUNDATION · ODCS</div>
+        <div class="lp-detail-title">Governed Contract</div>
+        <div class="lp-detail-sub">"Who certified this data and what is the freshness SLA?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">Upgrades the hand-written YAML from Example 01 to a formal <strong>Bitol ODCS 0.9.3</strong> contract. Same CET1 data. Same DuckDB runtime. The contract now carries a defined owner team, SodaCL quality checks, freshness SLA, availability SLA, and certification metadata — all machine-readable, all delivered to the LLM as context.</p>
+      <div class="lp-section-title">What changes from Example 01</div>
+      <div class="lp-what-changes">Example 01 could tell the agent who owned the data (a name in YAML). Example 03 tells the agent the certification date, the SLA threshold, the quality rules, and the governance status — all from a standard the regulator can audit.</div>
+      <table class="lp-score-table">
+        <tr><th>Question</th><th>Example 01</th><th>Example 03</th></tr>
+        <tr><td>CET1 ratio value</td><td class="score-pass">✓ answered</td><td class="score-pass">✓ answered</td></tr>
+        <tr><td>Data owner name</td><td class="score-pass">✓ from YAML</td><td class="score-pass">✓ from ODCS</td></tr>
+        <tr><td>Certification date</td><td class="score-fail">✗ not in YAML</td><td class="score-pass">✓ from ODCS</td></tr>
+        <tr><td>Freshness SLA</td><td class="score-fail">✗ not in YAML</td><td class="score-pass">✓ P5D from ODCS</td></tr>
+        <tr><td>Governance status</td><td class="score-fail">✗ not in YAML</td><td class="score-pass">✓ active / approved</td></tr>
+      </table>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">BFSI — CET1 Capital Adequacy</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Database</span><span class="lp-stack-val">DuckDB (local)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Context</span><span class="lp-stack-val">Bitol ODCS 0.9.3 YAML contract</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">LLM</span><span class="lp-stack-val">Ollama qwen2.5 · or Claude</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">cd my-hello-worlds/<span class="cy">[ce]-[odcs]-[bfsi]-[2026-05]</span>/code
+
+pip install duckdb structlog pyyaml ollama
+
+python bootstrap_odcs.py        <span class="cm"># seed capital_odcs.duckdb</span>
+python agent_odcs_ollama.py     <span class="cm"># Ollama (recommended)</span></div>
+    </div>
+  </div>
+
+  <!-- ── Example 04 — ODPS ──────────────────────────────────────── -->
+  <div id="page-lp-4" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 04 · FOUNDATION · ODPS</div>
+        <div class="lp-detail-title">Data Product</div>
+        <div class="lp-detail-sub">"What exposure do we have to counterparty HSBC right now?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">Introduces the <strong>Open Data Product Standard (ODPS 2.0)</strong> — OpenAPI for data products. Steps up from a table-level contract (Example 03) to a product-level definition that describes a business capability: input ports, output ports, ownership, SLAs, use cases, and quality rules. New domain: <strong>Trade Finance</strong> — counterparty exposure, settlement risk, credit concentration.</p>
+      <div class="lp-section-title">What changes from Example 03</div>
+      <div class="lp-what-changes">ODCS governs a table. ODPS governs a business capability — it tells the agent what the product is <em>for</em>, who its intended consumers are, what SLAs apply to the whole product, and which use cases it was designed to answer.</div>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">Trade Finance — counterparty exposure</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Database</span><span class="lp-stack-val">DuckDB (local)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Context</span><span class="lp-stack-val">ODPS 2.0 product definition YAML</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">LLM</span><span class="lp-stack-val">Ollama qwen2.5 · or Claude</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">cd my-hello-worlds/<span class="cy">[ce]-[odps]-[trade]-[2026-05]</span>/code
+
+python bootstrap_odps.py
+python agent_odps_ollama.py</div>
+    </div>
+  </div>
+
+  <!-- ── Example 05 — SLayer Hello World ───────────────────────── -->
+  <div id="page-lp-5" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 05 · DEPTH · Semantic Layer</div>
+        <div class="lp-detail-title">SLayer — Hello World</div>
+        <div class="lp-detail-sub">"How many orders shipped today?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">An agent that queries a live <strong>SLayer</strong> semantic layer via REST. No YAML authoring, no embedded engine. The agent calls <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">GET /datasets</code> at startup, discovers the data model, builds its own tool description from what SLayer returns, and answers a business question in two turns.</p>
+      <div class="lp-section-title">What changes from Examples 01–04</div>
+      <div class="lp-what-changes">Previous examples embedded context in YAML files the agent read. This example has no hand-authored context file — the semantic model lives in SLayer and the agent discovers it at runtime. The context is a live service, not a static artifact.</div>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">Jaffle Shop (orders / revenue)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Semantic layer</span><span class="lp-stack-val">SLayer (motley-slayer)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Transport</span><span class="lp-stack-val">HTTP REST POST /query</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">LLM</span><span class="lp-stack-val">Claude · or Ollama qwen2.5</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">pip install 'motley-slayer[all]'
+slayer  <span class="cm"># starts SLayer on :8080</span>
+
+cd my-hello-worlds/<span class="cy">[ce]-[slayer]-[hello-world]-[2026-05]</span>/code
+python agent_slayer_ollama_hw.py</div>
+    </div>
+  </div>
+
+  <!-- ── Example 06 — SLayer MCP ────────────────────────────────── -->
+  <div id="page-lp-6" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 06 · DEPTH · MCP</div>
+        <div class="lp-detail-title">SLayer via MCP</div>
+        <div class="lp-detail-sub">No Python agent. No REST calls. No tool definitions.</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">The same SLayer semantic layer from Example 05, now exposed as an <strong>MCP server</strong>. No Python agent code. No REST calls. No tool definitions. Claude Desktop discovers SLayer's tools natively via the MCP protocol — the semantic layer becomes invisible infrastructure.</p>
+      <div class="lp-section-title">What changes from Example 05</div>
+      <div class="lp-what-changes">Example 05 needed ~170 lines of Python to wire up REST calls and tool definitions. Example 06 needs one JSON config line in Claude Desktop. The semantic layer is the same — the transport and agent code disappear.</div>
+      <table class="lp-score-table">
+        <tr><th></th><th>Example 05 — REST</th><th>Example 06 — MCP</th></tr>
+        <tr><td>Agent code</td><td>~170 lines Python</td><td class="score-pass">None</td></tr>
+        <tr><td>Tool definition</td><td>Manual, in code</td><td class="score-pass">Auto-discovered</td></tr>
+        <tr><td>Transport</td><td>HTTP REST</td><td>MCP stdio</td></tr>
+        <tr><td>Client</td><td>Custom agent loop</td><td class="score-pass">Claude Desktop</td></tr>
+      </table>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">Jaffle Shop (orders / revenue)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Semantic layer</span><span class="lp-stack-val">SLayer MCP server</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Client</span><span class="lp-stack-val">Claude Desktop</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">pip install 'motley-slayer[all]'
+slayer  <span class="cm"># starts SLayer with MCP enabled</span>
+
+<span class="cm"># Add to Claude Desktop config:</span>
+<span class="cm"># config/claude_desktop_jaffle.json</span></div>
+    </div>
+  </div>
+
+  <!-- ── Example 07 — SLayer MCP BFSI ──────────────────────────── -->
+  <div id="page-lp-7" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 07 · DEPTH · MCP</div>
+        <div class="lp-detail-title">SLayer MCP — BFSI</div>
+        <div class="lp-detail-sub">"What is our CET1 ratio and buffer headroom?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">The zero-code MCP pattern from Example 06 applied to real BFSI data. Registers a DuckDB capital position datasource with SLayer, auto-ingests the model, and exposes it through Claude Desktop as MCP. Same architectural insight — no agent code — on a domain that matters to regulators.</p>
+      <div class="lp-section-title">What changes from Example 06</div>
+      <div class="lp-what-changes">Example 06 used the Jaffle Shop toy dataset to show the MCP pattern. Example 07 brings the CET1 capital adequacy domain back — so you can compare the same question answered first in Examples 01/03 via hand-crafted agents, now answered with zero agent code via MCP.</div>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">BFSI — CET1 Capital Adequacy</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Database</span><span class="lp-stack-val">DuckDB (local)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Semantic layer</span><span class="lp-stack-val">SLayer MCP server</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Client</span><span class="lp-stack-val">Claude Desktop</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">cd my-hello-worlds/<span class="cy">[ce]-[slayer]-[mcp]-[bfsi]-[2026-05]</span>/code
+
+python bootstrap_mcp_bfsi.py    <span class="cm"># seed capital_bfsi.duckdb</span>
+python setup_mcp_bfsi.py        <span class="cm"># register datasource into SLayer</span>
+<span class="cm"># Then open Claude Desktop — config/claude_desktop_bfsi.json</span></div>
+    </div>
+  </div>
+
+  <!-- ── Example 08 — Ontology ──────────────────────────────────── -->
+  <div id="page-lp-8" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 08 · DEPTH · Ontology</div>
+        <div class="lp-detail-title">OWL/SKOS Ontology</div>
+        <div class="lp-detail-sub">"Which Basel III article governs our CET1 ratio?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">The agent reads a <strong>Turtle OWL/SKOS ontology</strong> at runtime using <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">rdflib</code>. It doesn't just know the schema — it knows the domain: that <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">CET1Capital ⊂ Tier1Capital ⊂ RegulatoryCapital</code>, that the minimum threshold is Basel III Article 92, and that negative buffer headroom triggers Article 141 restrictions.</p>
+      <div class="lp-section-title">What changes from Examples 01–07</div>
+      <div class="lp-what-changes">Previous examples gave the agent facts (values, owners, SLAs). The ontology gives the agent <em>reasoning</em> — concept hierarchies, regulatory citations, and consequence chains that were never in any database column.</div>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">BFSI — Basel III Capital</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Ontology</span><span class="lp-stack-val">OWL/SKOS Turtle (bfsi_capital.ttl)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Parser</span><span class="lp-stack-val">rdflib</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">LLM</span><span class="lp-stack-val">Ollama qwen2.5 · or Claude</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">cd my-hello-worlds/<span class="cy">[ce]-[ontology]-[bfsi]-[2026-05]</span>/code
+
+pip install duckdb rdflib structlog ollama
+
+python bootstrap_ontology.py
+python agent_ontology_ollama.py</div>
+      <div class="lp-section-title">What the agent now knows (from the TTL file)</div>
+      <div class="lp-code-block"><span class="cm"># bfsi_capital.ttl — parsed at runtime, not hardcoded</span>
+:CET1Ratio
+  :regulatedBy    :BaselIII_Article_92 ;
+  :minimumThreshold  "4.5"^^xsd:decimal .
+
+:BufferHeadroom
+  :consequenceOf  :BaselIII_Article_141 ;
+  :action         :RestrictDistributions .</div>
+    </div>
+  </div>
+
+  <!-- ── Example 09 — Metric Layer ──────────────────────────────── -->
+  <div id="page-lp-9" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 09 · DEPTH · Metric Layer</div>
+        <div class="lp-detail-title">dbt Metric Layer</div>
+        <div class="lp-detail-sub">"What are our five governed capital metrics?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">Five named, versioned business metrics defined in <strong>dbt MetricFlow</strong> — <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">cet1_ratio</code>, <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">buffer_headroom</code>, and three others. The agent queries metrics by name — it never writes SQL. The metric definition is the contract: if the formula changes in <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">schema.yml</code>, every agent using that metric gets the updated calculation automatically.</p>
+      <div class="lp-section-title">What changes from Example 08</div>
+      <div class="lp-what-changes">Example 08 gave the agent the concept hierarchy and regulatory citations. Example 09 gives it governed, version-controlled metric definitions — so the CET1 ratio the agent returns is the same number the risk team uses, computed from the same formula, not the agent's own SQL.</div>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">BFSI — CET1 Capital Adequacy</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Metric layer</span><span class="lp-stack-val">dbt MetricFlow (schema.yml)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Database</span><span class="lp-stack-val">DuckDB via dbt profile</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">LLM</span><span class="lp-stack-val">Ollama qwen2.5</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">cd my-hello-worlds/<span class="cy">[ce]-[metrics]-[bfsi]-[2026-05]</span>/code
+
+pip install dbt-core dbt-duckdb dbt-metricflow structlog ollama
+
+python bootstrap_metrics.py     <span class="cm"># dbt run + mf validate-configs</span>
+python agent_metrics_ollama.py</div>
+    </div>
+  </div>
+
+  <!-- ── Example 10 — Full Stack ────────────────────────────────── -->
+  <div id="page-lp-10" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE 10 · CAPSTONE · Full Stack</div>
+        <div class="lp-detail-title">Five Agents · One Question</div>
+        <div class="lp-detail-sub">"What is our CET1 ratio, who owns the data, and what happens if buffer headroom turns negative?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">One question. Five agents. Each agent has a richer context layer than the last. A single script orchestrates all five, prints their answers, and scores each one against five verifiable criteria. The progression from 1/5 to 5/5 is the entire CE series made tangible in one terminal run.</p>
+      <div class="lp-section-title">The five agents</div>
+      <table class="lp-score-table">
+        <tr><th>Agent</th><th>Context layers</th><th>Score</th></tr>
+        <tr><td>1 — Baseline</td><td>Schema only (table + column names)</td><td class="score-fail">1 / 5</td></tr>
+        <tr><td>2 — + YAML Contract</td><td>Column descriptions + table purpose</td><td class="score-fail">1 / 5</td></tr>
+        <tr><td>3 — + ODCS Contract</td><td>+ Ownership, certification date, SLA</td><td class="score-partial">3 / 5</td></tr>
+        <tr><td>4 — + OWL/SKOS Ontology</td><td>+ Basel III minimum, concept hierarchy, Article 141</td><td class="score-partial">4 / 5</td></tr>
+        <tr><td>5 — Full Stack</td><td>All layers + MetricFlow governed metrics</td><td class="score-pass">5 / 5</td></tr>
+      </table>
+      <div class="lp-section-title">The five scoring criteria</div>
+      <table class="lp-score-table">
+        <tr><th>Criterion</th><th>Source of truth</th></tr>
+        <tr><td>CET1 ratio: 14.83%</td><td>DuckDB data</td></tr>
+        <tr><td>Regulation cited: Basel III Article 92</td><td>OWL ontology (.ttl file only)</td></tr>
+        <tr><td>Owner: Treasury Risk Team</td><td>ODCS contract (exact string)</td></tr>
+        <tr><td>Freshness SLA: 5 business days</td><td>ODCS contract (P5D threshold)</td></tr>
+        <tr><td>Buffer consequence: Article 141 → restrict distributions</td><td>OWL ontology (.ttl file only)</td></tr>
+      </table>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">cd my-hello-worlds/<span class="cy">[ce]-[agentic]-[full-stack]-[2026-05]</span>/code
+
+<span class="cm"># Run sibling bootstraps first (pulls context files from Examples 03 + 08)</span>
+python bootstrap_full_stack.py  <span class="cm"># validates prerequisites</span>
+python run_comparison.py        <span class="cm"># orchestrates all 5 agents, prints scored table</span></div>
+    </div>
+  </div>
+
+  <!-- ── Example KG — Knowledge Graph ──────────────────────────── -->
+  <div id="page-lp-kg" class="page">
+    <div class="lp-wrap">
+      <button class="back-link" onclick="showPage('learning-home')">← Learning Path</button>
+      <div class="lp-detail-head">
+        <div class="lp-detail-num">EXAMPLE KG · CAPSTONE · Knowledge Graph</div>
+        <div class="lp-detail-title">Knowledge Graph — Amazon Delivery</div>
+        <div class="lp-detail-sub">"Is my order covered by the A-to-Z Guarantee?"</div>
+        <div class="lp-accent-bar"></div>
+      </div>
+      <div class="lp-section-title">What this teaches</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;">A three-stage context-building pipeline using <strong>Neo4j</strong> (local Amazon Neptune equivalent). Raw flat rows in DuckDB become a connected graph — Customer → Order → Scan → Hub — and an A-to-Z Guarantee node is attached to qualifying scans. The key insight: the guarantee eligibility rule is parsed from a prose policy document at runtime, not hardcoded in Python.</p>
+      <div class="lp-section-title">The standout design</div>
+      <div class="lp-what-changes">The guarantee trigger rule lives in <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">contracts/guarantee_policy.md</code> — written as plain prose, the way a real Fulfilment Policy document is. <code style="font-size:11px;background:var(--card);padding:1px 5px;border-radius:3px;">ingest_to_graph.py</code> parses the rule from the document at runtime. Change the policy wording, rerun ingestion — the graph changes with zero code edits. That is what "governed" means.</div>
+      <div class="lp-section-title">The graph schema</div>
+      <div class="lp-code-block"><span class="cg">Customer</span> -[:PLACED]->    <span class="cg">Order</span>
+<span class="cg">Order</span>    -[:SCANNED_AT]-> <span class="cg">Scan</span>  -[:NEXT]-> <span class="cg">Scan</span>  <span class="cm">(journey chain)</span>
+<span class="cg">Scan</span>     -[:AT_LOCATION]-> <span class="cg">Hub</span>
+<span class="cg">Scan</span>     -[:TRIGGERS]->    <span class="cg">Guarantee</span>  <span class="cm">(only if policy rule matches)</span>
+<span class="cg">Order</span>    -[:HANDLED_BY]->  <span class="cg">Carrier</span></div>
+      <div class="lp-section-title">The six seeded orders</div>
+      <table class="lp-score-table">
+        <tr><th>Order</th><th>Customer</th><th>Outcome</th><th>Guarantee?</th></tr>
+        <tr><td>48213</td><td>Sarah — Trainers</td><td>DEL + DAMAGED at Manchester Hub</td><td class="score-pass">✓ AtoZGuarantee (policy:4.2)</td></tr>
+        <tr><td>51890</td><td>Sarah — Kettle</td><td>DEL, condition OK</td><td class="score-fail">✗ No guarantee</td></tr>
+        <tr><td>60021</td><td>Tom — Book</td><td>ATT (attempted, no answer)</td><td class="score-fail">✗ No guarantee</td></tr>
+        <tr><td>60022</td><td>Tom — Headphones</td><td>SAF (safe place drop)</td><td class="score-fail">✗ No guarantee</td></tr>
+        <tr><td>60023</td><td>Tom — Phone Case</td><td>NEI (neighbour drop)</td><td class="score-fail">✗ No guarantee</td></tr>
+        <tr><td>71100</td><td>Emma — Blender</td><td>LIT (lost in transit)</td><td class="score-fail">✗ No guarantee</td></tr>
+      </table>
+      <div class="lp-section-title">Stack</div>
+      <div class="lp-stack-row">
+        <div class="lp-stack-item"><span class="lp-stack-label">Domain</span><span class="lp-stack-val">Amazon UK Delivery</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Source data</span><span class="lp-stack-val">DuckDB (flat rows)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Graph DB</span><span class="lp-stack-val">Neo4j 5 (Docker) — Neptune-compatible Cypher</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">Policy</span><span class="lp-stack-val">guarantee_policy.md (prose, parsed at runtime)</span></div>
+        <div class="lp-stack-item"><span class="lp-stack-label">LLM</span><span class="lp-stack-val">Ollama qwen2.5</span></div>
+      </div>
+      <div class="lp-section-title">Quick start</div>
+      <div class="lp-code-block">docker run -d --name neo4j-delivery -p 7474:7474 -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/password neo4j:5
+
+pip install neo4j duckdb openai structlog
+ollama pull qwen2.5
+
+cd my-hello-worlds/<span class="cy">[ce]-[knowledge-graph]-[amazon-delivery]-[2026-07]</span>/code
+
+python bootstrap_source.py      <span class="cm"># seed flat rows into DuckDB</span>
+python ingest_to_graph.py       <span class="cm"># read DuckDB + parse policy → write Neo4j</span>
+python agent_graph_ollama.py    <span class="cm"># ask questions against the graph</span></div>
+      <div class="lp-section-title">Prove the rule is really externalised</div>
+      <div class="lp-code-block"><span class="cm"># Edit contracts/guarantee_policy.md — change DAMAGED to LATE</span>
+python ingest_to_graph.py
+<span class="cm"># → Scans matching the rule: 0</span>
+<span class="cm"># No code changed. Only the prose.</span></div>
+      <div class="lp-section-title">Explore in the Neo4j browser</div>
+      <div class="lp-code-block"><span class="cm"># Open http://localhost:7474  (neo4j / password)</span>
+
+<span class="cm"># See the full graph — 31 nodes</span>
+MATCH (n) RETURN n
+
+<span class="cm"># Trace one order's full journey</span>
+MATCH (c:Customer)-[:PLACED]->(o:Order {order_id: '48213'})
+MATCH (o)-[:SCANNED_AT]->(s:Scan)-[:AT_LOCATION]->(h:Hub)
+OPTIONAL MATCH (s)-[:TRIGGERS]->(g:Guarantee)
+RETURN c, o, s, h, g</div>
+    </div>
+  </div>
+
 </main>
 
 <footer>
@@ -3415,7 +4108,9 @@ function showPage(id) {
 function showSection(section, btn) {
   document.querySelectorAll('.header-nav-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  showPage(section === 'usecases' ? 'home' : 'semantic-home');
+  if (section === 'usecases') showPage('home');
+  else if (section === 'semantic') showPage('semantic-home');
+  else if (section === 'learning') showPage('learning-home');
 }
 
 function showSemTab(id, btn) {
