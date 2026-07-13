@@ -608,6 +608,10 @@ table.sem-table tr:last-child td { border-bottom: none; }
   padding: 20px; overflow-x: auto; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
+/* decision-tree use-case layout (Card Declined — Decision Trace) */
+.dtree-wrap { margin-bottom: 36px; }
+.dtree-wrap .arch-diagram-card { margin-bottom: 16px; }
+
 /* option A/B comparison (property graph vs RDF/OWL) */
 .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 @media (max-width: 640px) { .option-grid { grid-template-columns: 1fr; } }
@@ -758,6 +762,14 @@ footer {
           <div class="uc-tag databricks">DATABRICKS</div>
           <h3>CARD DECLINED</h3>
           <p>"Why was my card declined?"</p>
+          <div class="uc-cta">View use case →</div>
+        </div>
+
+        <div class="uc-card" data-platform="aws" onclick="showPage('uc-card-decline-diagnostic')">
+          <div class="uc-icon">🧭</div>
+          <div class="uc-tag aws">AWS</div>
+          <h3>CARD DECLINED — DECISION TRACE</h3>
+          <p>"Why was my card declined?" — the full diagnostic path</p>
           <div class="uc-cta">View use case →</div>
         </div>
       </div>
@@ -3500,6 +3512,537 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════
+       PAGE: USE CASE — CARD DECLINED · DECISION TRACE (AWS)
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-uc-card-decline-diagnostic" class="page">
+    <div class="uc-detail-wrap" data-mode="today">
+
+      <button class="back-link" onclick="showPage('home')">← Use Cases</button>
+
+      <div class="mode-toggle">
+        <button class="toggle-btn active" onclick="setMode('today', this)">Today</button>
+        <button class="toggle-btn" onclick="setMode('governed', this)">With governed context</button>
+      </div>
+
+      <div class="headline">
+        <p class="quote">"Why was my card declined?"</p>
+        <p class="attribution">— Alex, checking out online</p>
+      </div>
+
+      <div class="dtree-wrap">
+
+        <!-- TODAY: record + blocked source systems (structured DB + unstructured policy docs) -->
+        <div class="arch-diagram-card state-today">
+          <svg viewBox="0 0 700 300" width="100%" style="min-width:620px;" role="img">
+            <title>Today: the agent can only read a flat status field; neither the databases nor the policy documents that would explain the decline are reachable</title>
+
+            <rect x="250" y="10" width="200" height="76" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+            <rect x="250" y="10" width="200" height="4" fill="#0078D4"/>
+            <text x="262" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.04em">PAYMENTS_DB.TRANSACTIONS</text>
+            <text x="262" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
+            <text x="262" y="63" font-family="Courier New" font-size="10.5" font-weight="700" fill="#B7791F">status: "DECLINED"</text>
+
+            <line x1="350" y1="86" x2="350" y2="116" stroke="#4A5568" stroke-width="1.8"/>
+            <polygon points="345,116 355,116 350,126" fill="#4A5568"/>
+            <text x="365" y="106" font-size="9" font-style="italic" fill="#718096">← only field the</text>
+            <text x="365" y="118" font-size="9" font-style="italic" fill="#718096">agent can query</text>
+
+            <rect x="60" y="140" width="580" height="140" rx="10" fill="#F7FAFC" stroke="#A0AEC0" stroke-width="1.4" stroke-dasharray="6 4"/>
+            <text x="350" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#718096" letter-spacing="0.05em">NOT REACHABLE BY THE AGENT</text>
+
+            <line x1="260" y1="168" x2="260" y2="272" stroke="#CBD5E0" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="440" y1="168" x2="440" y2="272" stroke="#CBD5E0" stroke-width="1" stroke-dasharray="3 3"/>
+
+            <text x="160" y="182" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">CORE BANKING LEDGER</text>
+            <text x="160" y="196" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">database — blocked</text>
+            <text x="160" y="220" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">OVERDRAFT POLICY §2.1</text>
+            <text x="160" y="234" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">policy doc — blocked</text>
+
+            <text x="350" y="182" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">FRAUD RISK ENGINE</text>
+            <text x="350" y="196" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">database — blocked</text>
+            <text x="350" y="220" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">RISK MODEL CARD v3.2</text>
+            <text x="350" y="234" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">policy doc — blocked</text>
+
+            <text x="540" y="182" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">CARD NETWORK (ISO 8583)</text>
+            <text x="540" y="196" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">database — blocked</text>
+            <text x="540" y="220" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">ISO 8583 FIELD 39 CODES</text>
+            <text x="540" y="234" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">policy doc — blocked</text>
+          </svg>
+        </div>
+
+        <!-- GOVERNED: record + 3× (structured DB + unstructured policy doc) feeding each decision + answer -->
+        <div class="arch-diagram-card state-governed">
+          <svg viewBox="0 0 760 700" width="100%" style="min-width:680px;" role="img">
+            <title>Governed: each of the three checks is fed by both a structured database field and an unstructured policy document, walked in sequence to the one true decline reason</title>
+
+            <rect x="280" y="10" width="200" height="70" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+            <rect x="280" y="10" width="200" height="4" fill="#0078D4"/>
+            <text x="292" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.04em">PAYMENTS_DB.TRANSACTIONS</text>
+            <text x="292" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
+            <text x="292" y="63" font-family="Courier New" font-size="10.5" fill="#2D3748">status: DECLINED</text>
+
+            <line x1="380" y1="80" x2="380" y2="106" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="374,106 386,106 380,116" fill="#1A9C59"/>
+
+            <!-- ── decision 1 ── -->
+            <rect x="10" y="120" width="170" height="54" rx="7" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
+            <rect x="10" y="120" width="170" height="4" fill="#0078D4"/>
+            <text x="18" y="133" font-size="6.8" font-weight="700" fill="#63B3ED" letter-spacing="0.03em">STRUCTURED · DATABASE</text>
+            <text x="18" y="149" font-size="8.8" font-weight="800" fill="#0078D4">CORE BANKING LEDGER</text>
+            <text x="18" y="166" font-family="Courier New" font-size="9.3" fill="#2D3748">acct_balance: £340</text>
+
+            <rect x="10" y="184" width="170" height="68" rx="7" fill="#FFFDF7" stroke="#E9DFC5" stroke-width="1.3"/>
+            <rect x="10" y="184" width="170" height="4" fill="#7C3AED"/>
+            <text x="18" y="197" font-size="6.8" font-weight="700" fill="#9F7AEA" letter-spacing="0.03em">UNSTRUCTURED · POLICY DOC</text>
+            <text x="18" y="213" font-size="8.6" font-weight="800" fill="#7C3AED">OVERDRAFT POLICY §2.1</text>
+            <text x="18" y="229" font-size="8.3" font-style="italic" fill="#5B4636">"balance ≥ txn + £10 buffer"</text>
+
+            <rect x="210" y="130" width="320" height="112" rx="8" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.6"/>
+            <rect x="210" y="130" width="320" height="4" fill="#7C3AED"/>
+            <text x="224" y="160" font-size="11" font-weight="700" fill="#2D3748">1. Balance sufficient?</text>
+            <text x="224" y="185" font-size="13" font-weight="800" fill="#1A9C59">✓ YES</text>
+            <text x="224" y="205" font-size="8" font-style="italic" fill="#718096">ledger + overdraft rule, combined</text>
+
+            <line x1="180" y1="147" x2="206" y2="157" stroke="#0078D4" stroke-width="1.6"/>
+            <polygon points="200,152 210,157 200,161" fill="#0078D4"/>
+            <line x1="180" y1="218" x2="206" y2="205" stroke="#7C3AED" stroke-width="1.6"/>
+            <polygon points="200,209 210,205 202,200" fill="#7C3AED"/>
+
+            <line x1="530" y1="175" x2="546" y2="175" stroke="#A0AEC0" stroke-width="1.4"/>
+            <polygon points="540,171 550,175 540,179" fill="#A0AEC0"/>
+            <text x="533" y="163" font-size="8.5" fill="#A0AEC0">✗ NO</text>
+            <rect x="550" y="155" width="180" height="55" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
+            <text x="562" y="176" font-size="9.5" font-style="italic" fill="#718096">Insufficient funds</text>
+            <text x="562" y="192" font-size="9.5" font-style="italic" fill="#718096">code 51 — ruled out</text>
+
+            <line x1="370" y1="242" x2="370" y2="270" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="364,270 376,270 370,280" fill="#1A9C59"/>
+
+            <!-- ── decision 2 ── -->
+            <rect x="10" y="280" width="170" height="54" rx="7" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
+            <rect x="10" y="280" width="170" height="4" fill="#0078D4"/>
+            <text x="18" y="293" font-size="6.8" font-weight="700" fill="#63B3ED" letter-spacing="0.03em">STRUCTURED · DATABASE</text>
+            <text x="18" y="309" font-size="8.8" font-weight="800" fill="#0078D4">FRAUD RISK ENGINE</text>
+            <text x="18" y="326" font-family="Courier New" font-size="9.3" fill="#2D3748">risk_score: 12 / 100</text>
+
+            <rect x="10" y="344" width="170" height="68" rx="7" fill="#FFFDF7" stroke="#E9DFC5" stroke-width="1.3"/>
+            <rect x="10" y="344" width="170" height="4" fill="#7C3AED"/>
+            <text x="18" y="357" font-size="6.8" font-weight="700" fill="#9F7AEA" letter-spacing="0.03em">UNSTRUCTURED · POLICY DOC</text>
+            <text x="18" y="373" font-size="8.6" font-weight="800" fill="#7C3AED">RISK MODEL CARD v3.2</text>
+            <text x="18" y="389" font-size="8.3" font-style="italic" fill="#5B4636">"flag if risk_score &gt; 70"</text>
+
+            <rect x="210" y="290" width="320" height="112" rx="8" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.6"/>
+            <rect x="210" y="290" width="320" height="4" fill="#7C3AED"/>
+            <text x="224" y="320" font-size="11" font-weight="700" fill="#2D3748">2. Fraud flag raised?</text>
+            <text x="224" y="345" font-size="13" font-weight="800" fill="#1A9C59">✓ NO — passed</text>
+            <text x="224" y="365" font-size="8" font-style="italic" fill="#718096">engine + risk-threshold rule, combined</text>
+
+            <line x1="180" y1="307" x2="206" y2="317" stroke="#0078D4" stroke-width="1.6"/>
+            <polygon points="200,312 210,317 200,321" fill="#0078D4"/>
+            <line x1="180" y1="378" x2="206" y2="365" stroke="#7C3AED" stroke-width="1.6"/>
+            <polygon points="200,369 210,365 202,360" fill="#7C3AED"/>
+
+            <line x1="530" y1="335" x2="546" y2="335" stroke="#A0AEC0" stroke-width="1.4"/>
+            <polygon points="540,331 550,335 540,339" fill="#A0AEC0"/>
+            <text x="530" y="323" font-size="8.5" fill="#A0AEC0">✓ YES</text>
+            <rect x="550" y="315" width="180" height="55" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
+            <text x="562" y="336" font-size="9.5" font-style="italic" fill="#718096">Suspected fraud</text>
+            <text x="562" y="352" font-size="9.5" font-style="italic" fill="#718096">code 05 — ruled out</text>
+
+            <line x1="370" y1="402" x2="370" y2="430" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="364,430 376,430 370,440" fill="#1A9C59"/>
+
+            <!-- ── decision 3 ── -->
+            <rect x="10" y="440" width="170" height="54" rx="7" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
+            <rect x="10" y="440" width="170" height="4" fill="#0078D4"/>
+            <text x="18" y="453" font-size="6.8" font-weight="700" fill="#63B3ED" letter-spacing="0.03em">STRUCTURED · DATABASE</text>
+            <text x="18" y="469" font-size="8.3" font-weight="800" fill="#0078D4">CARD NETWORK (ISO 8583)</text>
+            <text x="18" y="486" font-family="Courier New" font-size="9.3" fill="#2D3748">expiry: 2026-06-30</text>
+
+            <rect x="10" y="504" width="170" height="68" rx="7" fill="#FFFDF7" stroke="#E9DFC5" stroke-width="1.3"/>
+            <rect x="10" y="504" width="170" height="4" fill="#7C3AED"/>
+            <text x="18" y="517" font-size="6.8" font-weight="700" fill="#9F7AEA" letter-spacing="0.03em">UNSTRUCTURED · POLICY DOC</text>
+            <text x="18" y="533" font-size="8.6" font-weight="800" fill="#7C3AED">ISO 8583 · FIELD 39</text>
+            <text x="18" y="549" font-size="8.3" font-style="italic" fill="#5B4636">"code 54 = expired card"</text>
+
+            <rect x="210" y="450" width="320" height="112" rx="8" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.6"/>
+            <rect x="210" y="450" width="320" height="4" fill="#7C3AED"/>
+            <text x="224" y="480" font-size="11" font-weight="700" fill="#2D3748">3. Card expired?</text>
+            <text x="224" y="505" font-size="13" font-weight="800" fill="#C0392B">✗ YES</text>
+            <text x="224" y="525" font-size="8" font-style="italic" fill="#718096">network + code-39 mapping, combined</text>
+
+            <line x1="180" y1="467" x2="206" y2="477" stroke="#0078D4" stroke-width="1.6"/>
+            <polygon points="200,472 210,477 200,481" fill="#0078D4"/>
+            <line x1="180" y1="538" x2="206" y2="525" stroke="#7C3AED" stroke-width="1.6"/>
+            <polygon points="200,529 210,525 202,520" fill="#7C3AED"/>
+
+            <line x1="530" y1="495" x2="546" y2="495" stroke="#A0AEC0" stroke-width="1.4"/>
+            <polygon points="540,491 550,495 540,499" fill="#A0AEC0"/>
+            <text x="533" y="483" font-size="8.5" fill="#A0AEC0">NO</text>
+            <rect x="550" y="475" width="180" height="55" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
+            <text x="562" y="496" font-size="9.5" font-style="italic" fill="#718096">Not expired →</text>
+            <text x="562" y="512" font-size="9.5" font-style="italic" fill="#718096">would be approved</text>
+
+            <line x1="370" y1="562" x2="370" y2="590" stroke="#1A9C59" stroke-width="2.8"/>
+            <polygon points="362,590 378,590 370,600" fill="#1A9C59"/>
+
+            <!-- final answer -->
+            <rect x="220" y="600" width="300" height="90" rx="10" fill="#F0FFF4" stroke="#1A9C59" stroke-width="2"/>
+            <rect x="220" y="600" width="300" height="5" fill="#1A9C59"/>
+            <text x="370" y="624" text-anchor="middle" font-size="11" font-weight="800" fill="#15803D" letter-spacing="0.03em">DECLINE REASON — CODE 54</text>
+            <text x="370" y="646" text-anchor="middle" font-size="11.5" font-style="italic" fill="#14532D">"Card expired"</text>
+            <text x="370" y="666" text-anchor="middle" font-size="9.5" fill="#285E58">→ Update payment method to retry</text>
+          </svg>
+        </div>
+
+        <div class="tech-box kind-agent">
+          <div class="tech-box-label">What Alex actually hears</div>
+          <p class="tech-note state-today"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Agent:</strong> "It shows as declined. I don't have a reason."</p>
+          <p class="tech-note state-governed"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Agent:</strong> "Your card expired last week — update your payment method to retry."</p>
+        </div>
+
+      </div>
+
+      <div class="closing-line">
+        <p class="state-today">"The agent sees the outcome. It has no path to the reason — not in the database, not in the policy."</p>
+        <p class="state-governed">"Every check combines its database fact with its governing rule — walked in order, to the same true reason."</p>
+      </div>
+
+      <div style="text-align:center;">
+        <button class="solution-cta" onclick="showPage('solution-aws-card-decline')">View technical solution design →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       PAGE: TECHNICAL SOLUTION DESIGN — AWS / CARD DECLINED
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-solution-aws-card-decline" class="page">
+    <div class="solution-wrap">
+
+      <button class="back-link" onclick="showPage('uc-card-decline-diagnostic')">← Card Declined — Decision Trace</button>
+
+      <div class="solution-header">
+        <div class="solution-eyebrow">TECHNICAL SOLUTION DESIGN · AWS</div>
+        <h1>Neptune-Backed Decision Chain for Decline Reasons</h1>
+        <p class="solution-sub">How a developer would actually build the three-check decision trace — from raw tables and policy documents to a Bedrock Agent answer.</p>
+      </div>
+
+      <!-- 1. Problem statement & scope -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n1">1</div>
+          <h2>Problem statement &amp; scope</h2>
+        </div>
+        <p>The Bedrock Agent handling Alex's questions needs to reason across a balance check, a fraud score, and a card-status check — each one a fact governed by its own database <em>and</em> its own policy document, evaluated in a fixed order. Answering "why was my card declined" today requires a human to manually check three different systems and two different policy documents, with no shared, checkable definition of what these facts mean together or which order they're evaluated in.</p>
+        <div class="scope-grid">
+          <div class="scope-box in">
+            <div class="scope-label">IN SCOPE</div>
+            <ul>
+              <li>Neptune-backed graph modeling the balance / fraud / card-status decision chain</li>
+              <li>Ingestion path from the payments DB, fraud engine, and card network feeds</li>
+              <li>How the two policy documents (Overdraft Policy, Risk Model Card) and one standard (ISO 8583) become graph-side thresholds and mappings</li>
+              <li>Python query/API layer, callable by a Bedrock Agent action group</li>
+              <li>Baseline observability</li>
+            </ul>
+          </div>
+          <div class="scope-box out">
+            <div class="scope-label">OUT OF SCOPE</div>
+            <ul>
+              <li>PBAC / row-level security</li>
+              <li>Golden Gatekeeper review workflow</li>
+              <li>Infrastructure-as-code / deployment automation</li>
+              <li>Cost optimization</li>
+              <li>Changes to upstream fraud model or card network systems</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Architecture overview -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n2">2</div>
+          <h2>Architecture overview</h2>
+        </div>
+        <p>Source data and policy documents are transformed and loaded into Neptune, which a Python query layer running inside the same VPC accesses on behalf of the Bedrock Agent.</p>
+        <div class="arch-diagram-card">
+          <svg viewBox="0 0 920 380" width="100%" style="min-width:820px;" role="img">
+            <title>Architecture: payments, fraud, and card-network sources plus policy documents flow through ingestion into Neptune, queried by a Python Lambda layer, invoked by a Bedrock Agent, answering Alex</title>
+
+            <rect x="10" y="20" width="180" height="120" rx="10" fill="#F7FAFC" stroke="#A0AEC0" stroke-width="1.4"/>
+            <text x="100" y="40" text-anchor="middle" font-size="10" font-weight="800" fill="#4A5568" letter-spacing="0.05em">SOURCES</text>
+            <text x="100" y="58" text-anchor="middle" font-size="9.5" fill="#2D3748">payments_db.transactions</text>
+            <text x="100" y="74" text-anchor="middle" font-size="9.5" fill="#2D3748">core_banking + fraud_engine +</text>
+            <text x="100" y="88" text-anchor="middle" font-size="9.5" fill="#2D3748">card_network (databases)</text>
+            <text x="100" y="106" text-anchor="middle" font-size="9.5" fill="#2D3748">Overdraft Policy + Risk Card +</text>
+            <text x="100" y="120" text-anchor="middle" font-size="9.5" fill="#2D3748">ISO 8583 (policy docs)</text>
+
+            <line x1="190" y1="80" x2="230" y2="80" stroke="#D9621E" stroke-width="2.4"/>
+            <polygon points="230,75 240,80 230,85" fill="#D9621E"/>
+
+            <rect x="240" y="20" width="180" height="120" rx="10" fill="#FFF1E7" stroke="#D9621E" stroke-width="1.4"/>
+            <text x="330" y="40" text-anchor="middle" font-size="10" font-weight="800" fill="#B34E14" letter-spacing="0.05em">INGESTION</text>
+            <text x="330" y="64" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Glue ETL job</text>
+            <text x="330" y="80" text-anchor="middle" font-size="10.5" fill="#7C3A0F">(computes chain / TRIGGERS edges)</text>
+            <text x="330" y="104" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Neptune Bulk Loader</text>
+            <text x="330" y="120" text-anchor="middle" font-size="10.5" fill="#7C3A0F">(loads from S3)</text>
+
+            <line x1="420" y1="80" x2="460" y2="80" stroke="#7C3AED" stroke-width="2.4"/>
+            <polygon points="460,75 470,80 460,85" fill="#7C3AED"/>
+
+            <rect x="470" y="10" width="220" height="140" rx="10" fill="#F3EEFF" stroke="#7C3AED" stroke-width="1.6"/>
+            <text x="580" y="30" text-anchor="middle" font-size="10" font-weight="800" fill="#5B21B6" letter-spacing="0.05em">AMAZON NEPTUNE</text>
+            <text x="580" y="46" text-anchor="middle" font-size="9.5" fill="#5B21B6" font-style="italic">(pick ONE data model)</text>
+            <rect x="486" y="56" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.2"/>
+            <text x="580" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#5B21B6">Property graph</text>
+            <text x="580" y="86" text-anchor="middle" font-size="9" fill="#7C3AED">Gremlin + openCypher, same data</text>
+            <rect x="486" y="100" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.2"/>
+            <text x="580" y="116" text-anchor="middle" font-size="10" font-weight="700" fill="#5B21B6">RDF store</text>
+            <text x="580" y="130" text-anchor="middle" font-size="9" fill="#7C3AED">SPARQL only, separate cluster</text>
+
+            <rect x="460" y="165" width="360" height="130" rx="10" fill="none" stroke="#A0AEC0" stroke-width="1.4" stroke-dasharray="6 4"/>
+            <text x="640" y="182" text-anchor="middle" font-size="9.5" font-weight="700" fill="#718096" letter-spacing="0.05em">VPC BOUNDARY</text>
+
+            <line x1="580" y1="150" x2="580" y2="190" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="575,190 580,200 585,190" fill="#1A9C59"/>
+
+            <rect x="480" y="200" width="220" height="70" rx="10" fill="#F0FFF4" stroke="#1A9C59" stroke-width="1.6"/>
+            <text x="590" y="220" text-anchor="middle" font-size="10" font-weight="800" fill="#15803D" letter-spacing="0.05em">PYTHON QUERY LAYER</text>
+            <text x="590" y="238" text-anchor="middle" font-size="9.5" fill="#15803D">Lambda: gremlinpython /</text>
+            <text x="590" y="252" text-anchor="middle" font-size="9.5" fill="#15803D">neo4j driver / SPARQLWrapper</text>
+
+            <line x1="700" y1="235" x2="740" y2="235" stroke="#0078D4" stroke-width="2.4"/>
+            <polygon points="740,230 750,235 740,240" fill="#0078D4"/>
+            <text x="722" y="225" text-anchor="middle" font-size="8" fill="#0078D4">IAM invoke</text>
+
+            <rect x="750" y="200" width="150" height="70" rx="10" fill="#EBF8FF" stroke="#0078D4" stroke-width="1.6"/>
+            <text x="825" y="222" text-anchor="middle" font-size="10" font-weight="800" fill="#0067B0" letter-spacing="0.02em">BEDROCK AGENT</text>
+            <text x="825" y="240" text-anchor="middle" font-size="9.5" fill="#0067B0">Plans tool calls,</text>
+            <text x="825" y="254" text-anchor="middle" font-size="9.5" fill="#0067B0">assembles the answer</text>
+
+            <line x1="825" y1="270" x2="825" y2="310" stroke="#4A5568" stroke-width="2"/>
+            <polygon points="820,310 825,320 830,310" fill="#4A5568"/>
+            <text x="825" y="345" text-anchor="middle" font-size="11" font-weight="700" fill="#2D3748">Alex, checking out online</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- 3. Graph data model -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n3">3</div>
+          <h2>Graph data model</h2>
+        </div>
+        <p><strong>Nodes:</strong> <code>Transaction(txn_id, status)</code>, <code>BalanceCheck(acct_balance, result)</code>, <code>FraudCheck(risk_score, result)</code>, <code>CardCheck(expiry_date, result)</code>, <code>PolicyDocument(doc_id, title, rule_quote)</code>, <code>DeclineReason(code, description)</code>.<br>
+        <strong>Edges:</strong> <code>CHECKED_BY</code> (Transaction→BalanceCheck), <code>NEXT_CHECK</code> (chains BalanceCheck→FraudCheck→CardCheck in evaluation order), <code>GOVERNED_BY</code> (each check node → the one <code>PolicyDocument</code> that decided its <code>result</code> — Overdraft Policy §2.1, Risk Model Card v3.2, or ISO 8583 Field 39), <code>TRIGGERS</code> (CardCheck→DeclineReason, when <code>result='EXPIRED'</code>).</p>
+        <p style="font-size:12px; color:var(--muted); margin-top:-4px;">Every check node carries two inputs, matching the use case's diagram exactly: a structured property read from a database (<code>acct_balance</code>, <code>risk_score</code>, <code>expiry_date</code>), and a <code>GOVERNED_BY</code> edge to the unstructured policy document that decides what counts as a pass.</p>
+
+        <div class="option-grid">
+          <div class="option-box propgraph">
+            <div class="option-tag">OPTION A</div>
+            <h3>Property graph</h3>
+            <p>"Class" is just a vertex label. <code>TRIGGERS</code> edges are pre-computed at ingestion time from each check's <code>result</code>.</p>
+            <ul>
+              <li>No real inference — a new check type needs an ETL update</li>
+              <li>Query with Gremlin or openCypher, interchangeably, on the same dataset</li>
+              <li>Simpler to operate, faster to query</li>
+            </ul>
+          </div>
+          <div class="option-box rdf">
+            <div class="option-tag">OPTION B</div>
+            <h3>RDF / OWL</h3>
+            <p>Entities are URIs. <code>rdf:type</code> assigns OWL classes (e.g. <code>:Check9931 rdf:type :CardExpiredEvent</code>).</p>
+            <ul>
+              <li>Ontology declares <code>:CardExpiredEvent rdfs:subClassOf :DeclineTriggeringEvent</code></li>
+              <li>SPARQL can match any subclass of <code>DeclineTriggeringEvent</code> — real class inference</li>
+              <li>Requires its own Neptune cluster, queryable only via SPARQL</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout-warn">
+          <span class="icon">⚠</span>
+          <span><strong>Gremlin and openCypher share one property-graph dataset in Neptune — RDF does not.</strong> You cannot mix RDF and property-graph data in the same cluster, and RDF is only queryable via SPARQL. Pick one model per cluster; running both means two deployments.</span>
+        </div>
+
+        <h3 style="font-size:13.5px; font-weight:700; color:var(--text); margin:22px 0 10px;">Example instance — Transaction #TXN-58217 (property-graph model)</h3>
+        <p style="font-size:12px; color:var(--muted); margin:-4px 0 12px;">Matches the use case's diagram exactly: the same txn_id, the same three DB field values (£340 / 12 of 100 / 2026-06-30), and the same policy references — just drawn as a graph instead of a flowchart.</p>
+        <div class="arch-diagram-card">
+          <svg viewBox="0 0 850 280" width="100%" style="min-width:780px;" role="img">
+            <title>Example graph instance: a Transaction walks through a passed balance check and a passed fraud check into a failed card check, which triggers a decline reason — each check node also carries a GOVERNED_BY reference to its policy document</title>
+
+            <rect x="10" y="70" width="170" height="110" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+            <rect x="10" y="70" width="170" height="4" fill="#0078D4"/>
+            <text x="22" y="90" font-size="10" font-weight="800" fill="#0078D4" letter-spacing="0.04em">TRANSACTION</text>
+            <text x="22" y="115" font-family="Courier New" font-size="10" fill="#2D3748">id: TXN-58217</text>
+            <text x="22" y="132" font-family="Courier New" font-size="10" fill="#2D3748">status: DECLINED</text>
+
+            <line x1="180" y1="125" x2="216" y2="125" stroke="#4A5568" stroke-width="1.8"/>
+            <polygon points="216,120 226,125 216,130" fill="#4A5568"/>
+            <text x="198" y="115" text-anchor="middle" font-size="8.5" font-weight="700" fill="#4A5568">CHECKED_BY</text>
+
+            <rect x="226" y="70" width="170" height="110" rx="8" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.6"/>
+            <rect x="226" y="70" width="170" height="4" fill="#7C3AED"/>
+            <text x="238" y="90" font-size="10" font-weight="800" fill="#7C3AED" letter-spacing="0.03em">BALANCE CHECK</text>
+            <text x="238" y="110" font-family="Courier New" font-size="9.5" fill="#2D3748">acct_balance: £340</text>
+            <text x="238" y="127" font-family="Courier New" font-size="9" fill="#718096">GOVERNED_BY policy:2.1</text>
+            <text x="238" y="144" font-family="Courier New" font-size="10" font-weight="700" fill="#1A9C59">result: PASSED</text>
+
+            <line x1="396" y1="125" x2="432" y2="125" stroke="#4A5568" stroke-width="1.8"/>
+            <polygon points="432,120 442,125 432,130" fill="#4A5568"/>
+            <text x="414" y="115" text-anchor="middle" font-size="8.5" font-weight="700" fill="#4A5568">NEXT_CHECK</text>
+
+            <rect x="442" y="70" width="170" height="110" rx="8" fill="#FFFFFF" stroke="#D9621E" stroke-width="1.6"/>
+            <rect x="442" y="70" width="170" height="4" fill="#D9621E"/>
+            <text x="454" y="90" font-size="10" font-weight="800" fill="#D9621E" letter-spacing="0.03em">FRAUD CHECK</text>
+            <text x="454" y="110" font-family="Courier New" font-size="9.5" fill="#2D3748">risk_score: 12/100</text>
+            <text x="454" y="127" font-family="Courier New" font-size="9" fill="#718096">GOVERNED_BY risk-card:v3.2</text>
+            <text x="454" y="144" font-family="Courier New" font-size="10" font-weight="700" fill="#1A9C59">result: PASSED</text>
+
+            <line x1="612" y1="125" x2="648" y2="125" stroke="#4A5568" stroke-width="1.8"/>
+            <polygon points="648,120 658,125 648,130" fill="#4A5568"/>
+            <text x="630" y="115" text-anchor="middle" font-size="8.5" font-weight="700" fill="#4A5568">NEXT_CHECK</text>
+
+            <rect x="658" y="70" width="170" height="110" rx="8" fill="#FFFFFF" stroke="#0D9488" stroke-width="1.6"/>
+            <rect x="658" y="70" width="170" height="4" fill="#0D9488"/>
+            <text x="670" y="90" font-size="10" font-weight="800" fill="#0D9488" letter-spacing="0.03em">CARD CHECK</text>
+            <text x="670" y="110" font-family="Courier New" font-size="9.5" fill="#2D3748">expiry: 2026-06-30</text>
+            <text x="670" y="127" font-family="Courier New" font-size="9" fill="#718096">GOVERNED_BY iso8583:f39</text>
+            <text x="670" y="144" font-family="Courier New" font-size="10" font-weight="700" fill="#C0392B">result: EXPIRED</text>
+
+            <line x1="743" y1="180" x2="743" y2="206" stroke="#4A5568" stroke-width="1.8"/>
+            <polygon points="738,206 743,216 748,206" fill="#4A5568"/>
+            <text x="743" y="198" text-anchor="middle" font-size="8.5" font-weight="700" fill="#4A5568">TRIGGERS</text>
+
+            <rect x="658" y="216" width="170" height="55" rx="8" fill="#FFFFFF" stroke="#1A9C59" stroke-width="1.6"/>
+            <rect x="658" y="216" width="170" height="4" fill="#1A9C59"/>
+            <text x="670" y="235" font-size="10" font-weight="800" fill="#1A9C59" letter-spacing="0.03em">DECLINE REASON</text>
+            <text x="670" y="253" font-family="Courier New" font-size="10" fill="#2D3748">code: 54 — "Card expired"</text>
+          </svg>
+        </div>
+        <p style="font-size:12px; color:var(--muted); margin-top:8px;">This is one instance, not the schema — a card check with <code>result: PASSED</code> would have no <code>TRIGGERS</code> edge at all, since that edge only gets written when the ingestion logic (or OWL subclass match, in Option B) decides this check qualifies.</p>
+      </section>
+
+      <!-- 4. Ingestion pipeline -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n4">4</div>
+          <h2>Ingestion pipeline</h2>
+        </div>
+        <p><strong>Batch:</strong> a Glue ETL job reads the payments, ledger, and fraud-score tables, computes each check's <code>result</code>, the <code>NEXT_CHECK</code> chain, and the <code>GOVERNED_BY</code> edges (or emits triples), and writes to S3; Neptune's built-in Bulk Loader ingests from there.<br>
+        <strong>Incremental:</strong> a small Lambda on the transaction-event stream writes new vertices/edges (or triples) directly, for near-real-time updates.</p>
+        <div class="callout-warn">
+          <span class="icon">📄</span>
+          <span><strong>Where the structured and unstructured sources meet:</strong> <code>acct_balance</code>, <code>risk_score</code>, and <code>expiry_date</code> are plain database columns — but whether they <em>pass</em> is decided by three separate documents, each ingested as its own <code>PolicyDocument</code> node: "Overdraft Policy §2.1" (a threshold rule), "Risk Model Card v3.2" (a scoring cutoff), and the ISO 8583 Field 39 standard (a code mapping). The <code>GOVERNED_BY</code> edge linking a check to its document is hand-encoded into the ETL transform (Option A) or the OWL ontology's class axioms (Option B) by whoever owns ingestion. This design covers the mechanics, not who reviews those rules.</span>
+        </div>
+      </section>
+
+      <!-- 5. Query/API layer -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n5">5</div>
+          <h2>Query / API layer — Python, both options</h2>
+        </div>
+        <p>Same authentication either way: IAM SigV4 signing plus VPC security groups; the Lambda must be VPC-attached to reach the cluster.</p>
+
+        <div class="code-block">
+          <div class="code-block-head">
+            <span class="code-block-label">OPTION A · GREMLIN (gremlinpython)</span>
+            <span class="code-block-dots"><span></span><span></span><span></span></span>
+          </div>
+          <pre><span class="code-kw">from</span> gremlin_python.driver <span class="code-kw">import</span> client, serializer
+
+conn = client.Client(
+    <span class="code-str">'wss://my-cluster.cluster-xxxx.us-east-1.neptune.amazonaws.com:8182/gremlin'</span>,
+    <span class="code-str">'g'</span>,
+    message_serializer=serializer.GraphSONSerializersV2d0()
+)
+
+<span class="code-com"># walk Transaction → BalanceCheck → FraudCheck → CardCheck → DeclineReason</span>
+query = <span class="code-str">"""
+  g.V().has('Transaction', 'txn_id', 'TXN-58217')
+    .out('CHECKED_BY')
+    .repeat(out('NEXT_CHECK')).until(out('TRIGGERS').hasNext().or(outE('NEXT_CHECK').count().is(0)))
+    .out('TRIGGERS').hasLabel('DeclineReason')
+    .valueMap()
+"""</span>
+result = conn.submit(query).all().result()
+conn.close()</pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-head">
+            <span class="code-block-label">OPTION A · OPENCYPHER (neo4j driver over Bolt)</span>
+            <span class="code-block-dots"><span></span><span></span><span></span></span>
+          </div>
+          <pre><span class="code-kw">from</span> neo4j <span class="code-kw">import</span> GraphDatabase
+
+driver = GraphDatabase.<span class="code-fn">driver</span>(<span class="code-str">"bolt://my-cluster...:8182"</span>, auth=<span class="code-kw">None</span>)  <span class="code-com"># IAM/VPC, not basic auth</span>
+
+<span class="code-kw">with</span> driver.session() <span class="code-kw">as</span> session:
+    result = session.<span class="code-fn">run</span>(<span class="code-str">"""
+        MATCH (t:Transaction {txn_id:'TXN-58217'})-[:CHECKED_BY]->(:BalanceCheck)
+              -[:NEXT_CHECK*0..2]->(c)-[:TRIGGERS]->(d:DeclineReason)
+        RETURN t, c, d
+    """</span>)
+    <span class="code-kw">for</span> record <span class="code-kw">in</span> result:
+        <span class="code-fn">print</span>(record)</pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-head">
+            <span class="code-block-label">OPTION B · SPARQL (SPARQLWrapper, real OWL subclass matching)</span>
+            <span class="code-block-dots"><span></span><span></span><span></span></span>
+          </div>
+          <pre><span class="code-kw">from</span> SPARQLWrapper <span class="code-kw">import</span> SPARQLWrapper, JSON
+
+sparql = SPARQLWrapper(<span class="code-str">"https://my-cluster...:8182/sparql"</span>)
+sparql.<span class="code-fn">setQuery</span>(<span class="code-str">"""
+  PREFIX : &lt;http://example.org/decline#&gt;
+  SELECT ?txn ?reason WHERE {
+    ?txn :hasCheck ?check .
+    ?check a ?class .
+    ?class rdfs:subClassOf* :DeclineTriggeringEvent .
+    ?check :triggers ?reason .
+  }
+"""</span>)
+sparql.<span class="code-fn">setReturnFormat</span>(JSON)
+results = sparql.query().convert()</pre>
+        </div>
+      </section>
+
+      <!-- 6. Observability -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n6">6</div>
+          <h2>Observability</h2>
+        </div>
+        <div class="obs-grid">
+          <div class="obs-card">
+            <h4>Query-level logging</h4>
+            <p>Neptune's slow-query log plus CloudWatch — captures query text and latency per query language.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Distributed tracing</h4>
+            <p>AWS X-Ray across Bedrock Agent → Lambda → Neptune, so one Alex question is traceable end to end.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Health alarms</h4>
+            <p>CloudWatch metrics on cluster CPU, replica lag, and query errors, with alarms on breach.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Feedback hook</h4>
+            <p>Log every (question, query, answer) triple — feeds a future review of the policy thresholds or check order.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
        PAGE: LEARNING PATH — LANDING
   ═══════════════════════════════════════════════════════════════ -->
   <div id="page-learning-home" class="page">
@@ -4142,7 +4685,8 @@ function showTechPanel(btn) {
   }
 
   const card = detailWrap.querySelector('.check-card[data-check="' + n + '"]');
-  const cardTitle = card ? card.querySelector('h3').textContent : '';
+  const tab = wrap.querySelector('.tech-tab[data-target="' + n + '"]');
+  const cardTitle = card ? card.querySelector('h3').textContent : ((tab && tab.dataset.title) ? tab.dataset.title : 'Technical detail');
 
   detailWrap.querySelectorAll('.check-card').forEach(c => c.classList.toggle('highlighted', c === card));
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
