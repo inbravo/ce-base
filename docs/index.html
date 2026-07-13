@@ -554,10 +554,21 @@ table.sem-table tr:last-child td { border-bottom: none; }
 .closing-line p { font-size: 16px; font-weight: 700; font-style: italic; }
 .uc-detail-wrap[data-mode="today"]    .closing-line { border-left: 4px solid var(--amber); }
 .uc-detail-wrap[data-mode="governed"] .closing-line { border-left: 4px solid var(--green); }
+.uc-detail-wrap[data-mode="context"]  .closing-line { border-left: 4px solid var(--green); }
+.uc-detail-wrap[data-mode="secured"]  .closing-line { border-left: 4px solid var(--teal); }
 
 /* state visibility driven by data-mode on the wrapper */
 .uc-detail-wrap[data-mode="today"]    .state-governed { display: none; }
 .uc-detail-wrap[data-mode="governed"] .state-today     { display: none; }
+
+/* three-way state visibility (Today / With Context / With Secured Context) — used by
+   pages with a "secured" tier layered on top of "context"; state-context content
+   stays visible in secured mode since secured is a superset, not a replacement */
+.uc-detail-wrap[data-mode="today"]   .state-context { display: none; }
+.uc-detail-wrap[data-mode="today"]   .state-secured { display: none; }
+.uc-detail-wrap[data-mode="context"] .state-today    { display: none; }
+.uc-detail-wrap[data-mode="context"] .state-secured  { display: none; }
+.uc-detail-wrap[data-mode="secured"] .state-today    { display: none; }
 
 /* ══════════════════════════════════════════════════════════════════
    PAGE: TECHNICAL SOLUTION DESIGN
@@ -3521,7 +3532,8 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
 
       <div class="mode-toggle">
         <button class="toggle-btn active" onclick="setMode('today', this)">Today</button>
-        <button class="toggle-btn" onclick="setMode('governed', this)">With governed context</button>
+        <button class="toggle-btn" onclick="setMode('context', this)">With Context</button>
+        <button class="toggle-btn" onclick="setMode('secured', this)">With Secured Context</button>
       </div>
 
       <div class="headline">
@@ -3530,6 +3542,45 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
       </div>
 
       <div class="dtree-wrap">
+
+        <!-- SECURED ONLY: access filter applied before any check runs -->
+        <div class="arch-diagram-card state-secured">
+          <svg viewBox="0 0 760 190" width="100%" style="min-width:680px;" role="img">
+            <title>Secured: the query is scoped to Alex's own card before any check runs, so other customers' rows are filtered at the data layer and never returned, not merely hidden by the UI</title>
+
+            <text x="380" y="24" text-anchor="middle" font-size="10" font-weight="800" fill="#0D9488" letter-spacing="0.05em">ACCESS FILTER — APPLIED BEFORE EVALUATION</text>
+
+            <rect x="20" y="40" width="220" height="86" rx="8" fill="#FFFFFF" stroke="#0D9488" stroke-width="1.6"/>
+            <rect x="20" y="40" width="220" height="4" fill="#0D9488"/>
+            <text x="32" y="60" font-size="8.5" font-weight="800" fill="#0D9488" letter-spacing="0.03em">SESSION IDENTITY</text>
+            <text x="32" y="82" font-family="Courier New" font-size="10.5" fill="#2D3748">user: Alex</text>
+            <text x="32" y="99" font-family="Courier New" font-size="10.5" fill="#2D3748">card: •••• 4821</text>
+            <text x="32" y="116" font-family="Courier New" font-size="9" fill="#718096">role: authenticated customer</text>
+
+            <line x1="240" y1="83" x2="276" y2="83" stroke="#0D9488" stroke-width="1.8"/>
+            <polygon points="276,78 286,83 276,88" fill="#0D9488"/>
+
+            <rect x="286" y="40" width="210" height="86" rx="8" fill="#E6FFFA" stroke="#0D9488" stroke-width="1.6"/>
+            <rect x="286" y="40" width="210" height="4" fill="#0D9488"/>
+            <text x="298" y="60" font-size="8.5" font-weight="800" fill="#0D9488" letter-spacing="0.03em">ROW-LEVEL SCOPE</text>
+            <text x="298" y="83" font-family="Courier New" font-size="10.5" font-weight="700" fill="#0B7A70">card_id = •••• 4821</text>
+            <text x="298" y="102" font-size="8.5" font-style="italic" fill="#285E58">enforced in the query,</text>
+            <text x="298" y="115" font-size="8.5" font-style="italic" fill="#285E58">not the UI</text>
+
+            <line x1="496" y1="83" x2="532" y2="83" stroke="#A0AEC0" stroke-width="1.6"/>
+            <polygon points="532,78 542,83 532,88" fill="#A0AEC0"/>
+
+            <rect x="542" y="40" width="198" height="86" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
+            <text x="554" y="60" font-size="8.5" font-weight="800" fill="#718096" letter-spacing="0.03em">OTHER CUSTOMERS</text>
+            <text x="554" y="82" font-family="Courier New" font-size="10" fill="#A0AEC0" text-decoration="line-through">Tom · •••• 7734</text>
+            <text x="554" y="99" font-family="Courier New" font-size="10" fill="#A0AEC0" text-decoration="line-through">Emma · •••• 1290</text>
+            <text x="554" y="117" font-size="9" font-style="italic" fill="#C0392B">0 rows returned</text>
+
+            <line x1="380" y1="126" x2="380" y2="156" stroke="#0D9488" stroke-width="2.4"/>
+            <polygon points="374,156 386,156 380,166" fill="#0D9488"/>
+            <text x="380" y="180" text-anchor="middle" font-size="9" font-style="italic" fill="#0D9488">only Alex's own transaction rows reach the checks below</text>
+          </svg>
+        </div>
 
         <!-- TODAY: record + blocked source systems (structured DB + unstructured policy docs) -->
         <div class="arch-diagram-card state-today">
@@ -3570,10 +3621,10 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
           </svg>
         </div>
 
-        <!-- GOVERNED: record + 3× (structured DB + unstructured policy doc) feeding each decision + answer -->
-        <div class="arch-diagram-card state-governed">
+        <!-- CONTEXT (+ SECURED): record + 3× (structured DB + unstructured policy doc) feeding each decision + answer -->
+        <div class="arch-diagram-card state-context">
           <svg viewBox="0 0 760 700" width="100%" style="min-width:680px;" role="img">
-            <title>Governed: each of the three checks is fed by both a structured database field and an unstructured policy document, walked in sequence to the one true decline reason</title>
+            <title>With context: each of the three checks is fed by both a structured database field and an unstructured policy document, walked in sequence to the one true decline reason</title>
 
             <rect x="280" y="10" width="200" height="70" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
             <rect x="280" y="10" width="200" height="4" fill="#0078D4"/>
@@ -3698,14 +3749,16 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
         <div class="tech-box kind-agent">
           <div class="tech-box-label">What Alex actually hears</div>
           <p class="tech-note state-today"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Agent:</strong> "It shows as declined. I don't have a reason."</p>
-          <p class="tech-note state-governed"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Agent:</strong> "Your card expired last week — update your payment method to retry."</p>
+          <p class="tech-note state-context"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Agent:</strong> "Your card expired last week — update your payment method to retry."</p>
+          <p class="tech-note state-secured" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); font-size:11px; color:var(--muted);">🔒 Scoped to Alex's own card only — Tom's and Emma's records were filtered out before this query ran, not just left out of the reply.</p>
         </div>
 
       </div>
 
       <div class="closing-line">
         <p class="state-today">"The agent sees the outcome. It has no path to the reason — not in the database, not in the policy."</p>
-        <p class="state-governed">"Every check combines its database fact with its governing rule — walked in order, to the same true reason."</p>
+        <p class="state-context">"Every check combines its database fact with its governing rule — walked in order, to the same true reason."</p>
+        <p class="state-secured" style="font-size:12.5px; font-weight:700; font-style:italic; color:var(--muted); margin-top:6px;">"— and scoped to exactly this customer's own data, nothing more."</p>
       </div>
 
       <div style="text-align:center;">
