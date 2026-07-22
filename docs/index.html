@@ -413,6 +413,7 @@ table.sem-table tr:last-child td { border-bottom: none; }
 .record-status { font-size: 11px; color: var(--text); }
 .record-status .status-word { font-weight: 700; color: var(--amber); transition: color 0.3s ease; }
 .uc-detail-wrap[data-mode="governed"] .record-status .status-word { color: var(--green); }
+.record-source { font-family: 'Courier New', Courier, monospace; font-size: 9.5px; color: var(--muted); margin-top: 4px; }
 
 .record-proof { margin-top: 7px; display: flex; flex-direction: column; gap: 3px; }
 .proof-line {
@@ -3185,6 +3186,7 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
           <div class="record-card">
             <div class="record-id">TRANSACTION #TXN-58217</div>
             <div class="record-status">STATUS: <span class="status-word">DECLINED</span></div>
+            <div class="record-source">source: payments_db.transactions.decline_code</div>
             <div class="record-proof">
               <div class="proof-line"><span class="proof-check">✓</span> Balance: Sufficient</div>
               <div class="proof-line"><span class="proof-check">✓</span> Fraud check: Passed</div>
@@ -3193,7 +3195,7 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
           </div>
           <div class="pill gap state-today"><span class="dot"></span>Gap</div>
           <div class="pill resolved state-governed"><span class="dot"></span>Resolved</div>
-          <p class="explain state-today">The balance system, fraud engine, and card network each call this "declined" — but mean different things by it.</p>
+          <p class="explain state-today">Just one flat field on the transaction record — the balance system, fraud engine, and card network that actually decided this aren't visible from here.</p>
           <p class="explain state-governed">One shared reason code, defined once — every system and every agent means the same thing.</p>
         </div>
 
@@ -3338,7 +3340,8 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
 
       <div class="mode-toggle">
         <button class="toggle-btn active" onclick="setMode('today', this)">Today</button>
-        <button class="toggle-btn" onclick="setMode('governed', this)">With governed context</button>
+        <button class="toggle-btn" onclick="setMode('context', this)">With Context</button>
+        <button class="toggle-btn" onclick="setMode('secured', this)">With Secured Context</button>
       </div>
 
       <div class="headline">
@@ -3346,178 +3349,490 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
         <p class="attribution">— Alex, checking out online</p>
       </div>
 
-      <div class="flow-row">
-        <div class="flow-stop">
-          <div class="flow-circle">👤</div>
-          <div class="flow-label">Alex asks</div>
-        </div>
-        <div class="flow-arrow">──►</div>
-        <div class="flow-stop">
-          <div class="flow-circle">🧞</div>
-          <div class="flow-label">Genie looks it up</div>
-        </div>
-        <div class="flow-arrow">──►</div>
-        <div class="flow-stop mid">
-          <div class="flow-label">3 checks below</div>
-        </div>
-        <div class="flow-arrow">──►</div>
-        <div class="flow-stop">
-          <div class="flow-circle">✔</div>
-          <div class="flow-label">The answer</div>
-        </div>
-      </div>
+      <div class="dtree-wrap">
 
-      <div class="tech-detail-entry-wrap">
-        <button class="tech-detail-toggle" data-target="1" onclick="showTechPanel(this)">Technical detail</button>
-      </div>
+        <!-- SECURED ONLY: access filter applied before any check runs -->
+        <div class="arch-diagram-card state-secured">
+          <svg viewBox="0 0 760 190" width="100%" style="min-width:680px;" role="img">
+            <title>Secured: the query is scoped to Alex's own card before any check runs, so other customers' rows are filtered at the data layer and never returned, not merely hidden by the UI</title>
 
-      <div class="check-grid">
+            <text x="380" y="24" text-anchor="middle" font-size="10" font-weight="800" fill="#0D9488" letter-spacing="0.05em">ACCESS FILTER — APPLIED BEFORE EVALUATION</text>
 
-        <!-- check 1 -->
-        <div class="check-card" data-check="1">
-          <h3>What does "declined" actually mean?</h3>
-          <div class="record-card">
-            <div class="record-id">TRANSACTION #TXN-58217</div>
-            <div class="record-status">STATUS: <span class="status-word">DECLINED</span></div>
-            <div class="record-proof">
-              <div class="proof-line"><span class="proof-check">✓</span> Balance: Sufficient</div>
-              <div class="proof-line"><span class="proof-check">✓</span> Fraud check: Passed</div>
-              <div class="proof-line"><span class="proof-check">✓</span> Reason: Card expired</div>
-            </div>
-          </div>
-          <div class="pill gap state-today"><span class="dot"></span>Gap</div>
-          <div class="pill resolved state-governed"><span class="dot"></span>Resolved</div>
-          <p class="explain state-today">The balance system, fraud engine, and card network each call this "declined" — but mean different things by it.</p>
-          <p class="explain state-governed">One shared reason code, defined once — every system and every agent means the same thing.</p>
+            <rect x="20" y="40" width="220" height="86" rx="8" fill="#FFFFFF" stroke="#0D9488" stroke-width="1.6"/>
+            <rect x="20" y="40" width="220" height="4" fill="#0D9488"/>
+            <text x="32" y="60" font-size="8.5" font-weight="800" fill="#0D9488" letter-spacing="0.03em">SESSION IDENTITY</text>
+            <text x="32" y="82" font-family="Courier New" font-size="10.5" fill="#2D3748">user: Alex</text>
+            <text x="32" y="99" font-family="Courier New" font-size="10.5" fill="#2D3748">card: •••• 4821</text>
+            <text x="32" y="116" font-family="Courier New" font-size="9" fill="#718096">role: authenticated customer</text>
+
+            <line x1="240" y1="83" x2="276" y2="83" stroke="#0D9488" stroke-width="1.8"/>
+            <polygon points="276,78 286,83 276,88" fill="#0D9488"/>
+
+            <rect x="286" y="40" width="210" height="86" rx="8" fill="#E6FFFA" stroke="#0D9488" stroke-width="1.6"/>
+            <rect x="286" y="40" width="210" height="4" fill="#0D9488"/>
+            <text x="298" y="60" font-size="8.5" font-weight="800" fill="#0D9488" letter-spacing="0.03em">ROW-LEVEL SCOPE</text>
+            <text x="298" y="83" font-family="Courier New" font-size="10.5" font-weight="700" fill="#0B7A70">card_id = •••• 4821</text>
+            <text x="298" y="102" font-size="8.5" font-style="italic" fill="#285E58">enforced via Unity Catalog</text>
+            <text x="298" y="115" font-size="8.5" font-style="italic" fill="#285E58">row filters, not the UI</text>
+
+            <line x1="496" y1="83" x2="532" y2="83" stroke="#A0AEC0" stroke-width="1.6"/>
+            <polygon points="532,78 542,83 532,88" fill="#A0AEC0"/>
+
+            <rect x="542" y="40" width="198" height="86" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
+            <text x="554" y="60" font-size="8.5" font-weight="800" fill="#718096" letter-spacing="0.03em">OTHER CUSTOMERS</text>
+            <text x="554" y="82" font-family="Courier New" font-size="10" fill="#A0AEC0" text-decoration="line-through">Tom · •••• 7734</text>
+            <text x="554" y="99" font-family="Courier New" font-size="10" fill="#A0AEC0" text-decoration="line-through">Emma · •••• 1290</text>
+            <text x="554" y="117" font-size="9" font-style="italic" fill="#C0392B">0 rows returned</text>
+
+            <line x1="380" y1="126" x2="380" y2="156" stroke="#0D9488" stroke-width="2.4"/>
+            <polygon points="374,156 386,156 380,166" fill="#0D9488"/>
+            <text x="380" y="180" text-anchor="middle" font-size="9" font-style="italic" fill="#0D9488">only Alex's own transaction rows reach the checks below</text>
+          </svg>
         </div>
 
-        <!-- check 2 -->
-        <div class="check-card" data-check="2">
-          <h3>How do we calculate the fraud risk score?</h3>
-          <div class="record-card report-card">
-            <div class="tech-box-label">Databricks Notebook</div>
-            <div class="formula-record">
-              Risk = txn_velocity<br>
-              + <span class="redact-bar state-today">▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="reveal-word state-governed">merchant_risk</span><br>
-              + <span class="redact-bar state-today">▓▓▓▓▓▓▓▓▓▓</span><span class="reveal-word state-governed">geo_mismatch</span>
-            </div>
-          </div>
-          <div class="pill gap state-today"><span class="dot"></span>Gap</div>
-          <div class="pill resolved state-governed"><span class="dot"></span>Resolved</div>
-          <p class="explain state-today">The risk score comes from one Databricks notebook. The support agent just sees a code, not why.</p>
-          <p class="explain state-governed">The scoring logic is governed and queryable — the agent can explain exactly what tripped the flag.</p>
+        <!-- TODAY: record + blocked source systems (structured DB + unstructured policy docs) -->
+        <div class="arch-diagram-card state-today">
+          <svg viewBox="0 0 760 320" width="100%" style="min-width:680px;" role="img">
+            <title>Today: Genie can only read a flat status field on payments_db.transactions. Every stage past it is blocked — each stage's Delta table AND its governing policy document, the latter shown as a real but partially redacted rule fragment, not just an abstract label.</title>
+
+            <g style="cursor:help">
+              <title>Databricks SQL (Delta table) — raw transaction table</title>
+              <rect x="280" y="10" width="200" height="76" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+              <rect x="280" y="10" width="200" height="4" fill="#0078D4"/>
+              <text x="292" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.03em">🗄 PAYMENTS_DB.TRANSACTIONS</text>
+              <text x="292" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
+              <text x="292" y="63" font-family="Courier New" font-size="10.5" font-weight="700" fill="#B7791F">status: "DECLINED"</text>
+            </g>
+
+            <line x1="380" y1="86" x2="380" y2="112" stroke="#4A5568" stroke-width="1.8"/>
+            <polygon points="374,112 386,112 380,122" fill="#4A5568"/>
+            <text x="380" y="138" text-anchor="middle" font-size="13" fill="#4A5568">🔒</text>
+            <text x="380" y="154" text-anchor="middle" font-size="9" font-weight="800" fill="#4A5568" letter-spacing="0.04em">BLOCKED</text>
+            <text x="380" y="167" text-anchor="middle" font-size="8.3" font-style="italic" fill="#A0AEC0">no further traversal permitted</text>
+
+            <line x1="380" y1="174" x2="380" y2="188" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="130" y1="188" x2="630" y2="188" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="130" y1="188" x2="130" y2="200" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="380" y1="188" x2="380" y2="200" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="630" y1="188" x2="630" y2="200" stroke="#CBD5E0" stroke-width="1.4"/>
+
+            <!-- Balance Check -->
+            <rect x="20" y="200" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <text x="130" y="218" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">BALANCE CHECK</text>
+            <g style="cursor:help"><title>Databricks SQL (Delta table)</title>
+              <rect x="24" y="226" width="212" height="22" fill="#000000" opacity="0"/>
+              <text x="32" y="238" font-size="10" fill="#4A5568">🗄 Core Banking Ledger</text>
+              <text x="228" y="238" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <line x1="32" y1="248" x2="228" y2="248" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Unity Catalog Volume + Genie</title>
+              <rect x="24" y="250" width="212" height="60" fill="#000000" opacity="0"/>
+              <text x="32" y="264" font-size="10" fill="#7C3AED">📄 Overdraft Policy §2.1</text>
+              <text x="32" y="280" font-family="Courier New" font-size="8.3" fill="#5B4636">"balance ≥ txn +</text>
+              <text x="32" y="292" font-family="Courier New" font-size="8.3" font-style="italic" fill="#A0895C">&lt;buffer amount&gt;"</text>
+              <text x="228" y="292" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <circle cx="234" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')"/>
+            <text x="234" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')">i<title>View technical solution design →</title></text>
+
+            <!-- Fraud Check -->
+            <rect x="270" y="200" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <text x="380" y="218" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">FRAUD CHECK</text>
+            <g style="cursor:help"><title>Databricks SQL (Delta table)</title>
+              <rect x="274" y="226" width="212" height="22" fill="#000000" opacity="0"/>
+              <text x="282" y="238" font-size="10" fill="#4A5568">🗄 Fraud Risk Engine</text>
+              <text x="478" y="238" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <line x1="282" y1="248" x2="478" y2="248" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Unity Catalog Volume + Genie</title>
+              <rect x="274" y="250" width="212" height="60" fill="#000000" opacity="0"/>
+              <text x="282" y="264" font-size="10" fill="#7C3AED">📄 Risk Model Card v3.2</text>
+              <text x="282" y="280" font-family="Courier New" font-size="8.3" fill="#5B4636">"flag if risk_score &gt;</text>
+              <text x="282" y="292" font-family="Courier New" font-size="8.3" font-style="italic" fill="#A0895C">&lt;threshold&gt;"</text>
+              <text x="478" y="292" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <circle cx="484" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')"/>
+            <text x="484" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')">i<title>View technical solution design →</title></text>
+
+            <!-- Card Check -->
+            <rect x="520" y="200" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <text x="630" y="218" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">CARD CHECK</text>
+            <g style="cursor:help"><title>Databricks SQL (Delta table)</title>
+              <rect x="524" y="226" width="212" height="22" fill="#000000" opacity="0"/>
+              <text x="532" y="238" font-size="10" fill="#4A5568">🗄 Card Network (ISO 8583)</text>
+              <text x="728" y="238" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <line x1="532" y1="248" x2="728" y2="248" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Unity Catalog Volume + Genie</title>
+              <rect x="524" y="250" width="212" height="60" fill="#000000" opacity="0"/>
+              <text x="532" y="264" font-size="10" fill="#7C3AED">📄 ISO 8583 · Field 39</text>
+              <text x="532" y="280" font-family="Courier New" font-size="8.3" fill="#5B4636">"<tspan font-style="italic" fill="#A0895C">&lt;code&gt;</tspan> = expired</text>
+              <text x="532" y="292" font-family="Courier New" font-size="8.3" fill="#5B4636">card"</text>
+              <text x="728" y="292" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <circle cx="734" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')"/>
+            <text x="734" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')">i<title>View technical solution design →</title></text>
+          </svg>
         </div>
 
-        <!-- check 3 -->
-        <div class="check-card" data-check="3">
-          <h3>How does this connect to my account history?</h3>
-          <div class="record-card">
-            <div class="chain-line"><span class="chain-badge c-blue">Card •••• 4821</span></div>
-            <div class="chain-arrow-line">│</div>
-            <div class="chain-line"><span class="chain-badge c-purple">Merchant: QuickMart</span></div>
-            <div class="chain-arrow-line">│</div>
-            <div class="chain-line"><span class="chain-badge c-orange">Prior declines: 2 this week</span></div>
-            <div class="chain-line state-governed"><span class="chain-badge c-green">Risk: Reviewed ✓</span></div>
-          </div>
-          <div class="pill gap state-today"><span class="dot"></span>Gap</div>
-          <div class="pill resolved state-governed"><span class="dot"></span>Resolved</div>
-          <p class="explain state-today">This decline is a standalone event. Nothing links it to prior declines on this card or at this merchant.</p>
-          <p class="explain state-governed">Genie Ontology automatically links every decline, card, and merchant into one living graph the assistant can reason over.</p>
+        <!-- CONTEXT (+ SECURED): same unified box format as Today, now fully resolved -->
+        <div class="arch-diagram-card state-context">
+          <svg viewBox="0 0 760 400" width="100%" style="min-width:680px;" role="img">
+            <title>With context: the same three stage boxes as Today, now resolved — each Delta table field and policy rule fully visible, walked in order to the one true decline reason</title>
+
+            <g style="cursor:help">
+              <title>Databricks SQL (Delta table) — raw transaction table</title>
+              <rect x="280" y="10" width="200" height="76" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+              <rect x="280" y="10" width="200" height="4" fill="#0078D4"/>
+              <text x="292" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.03em">🗄 PAYMENTS_DB.TRANSACTIONS</text>
+              <text x="292" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
+              <text x="292" y="63" font-family="Courier New" font-size="10.5" font-weight="700" fill="#B7791F">status: "DECLINED"</text>
+            </g>
+
+            <line x1="380" y1="86" x2="380" y2="126" stroke="#1A9C59" stroke-width="2.2"/>
+            <polygon points="374,126 386,126 380,136" fill="#1A9C59"/>
+
+            <!-- Balance Check -->
+            <rect x="20" y="140" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <rect x="20" y="140" width="220" height="4" fill="#1A9C59"/>
+            <text x="130" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">BALANCE CHECK</text>
+            <g style="cursor:help"><title>Databricks SQL (Delta table)</title>
+              <rect x="24" y="166" width="212" height="30" fill="#000000" opacity="0"/>
+              <text x="32" y="176" font-size="10" fill="#4A5568">🗄 Core Banking Ledger</text>
+              <text x="32" y="190" font-family="Courier New" font-size="9" fill="#2D3748">acct_balance: £340</text>
+              <text x="228" y="190" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <line x1="32" y1="198" x2="228" y2="198" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Unity Catalog Volume + Genie</title>
+              <rect x="24" y="200" width="212" height="50" fill="#000000" opacity="0"/>
+              <text x="32" y="214" font-size="10" fill="#7C3AED">📄 Overdraft Policy §2.1</text>
+              <text x="32" y="230" font-family="Courier New" font-size="8.3" fill="#5B4636">"balance ≥ txn + £10 buffer"</text>
+              <text x="228" y="230" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <circle cx="234" cy="144" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')"/>
+            <text x="234" y="147" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')">i<title>View technical solution design →</title></text>
+
+            <!-- Fraud Check -->
+            <rect x="270" y="140" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <rect x="270" y="140" width="220" height="4" fill="#1A9C59"/>
+            <text x="380" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">FRAUD CHECK</text>
+            <g style="cursor:help"><title>Databricks SQL (Delta table)</title>
+              <rect x="274" y="166" width="212" height="30" fill="#000000" opacity="0"/>
+              <text x="282" y="176" font-size="10" fill="#4A5568">🗄 Fraud Risk Engine</text>
+              <text x="282" y="190" font-family="Courier New" font-size="9" fill="#2D3748">risk_score: 12 / 100</text>
+              <text x="478" y="190" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <line x1="282" y1="198" x2="478" y2="198" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Unity Catalog Volume + Genie</title>
+              <rect x="274" y="200" width="212" height="50" fill="#000000" opacity="0"/>
+              <text x="282" y="214" font-size="10" fill="#7C3AED">📄 Risk Model Card v3.2</text>
+              <text x="282" y="230" font-family="Courier New" font-size="8.3" fill="#5B4636">"flag if risk_score &gt; 70"</text>
+              <text x="478" y="230" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <circle cx="484" cy="144" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')"/>
+            <text x="484" y="147" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')">i<title>View technical solution design →</title></text>
+
+            <!-- Card Check -->
+            <rect x="520" y="140" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <rect x="520" y="140" width="220" height="4" fill="#C0392B"/>
+            <text x="630" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">CARD CHECK</text>
+            <g style="cursor:help"><title>Databricks SQL (Delta table)</title>
+              <rect x="524" y="166" width="212" height="30" fill="#000000" opacity="0"/>
+              <text x="532" y="176" font-size="10" fill="#4A5568">🗄 Card Network (ISO 8583)</text>
+              <text x="532" y="190" font-family="Courier New" font-size="9" fill="#2D3748">expiry: 2026-06-30</text>
+              <text x="728" y="190" text-anchor="end" font-size="11" font-weight="800" fill="#C0392B">✗</text>
+            </g>
+            <line x1="532" y1="198" x2="728" y2="198" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Unity Catalog Volume + Genie</title>
+              <rect x="524" y="200" width="212" height="50" fill="#000000" opacity="0"/>
+              <text x="532" y="214" font-size="10" fill="#7C3AED">📄 ISO 8583 · Field 39</text>
+              <text x="532" y="230" font-family="Courier New" font-size="8.3" fill="#5B4636">"code 54 = expired card"</text>
+              <text x="728" y="230" text-anchor="end" font-size="11" font-weight="800" fill="#C0392B">✗</text>
+            </g>
+            <circle cx="734" cy="144" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')"/>
+            <text x="734" y="147" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')">i<title>View technical solution design →</title></text>
+
+            <line x1="610" y1="252" x2="470" y2="286" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="464,278 476,286 466,296" fill="#1A9C59"/>
+
+            <!-- final answer -->
+            <g style="cursor:help">
+              <title>Genie Ontology (Knowledge Graph) — graph traversal resolves this reason</title>
+              <rect x="280" y="290" width="220" height="90" rx="10" fill="#F0FFF4" stroke="#1A9C59" stroke-width="2"/>
+              <rect x="280" y="290" width="220" height="5" fill="#1A9C59"/>
+              <text x="390" y="314" text-anchor="middle" font-size="11" font-weight="800" fill="#15803D" letter-spacing="0.03em">DECLINE REASON — CODE 54</text>
+              <text x="390" y="336" text-anchor="middle" font-size="11.5" font-style="italic" fill="#14532D">"Card expired"</text>
+              <text x="390" y="356" text-anchor="middle" font-size="9.5" fill="#285E58">→ Update payment method to retry</text>
+            </g>
+          </svg>
         </div>
 
-      </div>
-
-      <!-- shared, full-width technical-detail panel -->
-      <div class="tech-panel-wrap">
-        <div class="tech-panel-head">
-          <div class="tech-panel-title">Technical detail</div>
-          <button class="tech-panel-close" onclick="closeTechPanel(this)" aria-label="Close">✕</button>
-        </div>
-        <div class="tech-panel-tabs">
-          <button class="tech-tab" data-target="1" onclick="showTechPanel(this)">1</button>
-          <button class="tech-tab" data-target="2" onclick="showTechPanel(this)">2</button>
-          <button class="tech-tab" data-target="3" onclick="showTechPanel(this)">3</button>
+        <div class="tech-box kind-agent">
+          <div class="tech-box-label">What Alex actually hears</div>
+          <p class="tech-note state-today"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Genie:</strong> "It shows as declined. I don't have a reason."</p>
+          <p class="tech-note state-context"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Genie:</strong> "Your card expired last week — update your payment method to retry."</p>
+          <p class="tech-note state-secured" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); font-size:11px; color:var(--muted);">🔒 Scoped to Alex's own card only — Tom's and Emma's records were filtered out before this query ran, not just left out of the reply.</p>
         </div>
 
-        <div class="tech-panel" data-panel="1">
-          <div class="tech-visual">
-            <div class="tech-box kind-data">
-              <div class="tech-box-label">Unity Catalog</div>
-              <table class="schema-mini">
-                <tr><td class="col-name">decline_code</td><td class="col-type">STRING</td><td class="col-val">"D"</td></tr>
-              </table>
-            </div>
-            <svg class="tech-link" viewBox="0 0 40 20" width="40" height="20">
-              <line class="tech-link-line" x1="2" y1="10" x2="38" y2="10" stroke="#1A9C59" stroke-width="2.4"/>
-            </svg>
-            <div class="tech-box doc-box kind-policy">
-              <div class="tech-box-label">ISO 8583 — Field 39 Response Codes</div>
-              <p class="doc-quote">"...code 51 = insufficient funds; code 54 = expired card; code 05 = do not honor (suspected fraud)."</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="tech-panel" data-panel="2">
-          <div class="tech-visual">
-            <div class="tech-box doc-box kind-policy">
-              <div class="tech-box-label">Risk Model Card — v3.2</div>
-              <p class="doc-quote">"...approved features: transaction velocity, merchant category risk, geolocation mismatch. Any other feature requires model risk sign-off."</p>
-            </div>
-            <svg class="tech-link" viewBox="0 0 40 20" width="40" height="20">
-              <line class="tech-link-line" x1="2" y1="10" x2="38" y2="10" stroke="#1A9C59" stroke-width="2.4"/>
-            </svg>
-            <div class="tech-box kind-data">
-              <div class="tech-box-label">Databricks Notebook</div>
-              <div class="formula-mini">Risk = txn_velocity<br>+ merchant_risk + geo_mismatch</div>
-            </div>
-            <svg class="tech-link" viewBox="0 0 40 20" width="40" height="20">
-              <line class="tech-link-line" x1="2" y1="10" x2="38" y2="10" stroke="#1A9C59" stroke-width="2.4"/>
-            </svg>
-            <div class="tech-box kind-agent">
-              <div class="tech-box-label">Genie Agent</div>
-              <p class="tech-note state-today">Needs the risk factors to answer Alex — but there's no governed metric to query yet.</p>
-              <p class="tech-note state-governed">Now a governed Unity Catalog Metric View — Genie queries it directly instead of guessing from a notebook.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="tech-panel" data-panel="3">
-          <div class="tech-panel-col">
-            <div class="tech-visual">
-              <div class="tech-box kind-data">
-                <div class="tech-box-label">Raw Delta Tables</div>
-                <div class="formula-mini">card_transactions<br>merchant_registry<br>decline_history</div>
-              </div>
-              <div class="state-governed">
-                <svg class="tech-link" viewBox="0 0 40 20" width="40" height="20">
-                  <line class="tech-link-line" x1="2" y1="10" x2="38" y2="10" stroke="#1A9C59" stroke-width="2.4"/>
-                </svg>
-                <div class="tech-box kind-data">
-                  <div class="tech-box-label">Genie Ontology — Living Knowledge Graph</div>
-                  <div class="formula-mini">Card → Merchant → Decline history → Risk flag</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tech-box kind-agent state-today">
-              <div class="tech-box-label">What Alex actually hears</div>
-              <p class="tech-note"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Genie:</strong> "The transaction was not approved."</p>
-            </div>
-            <div class="tech-box kind-agent state-governed">
-              <div class="tech-box-label">What Alex actually hears</div>
-              <p class="tech-note"><strong>Alex:</strong> "Why was my card declined?"<br><strong>Genie:</strong> "Your card expired last week — update your payment method to try again."</p>
-            </div>
-
-            <p class="tech-note state-today">The system has the fact. It was never told what the fact means.</p>
-            <p class="tech-note state-governed">Genie Ontology automatically extracts this relationship from tables, queries, and dashboards — weighing sources by authority so every agent trusts the same definition, not a rebuilt guess.</p>
-          </div>
-        </div>
       </div>
 
       <div class="closing-line">
-        <p class="state-today">"Two different systems can give two different reasons for the same decline."</p>
-        <p class="state-governed">"Every assistant gives the same, accurate reason — every time."</p>
+        <p class="state-today">"Genie sees the outcome. It has no path to the reason — not in the table, not in the policy."</p>
+        <p class="state-context">"Every check combines its Delta table fact with its governing rule — walked in order, to the same true reason."</p>
+        <p class="state-secured" style="font-size:12.5px; font-weight:700; font-style:italic; color:var(--muted); margin-top:6px;">"— and scoped to exactly this customer's own data, nothing more."</p>
       </div>
+
+      <div style="text-align:center;">
+        <button class="solution-cta" onclick="showPage('solution-databricks-card-decline')">View technical solution design →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       PAGE: TECHNICAL SOLUTION DESIGN — DATABRICKS / CARD DECLINED
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-solution-databricks-card-decline" class="page">
+    <div class="solution-wrap">
+
+      <button class="back-link" onclick="showPage('uc-card-decline-databricks')">← Card Declined</button>
+
+      <div class="solution-header">
+        <div class="solution-eyebrow">TECHNICAL SOLUTION DESIGN · DATABRICKS</div>
+        <h1>Genie Ontology-Backed Context for Decline Reasons</h1>
+        <p class="solution-sub">How a developer would actually build the three-check decision trace — from raw Delta tables and policy documents to a Genie Space answer.</p>
+      </div>
+
+      <!-- 1. Problem statement & scope -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n1">1</div>
+          <h2>Problem statement &amp; scope</h2>
+        </div>
+        <p>The Genie Space handling Alex's questions needs to reason across a balance check, a fraud score, and a card-status check — each one a fact governed by its own Delta table <em>and</em> its own policy document, evaluated in a fixed order. Answering "why was my card declined" today requires Genie to guess at relationships no one told it about, with no shared, checkable definition of what these facts mean together or which order they're evaluated in.</p>
+        <div class="scope-grid">
+          <div class="scope-box in">
+            <div class="scope-label">IN SCOPE</div>
+            <ul>
+              <li>Genie Ontology-backed reasoning over the balance / fraud / card-status decision chain</li>
+              <li>Ingestion path from the payments, fraud, and card-network Delta tables</li>
+              <li>How the policy documents (Overdraft Policy, Risk Model Card) and the ISO 8583 standard live in Unity Catalog Volumes where Genie can weigh them</li>
+              <li>Genie Conversation API access, callable from an external app or agent</li>
+              <li>Baseline observability</li>
+            </ul>
+          </div>
+          <div class="scope-box out">
+            <div class="scope-label">OUT OF SCOPE</div>
+            <ul>
+              <li>Row-/column-level ACLs (assumed already configured in Unity Catalog)</li>
+              <li>Golden Gatekeeper review workflow</li>
+              <li>Infrastructure-as-code / deployment automation</li>
+              <li>SQL warehouse sizing / cost optimization</li>
+              <li>Changes to upstream fraud model or card network systems</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Architecture overview -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n2">2</div>
+          <h2>Architecture overview</h2>
+        </div>
+        <p>Delta tables are ingested and governed through Unity Catalog. Genie Ontology continuously mines table/column metadata, query history, and dashboard usage to infer an entity graph, weighting sources by authority. A Genie Space queries both the Ontology and a governed Metric View to answer Alex, over the Genie Conversation API.</p>
+        <div class="arch-diagram-card">
+          <svg viewBox="0 0 920 380" width="100%" style="min-width:820px;" role="img">
+            <title>Architecture: payments, fraud, and card-network Delta tables plus policy documents flow through Unity Catalog into Genie Ontology, which a Genie Space queries alongside a Metric View, invoked via the Genie Conversation API, answering Alex</title>
+
+            <rect x="10" y="20" width="180" height="120" rx="10" fill="#F7FAFC" stroke="#A0AEC0" stroke-width="1.4"/>
+            <text x="100" y="40" text-anchor="middle" font-size="10" font-weight="800" fill="#4A5568" letter-spacing="0.05em">DELTA TABLES</text>
+            <text x="100" y="58" text-anchor="middle" font-size="9.5" fill="#2D3748">payments_db.transactions</text>
+            <text x="100" y="74" text-anchor="middle" font-size="9.5" fill="#2D3748">core_banking + fraud_engine +</text>
+            <text x="100" y="88" text-anchor="middle" font-size="9.5" fill="#2D3748">card_network (Delta tables)</text>
+            <text x="100" y="106" text-anchor="middle" font-size="9.5" fill="#2D3748">Overdraft Policy + Risk Card +</text>
+            <text x="100" y="120" text-anchor="middle" font-size="9.5" fill="#2D3748">ISO 8583 (Volumes)</text>
+
+            <line x1="190" y1="80" x2="230" y2="80" stroke="#D9621E" stroke-width="2.4"/>
+            <polygon points="230,75 240,80 230,85" fill="#D9621E"/>
+
+            <rect x="240" y="20" width="180" height="120" rx="10" fill="#FFF1E7" stroke="#D9621E" stroke-width="1.4"/>
+            <text x="330" y="40" text-anchor="middle" font-size="10" font-weight="800" fill="#B34E14" letter-spacing="0.05em">UNITY CATALOG</text>
+            <text x="330" y="64" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Lakeflow Declarative</text>
+            <text x="330" y="80" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Pipelines (Bronze→Gold)</text>
+            <text x="330" y="104" text-anchor="middle" font-size="10.5" fill="#7C3A0F">Column comments / tags /</text>
+            <text x="330" y="120" text-anchor="middle" font-size="10.5" fill="#7C3A0F">certification</text>
+
+            <line x1="420" y1="80" x2="460" y2="80" stroke="#7C3AED" stroke-width="2.4"/>
+            <polygon points="460,75 470,80 460,85" fill="#7C3AED"/>
+
+            <rect x="470" y="10" width="220" height="140" rx="10" fill="#F3EEFF" stroke="#7C3AED" stroke-width="1.6"/>
+            <text x="580" y="30" text-anchor="middle" font-size="10" font-weight="800" fill="#5B21B6" letter-spacing="0.05em">GENIE ONTOLOGY</text>
+            <text x="580" y="46" text-anchor="middle" font-size="9.5" fill="#5B21B6" font-style="italic">(auto-extracted, not hand-modeled)</text>
+            <rect x="486" y="56" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.2"/>
+            <text x="580" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#5B21B6">Living knowledge graph</text>
+            <text x="580" y="86" text-anchor="middle" font-size="9" fill="#7C3AED">mined from usage, not authored</text>
+            <rect x="486" y="100" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.2"/>
+            <text x="580" y="116" text-anchor="middle" font-size="10" font-weight="700" fill="#5B21B6">Authority weighting</text>
+            <text x="580" y="130" text-anchor="middle" font-size="9" fill="#7C3AED">certified sources rank higher</text>
+
+            <rect x="460" y="165" width="360" height="130" rx="10" fill="none" stroke="#A0AEC0" stroke-width="1.4" stroke-dasharray="6 4"/>
+            <text x="640" y="182" text-anchor="middle" font-size="9.5" font-weight="700" fill="#718096" letter-spacing="0.05em">DATABRICKS WORKSPACE</text>
+
+            <line x1="580" y1="150" x2="580" y2="190" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="575,190 580,200 585,190" fill="#1A9C59"/>
+
+            <rect x="480" y="200" width="220" height="70" rx="10" fill="#F0FFF4" stroke="#1A9C59" stroke-width="1.6"/>
+            <text x="590" y="220" text-anchor="middle" font-size="10" font-weight="800" fill="#15803D" letter-spacing="0.05em">METRIC VIEW</text>
+            <text x="590" y="238" text-anchor="middle" font-size="9.5" fill="#15803D">Unity Catalog governed</text>
+            <text x="590" y="252" text-anchor="middle" font-size="9.5" fill="#15803D">decline-reason lookup (SQL)</text>
+
+            <line x1="700" y1="235" x2="740" y2="235" stroke="#0078D4" stroke-width="2.4"/>
+            <polygon points="740,230 750,235 740,240" fill="#0078D4"/>
+            <text x="722" y="225" text-anchor="middle" font-size="8" fill="#0078D4">Genie API</text>
+
+            <rect x="750" y="200" width="150" height="70" rx="10" fill="#EBF8FF" stroke="#0078D4" stroke-width="1.6"/>
+            <text x="825" y="222" text-anchor="middle" font-size="10" font-weight="800" fill="#0067B0" letter-spacing="0.02em">GENIE SPACE</text>
+            <text x="825" y="240" text-anchor="middle" font-size="9.5" fill="#0067B0">Plans SQL / tool calls,</text>
+            <text x="825" y="254" text-anchor="middle" font-size="9.5" fill="#0067B0">assembles the answer</text>
+
+            <line x1="825" y1="270" x2="825" y2="310" stroke="#4A5568" stroke-width="2"/>
+            <polygon points="820,310 825,320 830,310" fill="#4A5568"/>
+            <text x="825" y="345" text-anchor="middle" font-size="11" font-weight="700" fill="#2D3748">Alex, checking out online</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- 3. Ontology model -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n3">3</div>
+          <h2>Ontology — auto-extracted, not hand-modeled</h2>
+        </div>
+        <p>Unlike Neptune, there's no explicit schema step where a developer declares <code>BalanceCheck</code>, <code>FraudCheck</code>, and <code>CardCheck</code> as node types and wires up a <code>TRIGGERS</code> edge to a decline reason. Genie Ontology continuously mines signals and infers the graph:</p>
+
+        <div class="option-grid">
+          <div class="option-box propgraph">
+            <div class="option-tag">SIGNALS IT MINES</div>
+            <h3>What Genie observes</h3>
+            <ul>
+              <li>Table and column names, and foreign-key-like naming patterns (<code>txn_id</code>, <code>card_id</code>)</li>
+              <li>Join patterns seen across the SQL query history</li>
+              <li>Which dashboards and queries are used most, and by whom</li>
+            </ul>
+          </div>
+          <div class="option-box rdf">
+            <div class="option-tag">WHAT A DEVELOPER CONTROLS</div>
+            <h3>The only levers available</h3>
+            <ul>
+              <li>Unity Catalog column comments and table/column tags</li>
+              <li>Marking an asset "Certified" — certified sources are weighted higher</li>
+              <li>Which queries and dashboards get promoted, since usage itself is a signal</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout-warn">
+          <span class="icon">⚠</span>
+          <span><strong>There's no query language for hand-writing a <code>TRIGGERS</code> edge.</strong> If Genie hasn't seen enough certified, authoritative usage connecting <code>expiry_date &lt; today</code> to a decline outcome, it won't reliably infer that relationship. The fix is exposing that logic in a governed, certified asset — a Metric View or a certified query (Section 5) — not in application code, and not in a hand-written graph edge either.</span>
+        </div>
+      </section>
+
+      <!-- 4. Ingestion pipeline -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n4">4</div>
+          <h2>Ingestion pipeline</h2>
+        </div>
+        <p>Lakeflow Declarative Pipelines ingest raw payments, fraud-score, and card-network events into Bronze → Silver → Gold Delta tables inside Unity Catalog — standard Delta ingestion, nothing graph-specific happens here. The policy documents (Overdraft Policy, Risk Model Card, ISO 8583) are loaded as files into Unity Catalog Volumes, where Genie can read and weigh them as sources — but nothing forces Genie to connect a specific document to a specific check.</p>
+        <div class="callout-warn">
+          <span class="icon">📄</span>
+          <span><strong>Where the policy documents fit:</strong> <code>acct_balance</code>, <code>risk_score</code>, and <code>expiry_date</code> are plain Delta columns — but whether they <em>pass</em> is decided by three separate documents sitting in a Unity Catalog Volume. Nothing automatically links "Overdraft Policy §2.1" to the <code>BALANCE CHECK</code> table the way a hand-written <code>GOVERNED_BY</code> edge would in Neptune. In practice this link still has to live somewhere a human maintains it — most reliably as a certified Metric View or certified query (Section 5). Left undone, it lives nowhere formal at all, which is a governance gap Genie Ontology's auto-extraction doesn't close by itself.</span>
+        </div>
+      </section>
+
+      <!-- 5. Query/API layer -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n5">5</div>
+          <h2>Query / API layer — Python, both options</h2>
+        </div>
+        <p>Authentication either way: a Databricks personal access token or OAuth service principal, scoped to the Genie Space or SQL warehouse.</p>
+
+        <div class="code-block">
+          <div class="code-block-head">
+            <span class="code-block-label">OPTION A · GENIE CONVERSATION API (databricks-sdk)</span>
+            <span class="code-block-dots"><span></span><span></span><span></span></span>
+          </div>
+          <pre><span class="code-kw">from</span> databricks.sdk <span class="code-kw">import</span> WorkspaceClient
+
+w = WorkspaceClient()
+
+<span class="code-com"># ask Genie a question against the Card Decline space</span>
+resp = w.genie.<span class="code-fn">start_conversation_and_wait</span>(
+    space_id=<span class="code-str">"01ef...card-decline-space"</span>,
+    content=<span class="code-str">"Why was transaction TXN-58217 declined?"</span>
+)
+conversation_id = resp.conversation_id
+
+<span class="code-com"># follow-up question, same conversation</span>
+followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
+    space_id=<span class="code-str">"01ef...card-decline-space"</span>,
+    conversation_id=conversation_id,
+    content=<span class="code-str">"Did the balance and fraud checks pass first?"</span>
+)
+<span class="code-fn">print</span>(followup.attachments[0].text.content)</pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-head">
+            <span class="code-block-label">OPTION B · DIRECT METRIC VIEW QUERY (databricks-sql-connector)</span>
+            <span class="code-block-dots"><span></span><span></span><span></span></span>
+          </div>
+          <pre><span class="code-kw">from</span> databricks <span class="code-kw">import</span> sql
+
+<span class="code-kw">with</span> sql.<span class="code-fn">connect</span>(
+    server_hostname=<span class="code-str">"my-workspace.cloud.databricks.com"</span>,
+    http_path=<span class="code-str">"/sql/1.0/warehouses/xxxx"</span>,
+    access_token=<span class="code-str">"..."</span>
+) <span class="code-kw">as</span> conn:
+    <span class="code-kw">with</span> conn.<span class="code-fn">cursor</span>() <span class="code-kw">as</span> cur:
+        cur.<span class="code-fn">execute</span>(<span class="code-str">"SELECT * FROM decline.metrics.reason_by_txn WHERE txn_id = 'TXN-58217'"</span>)
+        <span class="code-kw">for</span> row <span class="code-kw">in</span> cur.<span class="code-fn">fetchall</span>():
+            <span class="code-fn">print</span>(row)</pre>
+        </div>
+
+        <div class="callout-info">
+          <span class="icon">▶</span>
+          <span><strong>Compare with the AWS design:</strong> the AWS version of this use case (Neptune-backed) hand-models <code>BalanceCheck</code> / <code>FraudCheck</code> / <code>CardCheck</code> as graph nodes with an explicit <code>GOVERNED_BY</code> edge to each policy document. Here, that same relationship is only ever a probabilistic inference Genie makes from usage — there's no equivalent hand-written edge to fall back on, which is the core tradeoff of choosing Genie Ontology over an explicitly modeled graph.</span>
+        </div>
+      </section>
+
+      <!-- 6. Observability -->
+      <section class="sol-section">
+        <div class="sol-section-head">
+          <div class="sol-num n6">6</div>
+          <h2>Observability</h2>
+        </div>
+        <div class="obs-grid">
+          <div class="obs-card">
+            <h4>Query-level logging</h4>
+            <p>System Tables (<code>system.query.history</code>) capture every SQL statement Genie generates, its latency, and the warehouse used.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Lineage tracing</h4>
+            <p>Unity Catalog's automatic lineage graph traces every column an answer relied on back to its source table.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Health alarms</h4>
+            <p>SQL warehouse System Table metrics — queue time, cluster utilization — with alerts on breach.</p>
+          </div>
+          <div class="obs-card">
+            <h4>Feedback hook</h4>
+            <p>Thumbs up/down on Genie's generated answers logs directly to System Tables — feeds curation of comments, tags, and certification.</p>
+          </div>
+        </div>
+      </section>
 
     </div>
   </div>
@@ -3584,165 +3899,178 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
 
         <!-- TODAY: record + blocked source systems (structured DB + unstructured policy docs) -->
         <div class="arch-diagram-card state-today">
-          <svg viewBox="0 0 700 300" width="100%" style="min-width:620px;" role="img">
-            <title>Today: the agent can only read a flat status field; neither the databases nor the policy documents that would explain the decline are reachable</title>
+          <svg viewBox="0 0 760 320" width="100%" style="min-width:680px;" role="img">
+            <title>Today: the agent can only read a flat status field on payments_db.transactions. Every stage past it is blocked — each stage's database AND its governing policy document, the latter shown as a real but partially redacted rule fragment, not just an abstract label.</title>
 
-            <rect x="250" y="10" width="200" height="76" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
-            <rect x="250" y="10" width="200" height="4" fill="#0078D4"/>
-            <text x="262" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.04em">PAYMENTS_DB.TRANSACTIONS</text>
-            <text x="262" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
-            <text x="262" y="63" font-family="Courier New" font-size="10.5" font-weight="700" fill="#B7791F">status: "DECLINED"</text>
+            <g style="cursor:help">
+              <title>Amazon Redshift — raw transaction table</title>
+              <rect x="280" y="10" width="200" height="76" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+              <rect x="280" y="10" width="200" height="4" fill="#0078D4"/>
+              <text x="292" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.03em">🗄 PAYMENTS_DB.TRANSACTIONS</text>
+              <text x="292" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
+              <text x="292" y="63" font-family="Courier New" font-size="10.5" font-weight="700" fill="#B7791F">status: "DECLINED"</text>
+            </g>
 
-            <line x1="350" y1="86" x2="350" y2="116" stroke="#4A5568" stroke-width="1.8"/>
-            <polygon points="345,116 355,116 350,126" fill="#4A5568"/>
-            <text x="365" y="106" font-size="9" font-style="italic" fill="#718096">← only field the</text>
-            <text x="365" y="118" font-size="9" font-style="italic" fill="#718096">agent can query</text>
+            <line x1="380" y1="86" x2="380" y2="112" stroke="#4A5568" stroke-width="1.8"/>
+            <polygon points="374,112 386,112 380,122" fill="#4A5568"/>
+            <text x="380" y="138" text-anchor="middle" font-size="13" fill="#4A5568">🔒</text>
+            <text x="380" y="154" text-anchor="middle" font-size="9" font-weight="800" fill="#4A5568" letter-spacing="0.04em">BLOCKED</text>
+            <text x="380" y="167" text-anchor="middle" font-size="8.3" font-style="italic" fill="#A0AEC0">no further traversal permitted</text>
 
-            <rect x="60" y="140" width="580" height="140" rx="10" fill="#F7FAFC" stroke="#A0AEC0" stroke-width="1.4" stroke-dasharray="6 4"/>
-            <text x="350" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#718096" letter-spacing="0.05em">NOT REACHABLE BY THE AGENT</text>
+            <line x1="380" y1="174" x2="380" y2="188" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="130" y1="188" x2="630" y2="188" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="130" y1="188" x2="130" y2="200" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="380" y1="188" x2="380" y2="200" stroke="#CBD5E0" stroke-width="1.4"/>
+            <line x1="630" y1="188" x2="630" y2="200" stroke="#CBD5E0" stroke-width="1.4"/>
 
-            <line x1="260" y1="168" x2="260" y2="272" stroke="#CBD5E0" stroke-width="1" stroke-dasharray="3 3"/>
-            <line x1="440" y1="168" x2="440" y2="272" stroke="#CBD5E0" stroke-width="1" stroke-dasharray="3 3"/>
+            <!-- Balance Check -->
+            <rect x="20" y="200" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <text x="130" y="218" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">BALANCE CHECK</text>
+            <g style="cursor:help"><title>Amazon Redshift</title>
+              <rect x="24" y="226" width="212" height="22" fill="#000000" opacity="0"/>
+              <text x="32" y="238" font-size="10" fill="#4A5568">🗄 Core Banking Ledger</text>
+              <text x="228" y="238" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <line x1="32" y1="248" x2="228" y2="248" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Amazon S3 + Bedrock Knowledge Base</title>
+              <rect x="24" y="250" width="212" height="60" fill="#000000" opacity="0"/>
+              <text x="32" y="264" font-size="10" fill="#7C3AED">📄 Overdraft Policy §2.1</text>
+              <text x="32" y="280" font-family="Courier New" font-size="8.3" fill="#5B4636">"balance ≥ txn +</text>
+              <text x="32" y="292" font-family="Courier New" font-size="8.3" font-style="italic" fill="#A0895C">&lt;buffer amount&gt;"</text>
+              <text x="228" y="292" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <circle cx="234" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')"/>
+            <text x="234" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')">i<title>View technical solution design →</title></text>
 
-            <text x="160" y="182" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">CORE BANKING LEDGER</text>
-            <text x="160" y="196" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">database — blocked</text>
-            <text x="160" y="220" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">OVERDRAFT POLICY §2.1</text>
-            <text x="160" y="234" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">policy doc — blocked</text>
+            <!-- Fraud Check -->
+            <rect x="270" y="200" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <text x="380" y="218" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">FRAUD CHECK</text>
+            <g style="cursor:help"><title>Amazon Redshift</title>
+              <rect x="274" y="226" width="212" height="22" fill="#000000" opacity="0"/>
+              <text x="282" y="238" font-size="10" fill="#4A5568">🗄 Fraud Risk Engine</text>
+              <text x="478" y="238" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <line x1="282" y1="248" x2="478" y2="248" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Amazon S3 + Bedrock Knowledge Base</title>
+              <rect x="274" y="250" width="212" height="60" fill="#000000" opacity="0"/>
+              <text x="282" y="264" font-size="10" fill="#7C3AED">📄 Risk Model Card v3.2</text>
+              <text x="282" y="280" font-family="Courier New" font-size="8.3" fill="#5B4636">"flag if risk_score &gt;</text>
+              <text x="282" y="292" font-family="Courier New" font-size="8.3" font-style="italic" fill="#A0895C">&lt;threshold&gt;"</text>
+              <text x="478" y="292" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <circle cx="484" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')"/>
+            <text x="484" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')">i<title>View technical solution design →</title></text>
 
-            <text x="350" y="182" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">FRAUD RISK ENGINE</text>
-            <text x="350" y="196" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">database — blocked</text>
-            <text x="350" y="220" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">RISK MODEL CARD v3.2</text>
-            <text x="350" y="234" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">policy doc — blocked</text>
-
-            <text x="540" y="182" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">CARD NETWORK (ISO 8583)</text>
-            <text x="540" y="196" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">database — blocked</text>
-            <text x="540" y="220" text-anchor="middle" font-size="9.3" font-weight="700" fill="#4A5568">ISO 8583 FIELD 39 CODES</text>
-            <text x="540" y="234" text-anchor="middle" font-size="8.3" font-style="italic" fill="#B7791F">policy doc — blocked</text>
+            <!-- Card Check -->
+            <rect x="520" y="200" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <text x="630" y="218" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">CARD CHECK</text>
+            <g style="cursor:help"><title>Amazon Redshift</title>
+              <rect x="524" y="226" width="212" height="22" fill="#000000" opacity="0"/>
+              <text x="532" y="238" font-size="10" fill="#4A5568">🗄 Card Network (ISO 8583)</text>
+              <text x="728" y="238" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <line x1="532" y1="248" x2="728" y2="248" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Amazon S3 + Bedrock Knowledge Base</title>
+              <rect x="524" y="250" width="212" height="60" fill="#000000" opacity="0"/>
+              <text x="532" y="264" font-size="10" fill="#7C3AED">📄 ISO 8583 · Field 39</text>
+              <text x="532" y="280" font-family="Courier New" font-size="8.3" fill="#5B4636">"<tspan font-style="italic" fill="#A0895C">&lt;code&gt;</tspan> = expired</text>
+              <text x="532" y="292" font-family="Courier New" font-size="8.3" fill="#5B4636">card"</text>
+              <text x="728" y="292" text-anchor="end" font-size="11" fill="#A0AEC0">🔒</text>
+            </g>
+            <circle cx="734" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')"/>
+            <text x="734" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')">i<title>View technical solution design →</title></text>
           </svg>
         </div>
 
-        <!-- CONTEXT (+ SECURED): record + 3× (structured DB + unstructured policy doc) feeding each decision + answer -->
+        <!-- CONTEXT (+ SECURED): same unified box format as Today, now fully resolved -->
         <div class="arch-diagram-card state-context">
-          <svg viewBox="0 0 760 700" width="100%" style="min-width:680px;" role="img">
-            <title>With context: each of the three checks is fed by both a structured database field and an unstructured policy document, walked in sequence to the one true decline reason</title>
+          <svg viewBox="0 0 760 400" width="100%" style="min-width:680px;" role="img">
+            <title>With context: the same three stage boxes as Today, now resolved — each database field and policy rule fully visible, walked in order to the one true decline reason</title>
 
-            <rect x="280" y="10" width="200" height="70" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
-            <rect x="280" y="10" width="200" height="4" fill="#0078D4"/>
-            <text x="292" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.04em">PAYMENTS_DB.TRANSACTIONS</text>
-            <text x="292" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
-            <text x="292" y="63" font-family="Courier New" font-size="10.5" fill="#2D3748">status: DECLINED</text>
+            <g style="cursor:help">
+              <title>Amazon Redshift — raw transaction table</title>
+              <rect x="280" y="10" width="200" height="76" rx="8" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.6"/>
+              <rect x="280" y="10" width="200" height="4" fill="#0078D4"/>
+              <text x="292" y="28" font-size="9" font-weight="800" fill="#0078D4" letter-spacing="0.03em">🗄 PAYMENTS_DB.TRANSACTIONS</text>
+              <text x="292" y="46" font-family="Courier New" font-size="10.5" fill="#2D3748">txn_id: TXN-58217</text>
+              <text x="292" y="63" font-family="Courier New" font-size="10.5" font-weight="700" fill="#B7791F">status: "DECLINED"</text>
+            </g>
 
-            <line x1="380" y1="80" x2="380" y2="106" stroke="#1A9C59" stroke-width="2.4"/>
-            <polygon points="374,106 386,106 380,116" fill="#1A9C59"/>
+            <line x1="380" y1="86" x2="380" y2="126" stroke="#1A9C59" stroke-width="2.2"/>
+            <polygon points="374,126 386,126 380,136" fill="#1A9C59"/>
 
-            <!-- ── decision 1 ── -->
-            <rect x="10" y="120" width="170" height="54" rx="7" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
-            <rect x="10" y="120" width="170" height="4" fill="#0078D4"/>
-            <text x="18" y="133" font-size="6.8" font-weight="700" fill="#63B3ED" letter-spacing="0.03em">STRUCTURED · DATABASE</text>
-            <text x="18" y="149" font-size="8.8" font-weight="800" fill="#0078D4">CORE BANKING LEDGER</text>
-            <text x="18" y="166" font-family="Courier New" font-size="9.3" fill="#2D3748">acct_balance: £340</text>
+            <!-- Balance Check -->
+            <rect x="20" y="140" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <rect x="20" y="140" width="220" height="4" fill="#1A9C59"/>
+            <text x="130" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">BALANCE CHECK</text>
+            <g style="cursor:help"><title>Amazon Redshift</title>
+              <rect x="24" y="166" width="212" height="30" fill="#000000" opacity="0"/>
+              <text x="32" y="176" font-size="10" fill="#4A5568">🗄 Core Banking Ledger</text>
+              <text x="32" y="190" font-family="Courier New" font-size="9" fill="#2D3748">acct_balance: £340</text>
+              <text x="228" y="190" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <line x1="32" y1="198" x2="228" y2="198" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Amazon S3 + Bedrock Knowledge Base</title>
+              <rect x="24" y="200" width="212" height="50" fill="#000000" opacity="0"/>
+              <text x="32" y="214" font-size="10" fill="#7C3AED">📄 Overdraft Policy §2.1</text>
+              <text x="32" y="230" font-family="Courier New" font-size="8.3" fill="#5B4636">"balance ≥ txn + £10 buffer"</text>
+              <text x="228" y="230" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <circle cx="234" cy="144" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')"/>
+            <text x="234" y="147" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')">i<title>View technical solution design →</title></text>
 
-            <rect x="10" y="184" width="170" height="68" rx="7" fill="#FFFDF7" stroke="#E9DFC5" stroke-width="1.3"/>
-            <rect x="10" y="184" width="170" height="4" fill="#7C3AED"/>
-            <text x="18" y="197" font-size="6.8" font-weight="700" fill="#9F7AEA" letter-spacing="0.03em">UNSTRUCTURED · POLICY DOC</text>
-            <text x="18" y="213" font-size="8.6" font-weight="800" fill="#7C3AED">OVERDRAFT POLICY §2.1</text>
-            <text x="18" y="229" font-size="8.3" font-style="italic" fill="#5B4636">"balance ≥ txn + £10 buffer"</text>
+            <!-- Fraud Check -->
+            <rect x="270" y="140" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <rect x="270" y="140" width="220" height="4" fill="#1A9C59"/>
+            <text x="380" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">FRAUD CHECK</text>
+            <g style="cursor:help"><title>Amazon Redshift</title>
+              <rect x="274" y="166" width="212" height="30" fill="#000000" opacity="0"/>
+              <text x="282" y="176" font-size="10" fill="#4A5568">🗄 Fraud Risk Engine</text>
+              <text x="282" y="190" font-family="Courier New" font-size="9" fill="#2D3748">risk_score: 12 / 100</text>
+              <text x="478" y="190" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <line x1="282" y1="198" x2="478" y2="198" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Amazon S3 + Bedrock Knowledge Base</title>
+              <rect x="274" y="200" width="212" height="50" fill="#000000" opacity="0"/>
+              <text x="282" y="214" font-size="10" fill="#7C3AED">📄 Risk Model Card v3.2</text>
+              <text x="282" y="230" font-family="Courier New" font-size="8.3" fill="#5B4636">"flag if risk_score &gt; 70"</text>
+              <text x="478" y="230" text-anchor="end" font-size="11" font-weight="800" fill="#1A9C59">✓</text>
+            </g>
+            <circle cx="484" cy="144" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')"/>
+            <text x="484" y="147" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')">i<title>View technical solution design →</title></text>
 
-            <rect x="210" y="130" width="320" height="112" rx="8" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.6"/>
-            <rect x="210" y="130" width="320" height="4" fill="#7C3AED"/>
-            <text x="224" y="160" font-size="11" font-weight="700" fill="#2D3748">1. Balance sufficient?</text>
-            <text x="224" y="185" font-size="13" font-weight="800" fill="#1A9C59">✓ YES</text>
-            <text x="224" y="205" font-size="8" font-style="italic" fill="#718096">ledger + overdraft rule, combined</text>
+            <!-- Card Check -->
+            <rect x="520" y="140" width="220" height="112" rx="8" fill="#FFFFFF" stroke="#CBD5E0" stroke-width="1.4"/>
+            <rect x="520" y="140" width="220" height="4" fill="#C0392B"/>
+            <text x="630" y="158" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4A5568" letter-spacing="0.03em">CARD CHECK</text>
+            <g style="cursor:help"><title>Amazon Redshift</title>
+              <rect x="524" y="166" width="212" height="30" fill="#000000" opacity="0"/>
+              <text x="532" y="176" font-size="10" fill="#4A5568">🗄 Card Network (ISO 8583)</text>
+              <text x="532" y="190" font-family="Courier New" font-size="9" fill="#2D3748">expiry: 2026-06-30</text>
+              <text x="728" y="190" text-anchor="end" font-size="11" font-weight="800" fill="#C0392B">✗</text>
+            </g>
+            <line x1="532" y1="198" x2="728" y2="198" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3"/>
+            <g style="cursor:help"><title>Amazon S3 + Bedrock Knowledge Base</title>
+              <rect x="524" y="200" width="212" height="50" fill="#000000" opacity="0"/>
+              <text x="532" y="214" font-size="10" fill="#7C3AED">📄 ISO 8583 · Field 39</text>
+              <text x="532" y="230" font-family="Courier New" font-size="8.3" fill="#5B4636">"code 54 = expired card"</text>
+              <text x="728" y="230" text-anchor="end" font-size="11" font-weight="800" fill="#C0392B">✗</text>
+            </g>
+            <circle cx="734" cy="144" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')"/>
+            <text x="734" y="147" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')">i<title>View technical solution design →</title></text>
 
-            <line x1="180" y1="147" x2="206" y2="157" stroke="#0078D4" stroke-width="1.6"/>
-            <polygon points="200,152 210,157 200,161" fill="#0078D4"/>
-            <line x1="180" y1="218" x2="206" y2="205" stroke="#7C3AED" stroke-width="1.6"/>
-            <polygon points="200,209 210,205 202,200" fill="#7C3AED"/>
-
-            <line x1="530" y1="175" x2="546" y2="175" stroke="#A0AEC0" stroke-width="1.4"/>
-            <polygon points="540,171 550,175 540,179" fill="#A0AEC0"/>
-            <text x="533" y="163" font-size="8.5" fill="#A0AEC0">✗ NO</text>
-            <rect x="550" y="155" width="180" height="55" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
-            <text x="562" y="176" font-size="9.5" font-style="italic" fill="#718096">Insufficient funds</text>
-            <text x="562" y="192" font-size="9.5" font-style="italic" fill="#718096">code 51 — ruled out</text>
-
-            <line x1="370" y1="242" x2="370" y2="270" stroke="#1A9C59" stroke-width="2.4"/>
-            <polygon points="364,270 376,270 370,280" fill="#1A9C59"/>
-
-            <!-- ── decision 2 ── -->
-            <rect x="10" y="280" width="170" height="54" rx="7" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
-            <rect x="10" y="280" width="170" height="4" fill="#0078D4"/>
-            <text x="18" y="293" font-size="6.8" font-weight="700" fill="#63B3ED" letter-spacing="0.03em">STRUCTURED · DATABASE</text>
-            <text x="18" y="309" font-size="8.8" font-weight="800" fill="#0078D4">FRAUD RISK ENGINE</text>
-            <text x="18" y="326" font-family="Courier New" font-size="9.3" fill="#2D3748">risk_score: 12 / 100</text>
-
-            <rect x="10" y="344" width="170" height="68" rx="7" fill="#FFFDF7" stroke="#E9DFC5" stroke-width="1.3"/>
-            <rect x="10" y="344" width="170" height="4" fill="#7C3AED"/>
-            <text x="18" y="357" font-size="6.8" font-weight="700" fill="#9F7AEA" letter-spacing="0.03em">UNSTRUCTURED · POLICY DOC</text>
-            <text x="18" y="373" font-size="8.6" font-weight="800" fill="#7C3AED">RISK MODEL CARD v3.2</text>
-            <text x="18" y="389" font-size="8.3" font-style="italic" fill="#5B4636">"flag if risk_score &gt; 70"</text>
-
-            <rect x="210" y="290" width="320" height="112" rx="8" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.6"/>
-            <rect x="210" y="290" width="320" height="4" fill="#7C3AED"/>
-            <text x="224" y="320" font-size="11" font-weight="700" fill="#2D3748">2. Fraud flag raised?</text>
-            <text x="224" y="345" font-size="13" font-weight="800" fill="#1A9C59">✓ NO — passed</text>
-            <text x="224" y="365" font-size="8" font-style="italic" fill="#718096">engine + risk-threshold rule, combined</text>
-
-            <line x1="180" y1="307" x2="206" y2="317" stroke="#0078D4" stroke-width="1.6"/>
-            <polygon points="200,312 210,317 200,321" fill="#0078D4"/>
-            <line x1="180" y1="378" x2="206" y2="365" stroke="#7C3AED" stroke-width="1.6"/>
-            <polygon points="200,369 210,365 202,360" fill="#7C3AED"/>
-
-            <line x1="530" y1="335" x2="546" y2="335" stroke="#A0AEC0" stroke-width="1.4"/>
-            <polygon points="540,331 550,335 540,339" fill="#A0AEC0"/>
-            <text x="530" y="323" font-size="8.5" fill="#A0AEC0">✓ YES</text>
-            <rect x="550" y="315" width="180" height="55" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
-            <text x="562" y="336" font-size="9.5" font-style="italic" fill="#718096">Suspected fraud</text>
-            <text x="562" y="352" font-size="9.5" font-style="italic" fill="#718096">code 05 — ruled out</text>
-
-            <line x1="370" y1="402" x2="370" y2="430" stroke="#1A9C59" stroke-width="2.4"/>
-            <polygon points="364,430 376,430 370,440" fill="#1A9C59"/>
-
-            <!-- ── decision 3 ── -->
-            <rect x="10" y="440" width="170" height="54" rx="7" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.3"/>
-            <rect x="10" y="440" width="170" height="4" fill="#0078D4"/>
-            <text x="18" y="453" font-size="6.8" font-weight="700" fill="#63B3ED" letter-spacing="0.03em">STRUCTURED · DATABASE</text>
-            <text x="18" y="469" font-size="8.3" font-weight="800" fill="#0078D4">CARD NETWORK (ISO 8583)</text>
-            <text x="18" y="486" font-family="Courier New" font-size="9.3" fill="#2D3748">expiry: 2026-06-30</text>
-
-            <rect x="10" y="504" width="170" height="68" rx="7" fill="#FFFDF7" stroke="#E9DFC5" stroke-width="1.3"/>
-            <rect x="10" y="504" width="170" height="4" fill="#7C3AED"/>
-            <text x="18" y="517" font-size="6.8" font-weight="700" fill="#9F7AEA" letter-spacing="0.03em">UNSTRUCTURED · POLICY DOC</text>
-            <text x="18" y="533" font-size="8.6" font-weight="800" fill="#7C3AED">ISO 8583 · FIELD 39</text>
-            <text x="18" y="549" font-size="8.3" font-style="italic" fill="#5B4636">"code 54 = expired card"</text>
-
-            <rect x="210" y="450" width="320" height="112" rx="8" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.6"/>
-            <rect x="210" y="450" width="320" height="4" fill="#7C3AED"/>
-            <text x="224" y="480" font-size="11" font-weight="700" fill="#2D3748">3. Card expired?</text>
-            <text x="224" y="505" font-size="13" font-weight="800" fill="#C0392B">✗ YES</text>
-            <text x="224" y="525" font-size="8" font-style="italic" fill="#718096">network + code-39 mapping, combined</text>
-
-            <line x1="180" y1="467" x2="206" y2="477" stroke="#0078D4" stroke-width="1.6"/>
-            <polygon points="200,472 210,477 200,481" fill="#0078D4"/>
-            <line x1="180" y1="538" x2="206" y2="525" stroke="#7C3AED" stroke-width="1.6"/>
-            <polygon points="200,529 210,525 202,520" fill="#7C3AED"/>
-
-            <line x1="530" y1="495" x2="546" y2="495" stroke="#A0AEC0" stroke-width="1.4"/>
-            <polygon points="540,491 550,495 540,499" fill="#A0AEC0"/>
-            <text x="533" y="483" font-size="8.5" fill="#A0AEC0">NO</text>
-            <rect x="550" y="475" width="180" height="55" rx="8" fill="#F7FAFC" stroke="#CBD5E0" stroke-width="1.2"/>
-            <text x="562" y="496" font-size="9.5" font-style="italic" fill="#718096">Not expired →</text>
-            <text x="562" y="512" font-size="9.5" font-style="italic" fill="#718096">would be approved</text>
-
-            <line x1="370" y1="562" x2="370" y2="590" stroke="#1A9C59" stroke-width="2.8"/>
-            <polygon points="362,590 378,590 370,600" fill="#1A9C59"/>
+            <line x1="610" y1="252" x2="470" y2="286" stroke="#1A9C59" stroke-width="2.4"/>
+            <polygon points="464,278 476,286 466,296" fill="#1A9C59"/>
 
             <!-- final answer -->
-            <rect x="220" y="600" width="300" height="90" rx="10" fill="#F0FFF4" stroke="#1A9C59" stroke-width="2"/>
-            <rect x="220" y="600" width="300" height="5" fill="#1A9C59"/>
-            <text x="370" y="624" text-anchor="middle" font-size="11" font-weight="800" fill="#15803D" letter-spacing="0.03em">DECLINE REASON — CODE 54</text>
-            <text x="370" y="646" text-anchor="middle" font-size="11.5" font-style="italic" fill="#14532D">"Card expired"</text>
-            <text x="370" y="666" text-anchor="middle" font-size="9.5" fill="#285E58">→ Update payment method to retry</text>
+            <g style="cursor:help">
+              <title>Amazon Neptune — graph traversal resolves this reason</title>
+              <rect x="280" y="290" width="220" height="90" rx="10" fill="#F0FFF4" stroke="#1A9C59" stroke-width="2"/>
+              <rect x="280" y="290" width="220" height="5" fill="#1A9C59"/>
+              <text x="390" y="314" text-anchor="middle" font-size="11" font-weight="800" fill="#15803D" letter-spacing="0.03em">DECLINE REASON — CODE 54</text>
+              <text x="390" y="336" text-anchor="middle" font-size="11.5" font-style="italic" fill="#14532D">"Card expired"</text>
+              <text x="390" y="356" text-anchor="middle" font-size="9.5" fill="#285E58">→ Update payment method to retry</text>
+            </g>
           </svg>
         </div>
 

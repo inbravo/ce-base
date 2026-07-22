@@ -390,6 +390,63 @@
     color: var(--text);
   }
 
+  .banking-box {
+    background: var(--amber-light);
+    border: 1.5px solid var(--amber);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+  .banking-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--amber); margin-bottom: 10px;
+  }
+  .banking-box p { font-size: 14px; margin-bottom: 8px; color: var(--text); }
+  .banking-box p:last-child { margin-bottom: 0; }
+
+  .compliance-table-wrap { overflow-x: auto; margin: 16px 0; }
+  .compliance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .compliance-table thead th {
+    text-align: left;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 7px 12px;
+    border-bottom: 1.5px solid var(--rule);
+    white-space: nowrap;
+    background: var(--surface-2);
+  }
+  .compliance-table tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.45;
+    color: var(--text);
+  }
+  .compliance-table tbody tr:last-child td { border-bottom: none; }
+  .compliance-table tbody tr:hover { background: var(--surface-2); }
+  .ct-domain { font-weight: 650; color: var(--text); min-width: 130px; }
+  .ct-model { color: var(--imp-blue); font-weight: 550; min-width: 110px; }
+  .ct-miss { color: var(--red); min-width: 160px; }
+  .ct-win { color: var(--green); min-width: 160px; }
+  .domain-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+
   .doc-footer {
     margin-top: 56px;
     padding-top: 20px;
@@ -576,9 +633,9 @@
   <!-- Section 3 -->
   <div class="section">
     <div class="section-label">3 — The accuracy ceiling (the core argument)</div>
-    <h2>84.5% is the ceiling — and the missing 15.5% is the highest-stakes 15.5%</h2>
+    <h2>Databricks reports 84.5% — in regulated banking, the real gap is likely much wider</h2>
 
-    <p>Databricks' own published number is the most important data point in this analysis. Read it carefully before celebrating or dismissing it.</p>
+    <p>This number comes directly from Databricks' own DAIS 2026 announcement — their internal benchmark, measured on general business queries in a controlled environment. It is a real improvement, and worth acknowledging. But it should not be read as a regulated banking benchmark, because it was never measured as one.</p>
 
     <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px 22px; margin-bottom:20px;">
       <div style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:14px;">First-try answer accuracy (Databricks internal testing)</div>
@@ -597,7 +654,7 @@
         <div class="accuracy-bar-wrap"><div class="accuracy-bar" style="width:99%; background:var(--imp-blue);"></div></div>
         <div class="accuracy-pct">99%+</div>
       </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px;">* 1 in 6 Genie answers is still wrong in controlled Databricks conditions. In adversarial real-world conditions (regulatory data, domain-specific terminology, cross-system entities), this number is likely lower.</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:10px;">* Databricks' own benchmark — general business queries, controlled environment. In regulated banking, with policy-heavy terminology and low-frequency regulatory terms, the real accuracy is likely lower and the gap meaningfully wider than 15.5%.</div>
     </div>
 
     <div class="critical-box">
@@ -607,12 +664,88 @@
       <p><strong>Root cause:</strong> Genie's graph is built from observed authority and popularity. Verifying a calculation requires a graph built from the transformation code itself. Genie Ontology does not have the second graph.</p>
     </div>
 
+    <div class="banking-box">
+      <div class="banking-label">Why the gap is wider in regulated banking</div>
+      <p>Databricks measured 84.5% on general business queries — sales performance, product metrics, operational KPIs. These appear frequently in dashboards and query logs, which is exactly what a mining system needs to work well.</p>
+      <p>In regulated banking, the most important terms appear rarely in everyday query history. A compliance officer's definition of a stage 2 loan or a suspicious transaction pattern is not something an analyst queries daily. Because mining weights by frequency, low-frequency regulatory terms get the least attention from Genie Ontology — even though they carry the highest consequence when they are wrong.</p>
+      <p>A significant share of banking rules are written only in policy manuals, regulatory circulars, and compliance handbooks — not in any table or dashboard. Genie reads your tables, dashboards, and query history. It cannot read your policy documents. But the definition of "a suspicious transaction" or "a stage 2 loan" is not in your database — it is in a compliance manual or a regulatory circular. That meaning is completely invisible to any system that only mines structured data.</p>
+      <p>The 84.5% benchmark did not account for any of this. In regulated banking, the real gap is not 15.5%. It is larger — and the errors it produces are not wrong dashboard answers, they are compliance failures.</p>
+    </div>
+
     <div class="arg-block">
-      <div class="arg-block-title">The probabilistic vs. deterministic distinction</div>
-      <p>Genie Ontology's auto-extraction achieves high recall of <em>what the business uses</em>, not necessarily <em>what the business should mean</em>. The difference matters acutely in three categories:</p>
-      <p><strong>Regulated calculations</strong> — CET1 capital ratio, fraud velocity thresholds, overdraft policy triggers. These have legally mandated definitions. The most popular internal query interpretation of these terms may diverge from the regulation.</p>
-      <p><strong>Domain-specific terminology</strong> — DEL/ATT/SAF in Amazon logistics, specific card decline codes in BFSI, product-specific SKU taxonomy. These terms have precise domain meanings that no query history can reliably recover because they are documented in policy, not encoded in queries.</p>
-      <p><strong>Novel business events</strong> — Genie Ontology can only learn from what has already run. A new regulation, a new product, a newly acquired entity has zero query history. An auto-extracted ontology has no signal for it; a domain-authored ontology captures it on day one.</p>
+      <div class="arg-block-title">Domain awareness: the mechanism that closes the gap</div>
+      <p>A mining system learns what your organisation <em>has been doing</em>. Domain awareness encodes what your organisation <em>is required to do</em>. These are different things — and in regulated industries, the difference between them is where compliance failures happen.</p>
+
+      <p>Certain industries have spent decades codifying that requirement into formal standards — externally validated, legally defensible, and completely invisible to any query mining system because they are written in regulatory documents, not in SQL. These are the accuracy anchors that make the gap closable:</p>
+
+      <div class="compliance-table-wrap">
+        <table class="compliance-table">
+          <thead>
+            <tr>
+              <th>Compliance domain</th>
+              <th>Standard model</th>
+              <th>What Genie misses</th>
+              <th>What Context Studio adds</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">BFSI</div>AML / KYC</td>
+              <td class="ct-model">FIBO — Legal Entity, Customer Due Diligence modules</td>
+              <td class="ct-miss">CDD tier definitions and beneficial ownership chains are policy-classified, not query-mined</td>
+              <td class="ct-win">Maps customer entities to FIBO legal entity classes; GOVERNED_BY edge binds CDD policy rule</td>
+            </tr>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">BFSI</div>Credit Risk / IFRS 9</td>
+              <td class="ct-model">FIBO — Debt, Credit stage classifications</td>
+              <td class="ct-miss">Stage 1/2/3 ECL definitions have IFRS-mandated criteria; dashboards often approximate them</td>
+              <td class="ct-win">Formal stage class hierarchy from FIBO; OWL reasoner catches stage misclassification before it ships</td>
+            </tr>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">BFSI</div>Capital Adequacy</td>
+              <td class="ct-model">FIBO — Regulatory Capital module; XBRL EBA taxonomy</td>
+              <td class="ct-miss">CET1 and Tier 2 definitions vary across reporting teams; XBRL submission terms are legally precise</td>
+              <td class="ct-win">XBRL taxonomy import pins submission-grade definitions; cross-maps to internal metric names</td>
+            </tr>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">BFSI</div>MiFID II / Markets</td>
+              <td class="ct-model">FIBO — Securities, Instruments; ISO 20022 message types</td>
+              <td class="ct-miss">Instrument classification, best-execution categories, and transaction reporting fields are MiFID-mandated</td>
+              <td class="ct-win">ISO 20022 message semantics imported directly; instrument class bindings are deterministic, not inferred</td>
+            </tr>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">BFSI</div>Payments / PSD2</td>
+              <td class="ct-model">ISO 20022 payment message schemas</td>
+              <td class="ct-miss">Payment initiation roles, SCA exemption categories, and SEPA term codes are externally mandated</td>
+              <td class="ct-win">ISO 20022 schema mapped to enterprise tables; PSD2 role classifications available on day one of a new directive</td>
+            </tr>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">BFSI</div>Operational Risk / DORA</td>
+              <td class="ct-model">FIBO — Risk Events; DORA ICT incident taxonomy (EU 2025)</td>
+              <td class="ct-miss">ICT incident severity classes, critical third-party provider definitions: zero query history exists yet</td>
+              <td class="ct-win">DORA class hierarchy encoded in Context Studio from regulatory text — available before any query runs</td>
+            </tr>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">Healthcare</div>Clinical data</td>
+              <td class="ct-model">HL7 FHIR R4 — Patient, Observation, Condition resources</td>
+              <td class="ct-miss">Clinical concept codes (SNOMED, LOINC) cannot be mined from EHR query patterns</td>
+              <td class="ct-win">FHIR resource classes as OWL; agents get coded clinical meaning, not column-name guesses</td>
+            </tr>
+            <tr>
+              <td class="ct-domain"><div class="domain-tag">Retail / Logistics</div>Supply chain</td>
+              <td class="ct-model">GS1 — delivery status codes, product identifiers, EPCIS events</td>
+              <td class="ct-miss">DEL/ATT/SAF status codes, SSCC identifiers: precise GS1 definitions invisible in SQL history</td>
+              <td class="ct-win">GS1 EPCIS event classes bound to delivery status columns; agents reason over logistics semantics, not strings</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Why this is the game-changer for Impetus tooling.</strong> Context Studio can ingest any of these standard OWL ontologies, map enterprise columns and tables to their formal classes, extend with domain-specific subclasses, and bind regulatory policy documents via <code>GOVERNED_BY</code> edges — all before a single query has run. Context Fiber then serves these governed bindings to agents at runtime alongside Databricks' mined context. The result is not additive — it is qualitatively different: the agent knows what a term <em>must</em> mean, not just what it <em>usually</em> means.</p>
+
+      <p><strong>The DORA case illustrates the sharpest edge of this advantage.</strong> DORA (Digital Operational Resilience Act) became mandatory for EU financial institutions in January 2025. ICT incident classification, critical third-party provider definitions, and resilience testing categories are all DORA-specific terms with no established query history anywhere. Genie Ontology's accuracy on DORA terminology on day one is effectively at the 50% baseline — it has nothing to mine. A Context Studio deployment that has encoded the DORA regulatory taxonomy is accurate from day one. This asymmetry repeats with every new regulation, every new product line, every acquisition — and it compounds.</p>
+
+      <p><strong>Domain-specific terminology without a formal standard</strong> carries the same gap at a smaller scale: DEL/ATT/SAF delivery codes in logistics, card decline reason hierarchies in payments, internal risk rating scales in lending. These are documented in policy, not recoverable from query history. Domain awareness — encoding what experts and regulators have formally agreed — is the mechanism that closes the accuracy gap Databricks cannot close by mining alone.</p>
     </div>
   </div>
 
