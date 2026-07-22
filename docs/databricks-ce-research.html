@@ -324,6 +324,13 @@
   }
   .build-name { font-weight: 650; color: var(--text); display: block; margin-bottom: 2px; }
   .build-desc { color: var(--muted); font-size: 13px; line-height: 1.45; }
+  .build-sub-list { list-style: none; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .build-sub-list li { display: flex; gap: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .build-sub-dot {
+    min-width: 6px; height: 6px; width: 6px; border-radius: 50%;
+    background: var(--imp-blue); margin-top: 5px; flex-shrink: 0;
+  }
+  .build-sub-name { font-weight: 650; color: var(--text); }
 
   .position-split {
     display: grid;
@@ -789,8 +796,14 @@
       <li>
         <div class="build-icon">5</div>
         <div>
-          <span class="build-name">ACE Feedback Loop</span>
-          <span class="build-desc">A systematic mechanism where agent errors (wrong answers, hallucinated terms, drifted definitions) are fed back into the ontology curation workflow. Databricks observability surfaces query history; it does not close the loop back into governed semantic correction. Without this loop, ontology quality degrades with agent scale.</span>
+          <span class="build-name">Agentic Outcome Accuracy</span>
+          <span class="build-desc">Genie has query history and thumbs up/down feedback. It has no mechanism to trace an answer back to the semantic definition it used, detect when that definition has drifted, or close the loop into a governed correction workflow. In a compliance context, "the agent got it wrong" is not enough — you need to show what it believed, why it was wrong, and what was done about it.</span>
+          <ul class="build-sub-list">
+            <li><div class="build-sub-dot"></div><div><span class="build-sub-name">Outcome Tracing</span> — every agent answer traces back to the exact semantic definition used. Full audit chain: answer → context payload → governed definition.</div></li>
+            <li><div class="build-sub-dot"></div><div><span class="build-sub-name">Accuracy Measurement</span> — systematic comparison of agent answers against governed definitions over time. Not thumbs up/down — structured measurement against what the definition says the answer must be.</div></li>
+            <li><div class="build-sub-dot"></div><div><span class="build-sub-name">Drift Detection</span> — when answers start diverging from governed semantics the system flags it before it causes a downstream failure. Genie errors persist silently until usage patterns shift.</div></li>
+            <li><div class="build-sub-dot"></div><div><span class="build-sub-name">Governed Correction Loop</span> — confirmed errors feed back as correction tasks into Context Studio, go through the sign-off gate, and ship as a governed update. Not informally tuned — formally corrected and auditable.</div></li>
+          </ul>
         </div>
       </li>
       <li>
@@ -860,7 +873,7 @@
       </div>
       <div class="brief-item">
         <div class="brief-num">5</div>
-        <div><strong>Make the ACE feedback loop a product, not a feature.</strong> The loop from agent error → ontology curation → governed release is where our competitive advantage compounds. Every agent error that we catch and correct makes our ontology more accurate; Genie Ontology's errors quietly persist until usage patterns shift. Over time, the accuracy gap widens in our favour.</div>
+        <div><strong>Build Agentic Outcome Accuracy as a full capability, not a feedback loop.</strong> Genie tells you what it answered. Impetus must tell you whether it was right — and fix it if it wasn't, through a governed process. Outcome tracing, drift detection, accuracy measurement, and a governed correction loop are four distinct things that need to work together. The compounding advantage is real: every confirmed error that goes through our correction workflow makes the ontology more accurate. Genie's errors persist silently until usage patterns happen to shift. Over time the accuracy gap widens in our favour — but only if we build this as a product, not an afterthought.</div>
       </div>
       <div class="brief-item">
         <div class="brief-num">6</div>
