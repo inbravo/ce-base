@@ -624,6 +624,133 @@ table.sem-table tr:last-child td { border-bottom: none; }
 .dtree-wrap { margin-bottom: 36px; }
 .dtree-wrap .arch-diagram-card { margin-bottom: 16px; }
 
+/* ── Comic strip: Today mode — shows what Alex & the agent said ──── */
+.comic-strip {
+  background: #FAFAF7;
+  border: 1.5px solid #E2D9C0;
+  border-radius: 12px;
+  padding: 16px 20px 18px;
+  margin-bottom: 14px;
+}
+.comic-avatars {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.comic-ava-block { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.comic-ava-block.right { align-items: flex-end; }
+.comic-emoji { font-size: 22px; line-height: 1; }
+.comic-name  { font-size: 11px; font-weight: 800; color: #2D3748; letter-spacing: 0.02em; }
+.comic-role  { font-size: 9.5px; color: #A0AEC0; font-style: italic; }
+.comic-divider { height: 1px; background: #E2D9C0; margin-bottom: 12px; }
+.comic-bubbles {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 14px;
+  align-items: flex-start;
+}
+.comic-bub {
+  position: relative;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.5;
+  max-width: 46%;
+}
+.comic-bub.alex {
+  background: #EBF8FF;
+  border: 1.5px solid #90CDF4;
+  color: #1A365D;
+}
+.comic-bub.alex::before {
+  content: '';
+  position: absolute;
+  left: -9px; top: 12px;
+  border: 6px solid transparent;
+  border-right-color: #90CDF4;
+}
+.comic-bub.alex::after {
+  content: '';
+  position: absolute;
+  left: -6px; top: 13px;
+  border: 5px solid transparent;
+  border-right-color: #EBF8FF;
+}
+.comic-bub.agent {
+  background: #FFFAF0;
+  border: 1.5px solid #FBD38D;
+  color: #5C3A00;
+  text-align: right;
+}
+.comic-bub.agent::before {
+  content: '';
+  position: absolute;
+  right: -9px; top: 12px;
+  border: 6px solid transparent;
+  border-left-color: #FBD38D;
+}
+.comic-bub.agent::after {
+  content: '';
+  position: absolute;
+  right: -6px; top: 13px;
+  border: 5px solid transparent;
+  border-left-color: #FFFAF0;
+}
+.comic-context-window {
+  border: 1.5px dashed #A0AEC0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #F7FAFC;
+}
+.ccw-label {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em;
+  color: #718096; text-transform: uppercase; margin-bottom: 8px;
+}
+.ccw-row {
+  font-family: 'Courier New', monospace; font-size: 11.5px;
+  color: #4A5568; margin-bottom: 5px;
+  display: flex; flex-wrap: wrap; gap: 0 4px; align-items: baseline;
+}
+.ccw-table  { font-weight: 800; color: #0078D4; }
+.ccw-sep    { color: #A0AEC0; }
+.ccw-status { font-weight: 700; color: #B7791F; }
+.ccw-note   { font-size: 10px; font-style: italic; color: #A0AEC0; margin-top: 2px; }
+
+/* With Context / With Secured Context variants */
+.comic-bub.agent.resolved {
+  background: var(--green-lt);
+  border-color: #9AE6B4;
+  color: #14532D;
+}
+.comic-bub.agent.resolved::before { border-left-color: #9AE6B4; }
+.comic-bub.agent.resolved::after  { border-left-color: var(--green-lt); }
+.comic-context-window.resolved {
+  border-style: solid;
+  border-color: #9AE6B4;
+  background: var(--green-lt);
+}
+.comic-context-window.resolved .ccw-label { color: var(--green); }
+.ccw-checks { display: flex; flex-direction: column; gap: 5px; margin-top: 2px; }
+.ccw-check {
+  display: flex; gap: 8px; align-items: baseline;
+  font-family: 'Courier New', monospace; font-size: 11.5px;
+}
+.ccw-tick         { font-style: normal; font-weight: 800; min-width: 14px; }
+.ccw-check.pass .ccw-tick { color: var(--green); }
+.ccw-check.fail .ccw-tick { color: var(--red); }
+.ccw-check-label  { font-weight: 700; color: #2D3748; min-width: 95px; }
+.ccw-check-val    { color: #4A5568; }
+.ccw-check.fail .ccw-check-val { color: var(--red); font-weight: 600; }
+.comic-secured-note {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: var(--teal-lt); border: 1.5px solid #81E6D9;
+  border-radius: 8px; padding: 10px 14px; margin-top: 10px;
+  font-size: 12px; color: #134E4A; line-height: 1.5;
+}
+.csn-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
 /* option A/B comparison (property graph vs RDF/OWL) */
 .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 @media (max-width: 640px) { .option-grid { grid-template-columns: 1fr; } }
@@ -3390,6 +3517,38 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
           </svg>
         </div>
 
+        <!-- COMIC STRIP: Today — conversation between Alex and Genie -->
+        <div class="comic-strip state-today">
+          <div class="comic-avatars">
+            <div class="comic-ava-block">
+              <span class="comic-emoji">👤</span>
+              <span class="comic-name">Alex</span>
+              <span class="comic-role">Customer</span>
+            </div>
+            <div class="comic-ava-block right">
+              <span class="comic-emoji">🤖</span>
+              <span class="comic-name">Genie</span>
+              <span class="comic-role">Databricks Genie</span>
+            </div>
+          </div>
+          <div class="comic-divider"></div>
+          <div class="comic-bubbles">
+            <div class="comic-bub alex">"Why was my card declined?"</div>
+            <div class="comic-bub agent">"It shows as DECLINED. I don't have a reason why."</div>
+          </div>
+          <div class="comic-context-window">
+            <div class="ccw-label">💭 &nbsp;Genie's complete context window — everything it could see</div>
+            <div class="ccw-row">
+              <span class="ccw-table">PAYMENTS_DB.TRANSACTIONS</span>
+              <span class="ccw-sep">&nbsp;→&nbsp;</span>
+              <span>txn_id: TXN-58217</span>
+              <span class="ccw-sep">&nbsp;·&nbsp;</span>
+              <span class="ccw-status">status: "DECLINED"</span>
+            </div>
+            <div class="ccw-note">one row · one field · no reason codes · no balance · no fraud score · no policy documents</div>
+          </div>
+        </div>
+
         <!-- TODAY: record + blocked source systems (structured DB + unstructured policy docs) -->
         <div class="arch-diagram-card state-today">
           <svg viewBox="0 0 760 320" width="100%" style="min-width:680px;" role="img">
@@ -3473,6 +3632,52 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
             <circle cx="734" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')"/>
             <text x="734" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-databricks-card-decline')">i<title>View technical solution design →</title></text>
           </svg>
+        </div>
+
+        <!-- COMIC STRIP: With Context (also visible in With Secured Context) -->
+        <div class="comic-strip state-context">
+          <div class="comic-avatars">
+            <div class="comic-ava-block">
+              <span class="comic-emoji">👤</span>
+              <span class="comic-name">Alex</span>
+              <span class="comic-role">Customer</span>
+            </div>
+            <div class="comic-ava-block right">
+              <span class="comic-emoji">🤖</span>
+              <span class="comic-name">Genie</span>
+              <span class="comic-role">Databricks Genie</span>
+            </div>
+          </div>
+          <div class="comic-divider"></div>
+          <div class="comic-bubbles">
+            <div class="comic-bub alex">"Why was my card declined?"</div>
+            <div class="comic-bub agent resolved">"Your card expired last week — update your payment method to retry."</div>
+          </div>
+          <div class="comic-context-window resolved">
+            <div class="ccw-label">✓ &nbsp;Genie's context window — 3 checks walked in order</div>
+            <div class="ccw-checks">
+              <div class="ccw-check pass">
+                <span class="ccw-tick">✓</span>
+                <span class="ccw-check-label">Balance Check</span>
+                <span class="ccw-check-val">acct_balance: £340 — overdraft policy met</span>
+              </div>
+              <div class="ccw-check pass">
+                <span class="ccw-tick">✓</span>
+                <span class="ccw-check-label">Fraud Check</span>
+                <span class="ccw-check-val">risk_score: 12/100 — below threshold</span>
+              </div>
+              <div class="ccw-check fail">
+                <span class="ccw-tick">✗</span>
+                <span class="ccw-check-label">Card Check</span>
+                <span class="ccw-check-val">card_status: EXPIRED ← reason identified</span>
+              </div>
+            </div>
+          </div>
+          <!-- Secured-only addendum: row-level scope note -->
+          <div class="comic-secured-note state-secured">
+            <span class="csn-icon">🔒</span>
+            <span><strong>Row-level scope applied before query ran</strong> — card_id = •••• 4821, enforced via Unity Catalog row filters. Tom's and Emma's records were filtered at the data layer and never reached these checks.</span>
+          </div>
         </div>
 
         <!-- CONTEXT (+ SECURED): same unified box format as Today, now fully resolved -->
@@ -3897,6 +4102,38 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
           </svg>
         </div>
 
+        <!-- COMIC STRIP: Today — conversation between Alex and the agent -->
+        <div class="comic-strip state-today">
+          <div class="comic-avatars">
+            <div class="comic-ava-block">
+              <span class="comic-emoji">👤</span>
+              <span class="comic-name">Alex</span>
+              <span class="comic-role">Customer</span>
+            </div>
+            <div class="comic-ava-block right">
+              <span class="comic-emoji">🤖</span>
+              <span class="comic-name">AI Agent</span>
+              <span class="comic-role">Amazon Bedrock</span>
+            </div>
+          </div>
+          <div class="comic-divider"></div>
+          <div class="comic-bubbles">
+            <div class="comic-bub alex">"Why was my card declined?"</div>
+            <div class="comic-bub agent">"Your transaction shows as DECLINED. I don't have a reason why."</div>
+          </div>
+          <div class="comic-context-window">
+            <div class="ccw-label">💭 &nbsp;Agent's complete context window — everything it could see</div>
+            <div class="ccw-row">
+              <span class="ccw-table">PAYMENTS_DB.TRANSACTIONS</span>
+              <span class="ccw-sep">&nbsp;→&nbsp;</span>
+              <span>txn_id: TXN-58217</span>
+              <span class="ccw-sep">&nbsp;·&nbsp;</span>
+              <span class="ccw-status">status: "DECLINED"</span>
+            </div>
+            <div class="ccw-note">one row · one field · no reason codes · no balance · no fraud score · no policy documents</div>
+          </div>
+        </div>
+
         <!-- TODAY: record + blocked source systems (structured DB + unstructured policy docs) -->
         <div class="arch-diagram-card state-today">
           <svg viewBox="0 0 760 320" width="100%" style="min-width:680px;" role="img">
@@ -3980,6 +4217,52 @@ followup = w.genie.<span class="code-fn">create_message_and_wait</span>(
             <circle cx="734" cy="204" r="7" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.2" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')"/>
             <text x="734" y="207" text-anchor="middle" font-size="8.5" font-weight="800" fill="#718096" style="cursor:pointer" onclick="showPage('solution-aws-card-decline')">i<title>View technical solution design →</title></text>
           </svg>
+        </div>
+
+        <!-- COMIC STRIP: With Context (also visible in With Secured Context) -->
+        <div class="comic-strip state-context">
+          <div class="comic-avatars">
+            <div class="comic-ava-block">
+              <span class="comic-emoji">👤</span>
+              <span class="comic-name">Alex</span>
+              <span class="comic-role">Customer</span>
+            </div>
+            <div class="comic-ava-block right">
+              <span class="comic-emoji">🤖</span>
+              <span class="comic-name">AI Agent</span>
+              <span class="comic-role">Amazon Bedrock</span>
+            </div>
+          </div>
+          <div class="comic-divider"></div>
+          <div class="comic-bubbles">
+            <div class="comic-bub alex">"Why was my card declined?"</div>
+            <div class="comic-bub agent resolved">"Your card expired last week — update your payment method to retry."</div>
+          </div>
+          <div class="comic-context-window resolved">
+            <div class="ccw-label">✓ &nbsp;Agent's context window — 3 checks walked in order</div>
+            <div class="ccw-checks">
+              <div class="ccw-check pass">
+                <span class="ccw-tick">✓</span>
+                <span class="ccw-check-label">Balance Check</span>
+                <span class="ccw-check-val">acct_balance: £340 — overdraft policy met</span>
+              </div>
+              <div class="ccw-check pass">
+                <span class="ccw-tick">✓</span>
+                <span class="ccw-check-label">Fraud Check</span>
+                <span class="ccw-check-val">risk_score: 12/100 — below threshold</span>
+              </div>
+              <div class="ccw-check fail">
+                <span class="ccw-tick">✗</span>
+                <span class="ccw-check-label">Card Check</span>
+                <span class="ccw-check-val">card_status: EXPIRED ← reason identified</span>
+              </div>
+            </div>
+          </div>
+          <!-- Secured-only addendum: row-level scope note -->
+          <div class="comic-secured-note state-secured">
+            <span class="csn-icon">🔒</span>
+            <span><strong>Row-level scope applied before query ran</strong> — card_id = •••• 4821. Tom's and Emma's records were filtered at the data layer and never reached these checks.</span>
+          </div>
         </div>
 
         <!-- CONTEXT (+ SECURED): same unified box format as Today, now fully resolved -->
